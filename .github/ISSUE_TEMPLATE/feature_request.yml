@@ -1,0 +1,40 @@
+name: Feature Request
+description: Propose a new feature or architectural change for the editor
+title: "feat: <title>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! Please provide as much detail as possible.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the proposed feature.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this change necessary? What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Proposed Implementation
+      description: Describe the technical approach or UI changes.
+  - type: checkboxes
+    id: dod
+    attributes:
+      label: Definition of Done
+      description: To be considered "Done," this feature must meet the following criteria.
+      options:
+        - label: "Implementation: Fully implemented according to the Serverless Workflow spec."
+        - label: "Unit Tests: Comprehensive unit tests are included and passing."
+        - label: "Integration Tests: Verified within the monorepo and target envelopes (Web/VS Code)."
+        - label: "Documentation: Updated README.md, ADRs, or official docs."
+        - label: "Performance: No significant regression in editor responsiveness."
+        - label: "Accessibility: UI changes comply with accessibility standards."

@@ -1,0 +1,22 @@
+name: Question / General
+description: Ask a question or share general feedback
+title: "query: <title>"
+labels: ["question"]
+body:
+  - type: textarea
+    id: subject
+    attributes:
+      label: Subject
+      description: What would you like to discuss?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide background information to help us provide a better answer.
+  - type: input
+    id: outcome
+    attributes:
+      label: Desired Outcome
+      description: Are you looking for a specific answer, a pointer to docs, or just starting a discussion?
