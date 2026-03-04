@@ -34,3 +34,12 @@
 - **Rationale**: Supports multiple hosts while keeping logic portable and testable.
 - **Alternatives considered**:
   - Single monolithic UI package: rejected due weaker portability and test isolation.
+
+## Decision 6: Baseline Runtime And Tooling Stack
+
+- **Decision**: Standardize repository bootstrap on Node.js 24 LTS, `pnpm@10.30.3`, `@biomejs/biome@2.4.5`, `vitest@4.0.18`, and `@playwright/test@1.58.2`; pin versions in repo metadata.
+- **Rationale**: Provides a stable LTS runtime, reproducible installs, a single fast lint/format toolchain, and clear separation between unit/integration and e2e test execution.
+- **Alternatives considered**:
+  - Deno-first stack: rejected for now due lower fit with current package ecosystem and existing TypeScript package workflows.
+  - Bun-first stack: rejected for now because ecosystem compatibility checks add bootstrap risk for initial delivery.
+  - ESLint + Prettier split tooling: rejected in favor of a single-tool chain to reduce config and maintenance overhead.

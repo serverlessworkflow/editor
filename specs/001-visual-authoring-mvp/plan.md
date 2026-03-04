@@ -9,10 +9,12 @@ Implement the baseline editor flow for creating, loading, editing, validating, a
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x  
+**Language/Version**: TypeScript 5.9.3  
 **Primary Dependencies**: Lit, Rete, React Flow, Serverless Workflow TypeScript SDK  
+**Runtime/Package Manager**: Node.js 24 LTS, `pnpm@10.30.3` (via `packageManager` pin; use userland `corepack@0.34.6` when bundled Corepack is unavailable)  
+**Lint/Format**: `@biomejs/biome@2.4.5`  
 **Storage**: N/A (host-managed)  
-**Testing**: Vitest and Playwright (contract/integration/unit)  
+**Testing**: `vitest@4.0.18` and `@playwright/test@1.58.2` (contract/integration/unit/e2e)  
 **Target Platform**: Modern desktop browsers and VS Code webview host  
 **Project Type**: Web component + headless core packages  
 **Performance Goals**: Live diagnostics feedback under 500 ms after debounce for typical edits  

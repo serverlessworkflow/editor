@@ -80,6 +80,9 @@ A workflow author receives live diagnostics while editing and can run explicit f
 - **FR-013**: System MUST support two renderer backends: `rete-lit` and `react-flow`.
 - **FR-014**: System MUST expose active renderer identity in host capability payloads.
 - **FR-015**: System MUST preserve create/load/edit/export/validate behavior across both renderer bundles.
+- **FR-016**: Repository bootstrap MUST pin the runtime and package manager to Node.js 24 LTS and `pnpm@10.30.3` using `engines` and `packageManager` metadata.
+- **FR-017**: Repository tooling MUST use `@biomejs/biome@2.4.5` as the single formatter and linter for TypeScript/JavaScript and JSON/YAML-adjacent config surfaces.
+- **FR-018**: Repository test tooling MUST use `vitest@4.0.18` for unit/integration and `@playwright/test@1.58.2` for end-to-end validation.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -101,3 +104,4 @@ A workflow author receives live diagnostics while editing and can run explicit f
 - **SC-004**: Host embedding setup requires no more than one custom element and one client initialization step.
 - **SC-005**: Renderer parity tests pass for 100% of MVP baseline fixtures across `rete-lit` and `react-flow` bundles.
 - **SC-006**: Host setup remains one custom element and one client initialization step regardless of selected renderer bundle.
+- **SC-007**: A new contributor can bootstrap the repository and run lint, unit/integration tests, and e2e smoke checks in under 15 minutes on a clean machine with Node.js 24 LTS.

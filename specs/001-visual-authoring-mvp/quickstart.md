@@ -1,5 +1,15 @@
 # Quickstart Validation: Visual Authoring MVP
 
+## Prerequisites
+
+1. Install Node.js 24 LTS.
+2. Ensure `pnpm@10.30.3` is active (via Corepack when available; otherwise install `corepack@0.34.6` userland and activate pnpm).
+3. Install dependencies and verify baseline tooling:
+   - `pnpm install --frozen-lockfile`
+   - `pnpm biome check .`
+   - `pnpm vitest --run`
+   - `pnpm playwright test --list`
+
 ## Scenario 1: Create New Workflow
 
 1. Open editor host page with empty state.

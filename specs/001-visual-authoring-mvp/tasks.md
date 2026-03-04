@@ -6,7 +6,7 @@
 ## Phase 1: Setup (Shared Infrastructure)
 
 - [ ] T001 Create package layout for core, web component, and host client modules in `packages/`
-- [ ] T002 Configure baseline toolchain and test runners in repo config files
+- [ ] T002 Configure baseline toolchain in repo config files (Node.js 24 LTS, `pnpm@10.30.3`, `@biomejs/biome@2.4.5`, `vitest@4.0.18`, `@playwright/test@1.58.2`)
 - [ ] T003 [P] Add fixtures for JSON and YAML workflow sources in `tests/fixtures/`
 
 ## Phase 2: Foundational (Blocking Prerequisites)
