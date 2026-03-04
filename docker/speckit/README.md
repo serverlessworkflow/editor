@@ -15,7 +15,7 @@ This folder isolates Spec Kit tooling in Docker so host Python/uv installs are u
 Default command executed inside container:
 
 ```text
-specify init --here --force --ai <agent> --script ps --ignore-agent-tools
+specify init --here --force --ai <agent> --script ps --ai-skills
 ```
 
 ## Run any Specify command in container

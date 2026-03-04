@@ -1,7 +1,14 @@
 ---
-description: Convert existing tasks into actionable, dependency-ordered GitHub issues for the feature based on available design artifacts.
-tools: ['github/github-mcp-server/issue_write']
+name: speckit-taskstoissues
+description: Convert tasks from tasks.md into GitHub issues. Use after task breakdown
+  to track work items in GitHub project management.
+compatibility: Requires spec-kit project structure with .specify/ directory
+metadata:
+  author: github-spec-kit
+  source: templates/commands/taskstoissues.md
 ---
+
+# Speckit Taskstoissues Skill
 
 ## User Input
 

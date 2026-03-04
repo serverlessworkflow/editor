@@ -1,14 +1,15 @@
 ---
-description: Execute the implementation planning workflow using the plan template to generate design artifacts.
-handoffs: 
-  - label: Create Tasks
-    agent: speckit.tasks
-    prompt: Break the plan into tasks
-    send: true
-  - label: Create Checklist
-    agent: speckit.checklist
-    prompt: Create a checklist for the following domain...
+name: speckit-plan
+description: Generate technical implementation plans from feature specifications.
+  Use after creating a spec to define architecture, tech stack, and implementation
+  phases. Creates plan.md with detailed technical design.
+compatibility: Requires spec-kit project structure with .specify/ directory
+metadata:
+  author: github-spec-kit
+  source: templates/commands/plan.md
 ---
+
+# Speckit Plan Skill
 
 ## User Input
 

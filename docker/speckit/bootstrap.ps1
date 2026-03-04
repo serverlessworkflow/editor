@@ -1,7 +1,7 @@
 param(
   [ValidateSet('codex','claude')]
   [string]$Ai = "codex",
-  [string]$ArgsForSpecify = "init --here --force --ai $Ai --script ps --ignore-agent-tools"
+  [string]$ArgsForSpecify = "init --here --force --ai $Ai --script ps --ai-skills"
 )
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "../..")
