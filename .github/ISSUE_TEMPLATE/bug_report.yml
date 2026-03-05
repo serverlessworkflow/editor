@@ -1,6 +1,6 @@
 name: Bug Report
 description: Create a report to help us improve the editor
-title: "[BUG]: <title>"
+title: "bug: <title>"
 labels: ["bug"]
 body:
   - type: textarea
@@ -19,6 +19,13 @@ body:
         1. Open the editor...
         2. Upload workflow file...
         3. Click on...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
     validations:
       required: true
   - type: input
