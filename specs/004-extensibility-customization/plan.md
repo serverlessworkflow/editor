@@ -47,11 +47,14 @@ specs/004-extensibility-customization/
 
 ```text
 packages/editor-core/src/plugins/
+packages/editor-core/tests/plugins/
 packages/editor-web-component/src/plugins/
 packages/editor-web-component/src/slots/
 packages/editor-renderer-rete-lit/src/plugins/
 packages/editor-renderer-react-flow/src/plugins/
 tests/contract/
+tests/e2e/
+tests/fixtures/plugins/
 tests/integration/
 ```
 

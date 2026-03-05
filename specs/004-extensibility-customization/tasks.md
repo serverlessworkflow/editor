@@ -24,6 +24,7 @@
 - [ ] T007 [P] [US1] Implement `registerPlugin` and `unregisterPlugin` host APIs in `packages/editor-web-component/src/api/plugins.ts`
 - [ ] T008 [US1] Implement plugin state query API in `packages/editor-core/src/plugins/plugin-info.ts`
 - [ ] T009 [US1] Add lifecycle contract tests in `tests/contract/plugin-lifecycle.contract.spec.ts`
+- [ ] T023 [US1] Add duplicate-key conflict policy contract tests in `tests/contract/plugin-conflict-policy.contract.spec.ts`
 
 ## Phase 4: User Story 2 - Extend Behavior Through Commands And Validation (Priority: P2)
 
@@ -47,10 +48,20 @@
 - [ ] T016 [P] [US3] Implement toolbar and property editor registries in `packages/editor-web-component/src/plugins/ui-registries.ts`
 - [ ] T017 [US3] Implement slot context bridge in `packages/editor-web-component/src/slots/slot-context.ts`
 - [ ] T018 [US3] Add renderer matrix integration tests for UI contribution and fallback flows in `tests/integration/plugin-ui-renderer-matrix.spec.ts`
+- [ ] T024 [US3] Add warning/event payload contract tests for unsupported renderer-targeted contributions in `tests/contract/plugin-renderer-warning.contract.spec.ts`
+- [ ] T025 [US3] Add slot semantics contract tests (valid slot names, deterministic ordering, duplicate key policy, unregister cleanup) in `tests/contract/plugin-slot-contract.spec.ts`
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T019 [P] Add per-renderer plugin budget tests in `tests/integration/plugin-budget-rete-lit.spec.ts`
-- [ ] T020 [P] Add per-renderer plugin budget tests in `tests/integration/plugin-budget-react-flow.spec.ts`
+**Shared Acceptance Criteria (T019, T020)**:
+
+- Enforce node renderer callback budget under 1 ms per node for the active renderer backend.
+- Enforce validation rule timeout at 500 ms.
+- Assert budget violations emit warning/event payloads including `pluginId`, `phase`, `reason`, `budgetType`, `budgetLimitMs`, and `observedDurationMs`.
+- Assert `rendererId` is present when `budgetType=renderer-callback`.
+
+- [ ] T019 [P] Add plugin budget integration tests for `rete-lit` renderer in `tests/integration/plugin-budget-rete-lit.spec.ts`
+- [ ] T020 [P] Add plugin budget integration tests for `react-flow` renderer in `tests/integration/plugin-budget-react-flow.spec.ts`
 - [ ] T021 [P] Add e2e observability checks for plugin lifecycle events including renderer context in `tests/e2e/plugin-events.spec.ts`
+- [ ] T026 [P] Add e2e accessibility checks for plugin-contributed toolbar/slot UI keyboard and accessible-name behavior in `tests/e2e/plugin-accessibility.spec.ts`
 - [ ] T022 Run quickstart scenarios from `specs/004-extensibility-customization/quickstart.md` and capture results

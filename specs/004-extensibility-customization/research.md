@@ -34,3 +34,10 @@
 - **Rationale**: Keeps editor resilient and host-observable.
 - **Alternatives considered**:
   - Silent failure handling: rejected because it reduces debuggability.
+
+## Decision 6: Strict Slot Contract With Deterministic Ordering
+
+- **Decision**: Restrict slot contributions to declared slot names, order contributions deterministically (`order`, then registration time), and reject invalid slot names with warning events.
+- **Rationale**: Keeps host layout extension predictable and testable while maintaining bounded extension points.
+- **Alternatives considered**:
+  - Accept arbitrary slot names at runtime: rejected due layout drift and unclear host guarantees.
