@@ -1,0 +1,31 @@
+{
+  "name": "serverless-workflow-visual-editor",
+  "version": "1.0.0",
+  "description": "React serverless workflow diagram component",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/serverlessworkflow/editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverlessworkflow/editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/serverlessworkflow/editor/issues"
+  },
+  "packageManager": "pnpm@10.31.0",
+  "type": "module",
+  "scripts": {
+    "build:prod": "pnpm -r --stream build:prod",
+    "build:dev": "pnpm -r --stream build:dev"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.37.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  }
+}

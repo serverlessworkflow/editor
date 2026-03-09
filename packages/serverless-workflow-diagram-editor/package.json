@@ -1,0 +1,70 @@
+{
+  "name": "serverless-workflow-diagram-editor",
+  "version": "1.0.0",
+  "description": "React serverless workflow diagram component",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/serverlessworkflow/editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverlessworkflow/editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/serverlessworkflow/editor/issues"
+  },
+  "packageManager": "pnpm@10.29.2",
+  "type": "module",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ./src ./stories",
+    "lint:fix": "eslint ./src ./stories --fix",
+    "clean": "rimraf dist",
+    "build:dev": "pnpm clean && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && pnpm clean && tsc -p tsconfig.json && pnpm test",
+    "test": "jest --silent --verbose --passWithNoTests",
+    "test:watch": "jest --watchAll",
+    "start": "storybook dev -p 6006",
+    "build:storybook": "storybook build --output-dir ./dist-storybook"
+  },
+  "dependencies": {
+    "@patternfly/patternfly": "^6.4.0",
+    "@patternfly/react-core": "^6.4.0",
+    "@patternfly/react-icons": "6.4.0",
+    "@patternfly/react-styles": "6.4.0",
+    "@patternfly/react-tokens": "6.4.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@serverless-workflow-settings/eslint-config": "workspace:*",
+    "@storybook/addon-a11y": "^10.2.16",
+    "@storybook/addon-docs": "^10.2.16",
+    "@storybook/addon-webpack5-compiler-swc": "^4.0.2",
+    "@storybook/react-webpack5": "^10.2.16",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.3.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint-plugin-storybook": "10.2.16",
+    "globals": "^17.4.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jiti": "^2.6.1",
+    "prop-types": "^15.8.1",
+    "rimraf": "^6.1.3",
+    "storybook": "^10.2.16",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  }
+}

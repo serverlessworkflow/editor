@@ -9,8 +9,8 @@ This project is the official, vendor-neutral visual editor for the [Serverless W
 ## Prerequisites
 
 To build and run the editor locally, you will need:
-- **Node.js** (current LTS version; see https://nodejs.org/)
-- **npm** or **pnpm**
+- **Node.js 24** (current LTS version; see https://nodejs.org/)
+- **pnpm 10.31.0**
 
 ## Building the Project
 
@@ -22,10 +22,10 @@ git clone https://github.com/serverlessworkflow/editor.git
 cd editor
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build all packages in the monorepo
-npm run build
+pnpm run build:[dev / prod]
 ```
 
 ## Development Environment
@@ -57,7 +57,7 @@ For new features or architectural changes:
 * **Linting & Formatting**: Follow the existing code style and formatting conventions used in the files you are editing. If the package you are changing defines linting or formatting scripts, run those before submitting code.
 * **Testing**: Ensure that logic changes are covered by tests, and run the relevant test commands for the packages you modify (see their documentation or `package.json`).
 * **Component Design**: Follow functional component patterns and ensure that UI state is managed predictably within the monorepo structure.
-* **New package creation**: If a new package needs to be created, please follow the standards used by the existing packages, including the standard commands `build`, `build-prod`, `test`, `e2e-test`, `lint`
+* **New package creation**: If a new package needs to be created, please follow the standards used by the existing packages, including the standard commands `build:dev`, `build:prod`, `test`, `e2e-test`, `lint`
 
 ## Pull Request Process
 

@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {/* Emit */
+    "baseUrl": ".",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "allowJs": true,
+
+    /* Module */
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "isolatedModules": true,
+    
+    /* Language and Environment */
+    "lib": ["es6", "es2018", "es2019", "esnext", "dom", "DOM.Iterable"],
+    "target": "ESNext",
+    "types": ["@testing-library/jest-dom", "node", "jest"],
+    "jsx": "react-jsx",
+    
+    /* Type Checking */
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    
+    // /* Stricter Typechecking Options */
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+  }
+}
