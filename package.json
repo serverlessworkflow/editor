@@ -12,7 +12,6 @@
   "bugs": {
     "url": "https://github.com/serverlessworkflow/editor/issues"
   },
-  "packageManager": "pnpm@10.31.0",
   "type": "module",
   "scripts": {
     "build:prod": "pnpm -r --stream build:prod",
@@ -27,5 +26,10 @@
     "eslint-plugin-react": "^7.37.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
+  },
+  "packageManager": "pnpm@10.31.0",
+  "engines": {
+    "node": ">=24",
+    "pnpm": "10.31.0"
   }
 }
