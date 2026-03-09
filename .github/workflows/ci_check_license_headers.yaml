@@ -64,8 +64,19 @@ jobs:
         run: |
           APACHE_RAT_JAR="apache-rat-${APACHE_RAT_VERSION}.jar"
 
+          rm -f .rat-reports
+
           # Redirect output to .rat-reports file, continue even if RAT returns non-zero exit code because we want to print Unapproved documents
           java -jar $APACHE_RAT_JAR --input-exclude-file .rat-excludes -- . > .rat-reports 2>&1 || true
+
+          # Verify that RAT ran successfully by checking for its summary output
+          if ! grep -q "Summary" .rat-reports; then
+            echo "❌ Apache RAT check FAILED - RAT did not complete successfully" >&2
+            cat .rat-reports
+            exit 1
+          fi
+
+          # Check for unapproved licenses
           if grep -q "^! Unapproved:" .rat-reports; then
             echo "❌ Apache RAT check FAILED - Files with unapproved licenses found:"
             echo ""
