@@ -16,7 +16,6 @@
   "type": "module",
   "files": [
     "dist",
-    "src",
     "README.md",
     "LICENSE"
   ],
@@ -26,7 +25,7 @@
     "lint:fix": "eslint ./src ./stories --fix",
     "clean": "rimraf dist",
     "build:dev": "pnpm clean && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && pnpm clean && tsc -p tsconfig.json && pnpm test",
+    "build:prod": "pnpm lint && pnpm test && pnpm clean && tsc -p tsconfig.json",
     "test": "jest --silent --verbose --passWithNoTests",
     "test:watch": "jest --watchAll",
     "start": "storybook dev -p 6006",
