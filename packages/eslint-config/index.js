@@ -43,9 +43,8 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "no-console": "warn",
-      semi: ["error", "always"],
+      semi: ["error", "always"], // Lorna: Need to double check if these are needed since we are using prettier in root?
       quotes: ["error", "double"],
-      "prettier/prettier": "error",
     },
   },
 ]);
