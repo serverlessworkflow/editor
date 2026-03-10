@@ -1,16 +1,20 @@
 {
   "name": "@serverless-workflow-settings/eslint-config",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared ESLint config for the serverless-workflow-editor monorepo",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Serverless Workflow Contributors",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.29.2",
   "type": "module",
+  "peerDependencies": {
+    "eslint": ">=9.0.0",
+    "prettier": ">=3.0.0"
+  },
   "devDependencies": {
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
