@@ -8,14 +8,14 @@
     "allowJs": true,
 
     /* Module */
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "CommonJS", // Lorna: do we need this? Is it because we might be building packages that still expect CJS?
+    "moduleResolution": "Node",
     "isolatedModules": true,
     
     /* Language and Environment */
-    "lib": ["ESNext", "dom", "DOM.Iterable"],
+    "lib": ["esnext", "dom", "DOM.Iterable"],
     "target": "ESNext",
-    "types": ["@testing-library/jest-dom", "node", "jest"],
+    "types": ["node", "jest"],
     "jsx": "react-jsx",
     
     /* Type Checking */
