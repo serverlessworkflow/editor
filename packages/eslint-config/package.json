@@ -2,13 +2,17 @@
   "name": "@serverless-workflow-settings/eslint-config",
   "version": "1.0.0",
   "description": "Shared ESLint config for the serverless-workflow-editor monorepo",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "Serverless Workflow Contributors",
   "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/serverlessworkflow/editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverlessworkflow/editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/serverlessworkflow/editor/issues"
+  },
+  "main": "index.js",
   "packageManager": "pnpm@10.29.2",
   "type": "module",
   "peerDependencies": {
