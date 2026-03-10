@@ -20,12 +20,12 @@
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 import { defineConfig } from 'eslint/config';
-import prettierPluginrecommended from "eslint-plugin-prettier/recommended";
+import prettierPluginRecommended from "eslint-plugin-prettier/recommended";
 
 export default defineConfig([
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
-  prettierPluginrecommended,
+  prettierPluginRecommended,
   {
     settings: {
       react: {

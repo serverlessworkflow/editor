@@ -17,31 +17,21 @@
  * under the License.
  */
 
-// import tseslint from 'typescript-eslint';
-// import pluginReact from 'eslint-plugin-react';
-// import { defineConfig } from 'eslint/config';
-// import prettierPluginrecommended from "eslint-plugin-prettier/recommended";
-
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
-import prettierConfig from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
     ...tseslint.configs.recommended,
     reactPlugin.configs.flat.recommended,
-    prettierPlugin,
     prettierPlugin, // Ensures Prettier runs as an ESLint rule
-    prettierConfig, // Disables ESLint rules that conflict with Prettier
     {
         plugins: {
-            react: reactPlugin,
             'react-hooks': hooksPlugin,
         },
         rules: {
-            ...reactPlugin.configs.recommended.rules,
             ...hooksPlugin.configs.recommended.rules,
             'react/react-in-jsx-scope': 'off', // Not needed for modern React
             "@typescript-eslint/no-unused-vars": "warn",
