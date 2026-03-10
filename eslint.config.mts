@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
-import { defineConfig } from 'eslint/config';
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
+import pluginReact from "eslint-plugin-react";
 import prettierPluginRecommended from "eslint-plugin-prettier/recommended";
 
 export default defineConfig([
@@ -32,11 +32,11 @@ export default defineConfig([
         version: "detect",
       },
     },
-    files: ['**/*.{ts,mts,tsx}'],
+    files: ["**/*.{ts,mts,tsx}"],
     rules: {
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "no-console": "warn",
     },
-  }
+  },
 ]);
