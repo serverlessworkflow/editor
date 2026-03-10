@@ -17,26 +17,11 @@
  * under the License.
  */
 
-import { defineConfig } from "eslint/config";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import prettierPluginRecommended from "eslint-plugin-prettier/recommended";
+import sharedConfig from "@serverless-workflow-settings/eslint-config";
 
-export default defineConfig([
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  prettierPluginRecommended,
+export default [
+  ...sharedConfig,
   {
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    files: ["**/*.{ts,mts,tsx}"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "no-console": "warn",
-    },
-  },
-]);
+    // Add app-specific overrides here
+  }
+];

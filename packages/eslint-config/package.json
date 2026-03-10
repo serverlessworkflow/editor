@@ -12,9 +12,14 @@
   "bugs": {
     "url": "https://github.com/serverlessworkflow/editor/issues"
   },
+  "type": "module",
   "main": "index.js",
   "packageManager": "pnpm@10.29.2",
-  "type": "module",
+    "scripts": {
+    "lint": "eslint . ",
+    "lint:fix": "eslint . --fix",
+    "build:prod": "pnpm lint"
+  },
   "peerDependencies": {
     "eslint": ">=9.0.0",
     "prettier": ">=3.0.0"

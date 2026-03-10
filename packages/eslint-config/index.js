@@ -21,19 +21,13 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
 import hooksPlugin from "eslint-plugin-react-hooks";
-import prettierPluginRecommended from "eslint-plugin-prettier/recommended";
+import prettierPlugin from "eslint-plugin-prettier/recommended";
 
 export default defineConfig([
   ...tseslint.configs.recommended,
   reactPlugin.configs.flat.recommended,
-  prettierPluginRecommended, // Ensures Prettier runs as an ESLint rule
+  prettierPlugin, // Ensures Prettier runs as an ESLint rule
   {
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    files: ["**/*.{ts,mts,tsx}"],
     plugins: {
       "react-hooks": hooksPlugin,
     },
@@ -43,8 +37,15 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "no-console": "warn",
-      semi: ["error", "always"], // Lorna: Need to double check if these are needed since we are using prettier in root?
+      semi: ["error", "always"],
       quotes: ["error", "double"],
+      "prettier/prettier": "error",
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+    files: ["**/*.{ts,mts,tsx}"],
   },
 ]);

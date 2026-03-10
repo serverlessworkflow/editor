@@ -17,25 +17,18 @@
  * under the License.
  */
 
-import type { StorybookConfig } from '@storybook/react-webpack5';
+import type { StorybookConfig } from "@storybook/react-webpack5";
 
 const config: StorybookConfig = {
-  "typescript": {
-    "check": true
+  typescript: {
+    check: true,
   },
-  "core": {
-    "disableTelemetry": true // Do not collect data
+  core: {
+    disableTelemetry: true, // Do not collect data
   },
-  "stories": [
-    "../stories/**/*.mdx",
-    "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"
-  ],
-  "addons": [
-    "@storybook/addon-webpack5-compiler-swc",
-    "@storybook/addon-a11y",
-    "@storybook/addon-docs"
-  ],
-  "framework": "@storybook/react-webpack5"
+  stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: ["@storybook/addon-webpack5-compiler-swc", "@storybook/addon-a11y", "@storybook/addon-docs"],
+  framework: "@storybook/react-webpack5",
 };
 
 export default config;

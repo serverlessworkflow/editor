@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ./src ./stories",
-    "lint:fix": "eslint ./src ./stories --fix",
+    "lint": "eslint ./src ./stories ./.storybook",
+    "lint:fix": "eslint ./src ./stories ./.storybook --fix",
     "clean": "rimraf dist",
     "build:dev": "pnpm clean && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && pnpm test && pnpm clean && tsc -p tsconfig.json",
