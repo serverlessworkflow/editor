@@ -1,0 +1,20 @@
+{
+  "name": "serverless-workflow-editor",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CNCF Serverless Workflow Specification Visual Editor",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverlessworkflow/editor.git"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
