@@ -31,7 +31,7 @@ pnpm install
 # Build package (development)
 pnpm run build:dev
 
-# Or build package (production))
+# Or build package (production)
 pnpm run build:prod
 
 # Build storybook static content for publishing (documentation and demo)
