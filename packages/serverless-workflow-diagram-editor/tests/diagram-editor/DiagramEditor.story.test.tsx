@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import { DiagramEditor } from "../../src/diagram-editor";
+import { composeStories } from "@storybook/react-vite";
+import * as stories from "../../stories/DiagramEditor.stories";
 import userEvent from "@testing-library/user-event";
 import { vi, test, expect, afterEach, describe } from "vitest";
 
-describe("DiagramEditor Component", () => {
+// Composes all stories in the file
+const { Component } = composeStories(stories);
+
+describe("DiagramEditor component story", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test("Render DiagramEditor Component", async () => {
+  test("Render DiagramEditor Component from story", async () => {
     const content = "Sample Content";
     const isReadOnly = true;
     const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
 
-    render(<DiagramEditor content={content} isReadOnly={isReadOnly} />);
+    render(<Component content={content} isReadOnly={isReadOnly} />);
 
     const user = userEvent.setup();
     const button = screen.getByRole("button", { name: /Click me!/i });

@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-import type { StorybookConfig } from "@storybook/react-vite";
+import * as a11yAddonAnnotations from "@storybook/addon-a11y/preview";
+import { setProjectAnnotations } from "@storybook/react-vite";
+import * as projectAnnotations from "./preview";
 
-const config: StorybookConfig = {
-  typescript: {
-    check: true,
-  },
-  core: {
-    disableTelemetry: true, // Do not collect data
-  },
-  stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-  addons: ["@chromatic-com/storybook", "@storybook/addon-vitest", "@storybook/addon-a11y", "@storybook/addon-docs"],
-  framework: "@storybook/react-vite",
-};
-
-export default config;
+// This is an important step to apply the right configuration when testing your stories.
+// More info at: https://storybook.js.org/docs/api/portable-stories/portable-stories-vitest#setprojectannotations
+setProjectAnnotations([a11yAddonAnnotations, projectAnnotations]);

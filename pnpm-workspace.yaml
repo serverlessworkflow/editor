@@ -3,5 +3,7 @@ packages:
 
 onlyBuiltDependencies:
   - '@swc/core'
+  - edgedriver
   - esbuild
+  - geckodriver
   - unrs-resolver

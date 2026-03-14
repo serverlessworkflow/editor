@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from "@storybook/react-webpack5";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+
 import { fn } from "storybook/test";
+
 import { Header } from "./Header";
 
 const meta = {
