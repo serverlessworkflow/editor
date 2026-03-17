@@ -1,6 +1,6 @@
 {
   "name": "@serverlessworkflow-toolings/linter",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "bin": {
     "linter": "./linter.js"
