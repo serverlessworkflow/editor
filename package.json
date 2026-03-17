@@ -14,18 +14,19 @@
   },
   "type": "module",
   "scripts": {
-    "format": "pnpm --filter @serverlessworkflow-toolings/linter format",
-    "format:check": "pnpm --filter @serverlessworkflow-toolings/linter format:check",
+    "format": "pnpm --filter @serverlessworkflow/linter format",
+    "format:check": "pnpm --filter @serverlessworkflow/linter format:check",
     "build:prod": "pnpm -r --stream --if-present build:prod",
     "build:dev": "pnpm -r --stream --if-present build:dev",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@serverlessworkflow-toolings/linter": "workspace:*",
-    "husky": "catalog:",
-    "lint-staged": "catalog:",
-    "oxfmt": "catalog:",
-    "typescript": "catalog:"
+    "@serverlessworkflow/linter": "workspace:*",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "typescript": "^5.9.3"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md,yml,yaml}": [

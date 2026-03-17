@@ -1,5 +1,5 @@
 {
-  "name": "@serverlessworkflow-toolings/linter",
+  "name": "@serverlessworkflow/linter",
   "version": "0.0.0",
   "private": true,
   "bin": {
@@ -17,11 +17,11 @@
     "format:check": "oxfmt --check"
   },
   "dependencies": {
-    "oxfmt": "catalog:",
-    "oxlint": "catalog:"
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
   }
 }
