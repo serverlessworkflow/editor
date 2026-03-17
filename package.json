@@ -22,10 +22,10 @@
   },
   "devDependencies": {
     "@serverless-workflow-settings/linter": "workspace:*",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "oxfmt": "^0.41.0",
-    "typescript": "^5.9.3"
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
+    "oxfmt": "catalog:",
+    "typescript": "catalog:"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md,yml,yaml}": [

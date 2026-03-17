@@ -17,11 +17,11 @@
     "format:check": "oxfmt --check"
   },
   "dependencies": {
-    "oxfmt": "^0.41.0",
-    "oxlint": "^1.56.0"
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }
