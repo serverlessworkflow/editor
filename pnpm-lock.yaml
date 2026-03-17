@@ -20,9 +20,6 @@ importers:
       oxfmt:
         specifier: ^0.41.0
         version: 0.41.0
-      oxlint:
-        specifier: ^1.56.0
-        version: 1.56.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -37,10 +34,10 @@ importers:
         version: 1.56.0
     devDependencies:
       '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.15
+        specifier: ^25.3.3
+        version: 25.5.0
       typescript:
-        specifier: ^5.7.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/serverless-workflow-diagram-editor:
@@ -1738,9 +1735,6 @@ packages:
 
   '@types/node@20.19.37':
     resolution: {integrity: sha512-8kzdPJ3FsNsVIurqBs7oodNnCEVbni9yUEkaHbgptDACOPW04jimGagZ51E6+lXUwJjgnBw+hyko/lkFWCldqw==}
-
-  '@types/node@22.19.15':
-    resolution: {integrity: sha512-F0R/h2+dsy5wJAUe3tAU6oqa2qbWY5TpNfL/RGmo1y38hiyO1w3x2jPtt76wmuaJI4DQnOBu21cNXQ2STIUUWg==}
 
   '@types/node@25.5.0':
     resolution: {integrity: sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==}
@@ -5376,10 +5370,6 @@ snapshots:
   '@types/mdx@2.0.13': {}
 
   '@types/node@20.19.37':
-    dependencies:
-      undici-types: 6.21.0
-
-  '@types/node@22.19.15':
     dependencies:
       undici-types: 6.21.0
 
