@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
+import type {} from "./types";
+
 export * from "./config";
 export * from "./resources";

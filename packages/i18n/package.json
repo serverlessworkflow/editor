@@ -15,7 +15,7 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "pnpm clean && tsc -p tsconfig.json",
-    "build:prod": "pnpm -run build"
+    "build:prod": "pnpm run build"
   },
   "dependencies": {
     "i18next": "^25.10.4",
