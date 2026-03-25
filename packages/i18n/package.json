@@ -1,0 +1,28 @@
+{
+  "name": "@serverlessworkflow/i18n",
+  "version": "1.0.0",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "pnpm clean && tsc -p tsconfig.json",
+    "build:prod": "pnpm -run build"
+  },
+  "dependencies": {
+    "i18next": "^25.10.4",
+    "react-i18next": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "rimraf": "catalog:"
+  }
+}

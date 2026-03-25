@@ -37,6 +37,11 @@
     "start": "storybook dev -p 6006 --no-open",
     "build:storybook": "pnpm clean:storybook && storybook build --output-dir ./dist-storybook"
   },
+  "dependencies": {
+    "@serverlessworkflow/i18n": "workspace:*",
+    "i18next": "^25.10.4",
+    "react-i18next": "^16.6.1"
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "catalog:",
     "@storybook/addon-a11y": "catalog:",

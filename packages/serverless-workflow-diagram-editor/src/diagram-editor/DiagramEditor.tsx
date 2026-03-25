@@ -15,6 +15,8 @@
  */
 
 import type { CSSProperties } from "react";
+import "../i18n";
+import { useTranslation } from "react-i18next";
 
 const clickmeBtnStyle: CSSProperties = {
   border: "2px solid blue",
@@ -32,6 +34,7 @@ export type DiagramEditorProps = {
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
   //TODO: Implement the actual component this is just a placeholder
+  const { t } = useTranslation();
 
   return (
     <>
@@ -41,6 +44,9 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
       <button style={clickmeBtnStyle} onClick={() => alert("Hello from Diagram!")}>
         Click me!
       </button>
+      <div>
+        {t("welcome")} {t("start")} {t("setup")}{" "}
+      </div>
     </>
   );
 };
