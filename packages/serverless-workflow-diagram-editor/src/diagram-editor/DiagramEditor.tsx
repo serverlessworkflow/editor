@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import type { CSSProperties } from "react";
+import { CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
+import { TranslationProvider } from "@serverlessworkflow/i18n";
 
 const clickmeBtnStyle: CSSProperties = {
   border: "2px solid blue",
@@ -31,16 +33,20 @@ export type DiagramEditorProps = {
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
-  //TODO: Implement the actual component this is just a placeholder
-
+  const { t } = useTranslation();
   return (
-    <>
+    <TranslationProvider>
       <h1>Hello from DiagramEditor component!</h1>
       <p>Read-only: {props.isReadOnly ? "true" : "false"}</p>
       <p>Content: {props.content}</p>
+
       <button style={clickmeBtnStyle} onClick={() => alert("Hello from Diagram!")}>
         Click me!
       </button>
-    </>
+
+      <div>
+        {t("welcome")} {t("start")} {t("setup")}
+      </div>
+    </TranslationProvider>
   );
 };
