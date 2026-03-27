@@ -34,7 +34,7 @@ catalogs:
       specifier: ^14.6.1
       version: 14.6.1
     '@types/node':
-      specifier: ^25.3.3
+      specifier: ^25.5.0
       version: 25.5.0
     '@types/react':
       specifier: ^19.2.14
@@ -52,7 +52,7 @@ catalogs:
       specifier: ^9.1.7
       version: 9.1.7
     i18next:
-      specifier: ^25.10.4
+      specifier: ^25.10.9
       version: 25.10.9
     jsdom:
       specifier: ^25.0.0
@@ -73,7 +73,7 @@ catalogs:
       specifier: ^19.2.4
       version: 19.2.4
     react-i18next:
-      specifier: ^16.6.1
+      specifier: ^16.6.6
       version: 16.6.6
     rimraf:
       specifier: ^6.1.3
@@ -119,9 +119,6 @@ importers:
 
   packages/i18n:
     dependencies:
-      '@serverlessworkflow/i18n':
-        specifier: workspace:*
-        version: 'link:'
       i18next:
         specifier: 'catalog:'
         version: 25.10.9(typescript@5.9.3)
@@ -132,6 +129,15 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 25.5.0
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.14)
+      '@types/react-i18next':
+        specifier: ^8.1.0
+        version: 8.1.0(i18next@25.10.9(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -1234,6 +1240,10 @@ packages:
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
       '@types/react': ^19.2.0
+
+  '@types/react-i18next@8.1.0':
+    resolution: {integrity: sha512-d4xhcjX5b3roNMObRNMfb1HinHQlQLPo8xlDj60dnHeeAw2bBymR2cy/l1giJpHzo/ZFgSvgVUvIWr4kCrenCg==}
+    deprecated: This is a stub types definition. react-i18next provides its own type definitions, so you do not need this installed.
 
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
@@ -3085,6 +3095,16 @@ snapshots:
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
     dependencies:
       '@types/react': 19.2.14
+
+  '@types/react-i18next@8.1.0(i18next@25.10.9(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)':
+    dependencies:
+      react-i18next: 16.6.6(i18next@25.10.9(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+    transitivePeerDependencies:
+      - i18next
+      - react
+      - react-dom
+      - react-native
+      - typescript
 
   '@types/react@19.2.14':
     dependencies:

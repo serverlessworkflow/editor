@@ -14,7 +14,5 @@
  * limitations under the License.
  */
 
-import type {} from "./types";
-
-export * from "./config";
-export * from "./resources";
+export { TranslationProvider, useLanguage } from "./TranslationProvider";
+export { default as i18n } from "./i18n";
