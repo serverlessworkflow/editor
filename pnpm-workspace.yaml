@@ -16,6 +16,7 @@ catalog:
   "@vitest/coverage-v8": ^4.1.0
   "@vitest/ui": ^4.1.0
   "@xyflow/react": ^12.10.1
+  "@serverlessworkflow/sdk": ^1.0.0
   husky: ^9.1.7
   jsdom: ^25.0.0
   lint-staged: ^16.4.0
