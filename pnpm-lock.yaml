@@ -100,10 +100,6 @@ catalogs:
 importers:
 
   .:
-    dependencies:
-      '@serverlessworkflow/sdk':
-        specifier: 'catalog:'
-        version: 1.0.1
     devDependencies:
       husky:
         specifier: 'catalog:'
