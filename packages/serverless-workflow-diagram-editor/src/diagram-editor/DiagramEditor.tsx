@@ -15,8 +15,13 @@
  */
 
 import { CSSProperties } from "react";
-import { useTranslation } from "react-i18next";
-import { TranslationProvider } from "@serverlessworkflow/i18n";
+import {
+  swdEditorDictionaries,
+  SwdEditorI18nContext,
+  swdEditorI18nDefaults,
+  useSwdEditorI18n,
+} from "../i18n";
+import { I18nDictionariesProvider } from "@serverlessworkflow/i18n/dist/react-components";
 
 const clickmeBtnStyle: CSSProperties = {
   border: "2px solid blue",
@@ -30,12 +35,27 @@ const clickmeBtnStyle: CSSProperties = {
 export type DiagramEditorProps = {
   content: string;
   isReadOnly: boolean;
+  locale: string;
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
-  const { t } = useTranslation();
   return (
-    <TranslationProvider>
+    <I18nDictionariesProvider
+      defaults={swdEditorI18nDefaults}
+      dictionaries={swdEditorDictionaries}
+      initialLocale={props.locale}
+      ctx={SwdEditorI18nContext}
+    >
+      <DiagramEditorInner {...props} />
+    </I18nDictionariesProvider>
+  );
+};
+
+const DiagramEditorInner = (props: DiagramEditorProps) => {
+  const { i18n } = useSwdEditorI18n();
+
+  return (
+    <>
       <h1>Hello from DiagramEditor component!</h1>
       <p>Read-only: {props.isReadOnly ? "true" : "false"}</p>
       <p>Content: {props.content}</p>
@@ -44,9 +64,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         Click me!
       </button>
 
-      <div>
-        {t("welcome")} {t("start")} {t("setup")}
-      </div>
-    </TranslationProvider>
+      <p>{i18n.hello}</p>
+    </>
   );
 };
