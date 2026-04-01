@@ -15,15 +15,15 @@
  */
 
 import {
-  DiagramEditor as SWDiagramEditor,
+  DiagramEditor as Component,
   DiagramEditorProps,
 } from "../src/diagram-editor/DiagramEditor";
 
 /** Primary UI component for user interaction */
 export const DiagramEditor = ({ ...props }: DiagramEditorProps) => {
   return (
-    <>
-      <SWDiagramEditor content={props.content} isReadOnly={props.isReadOnly} />
-    </>
+    <div style={{ height: "100vh" }}>
+      <Component isReadOnly={props.isReadOnly} locale={props.locale} />
+    </div>
   );
 };

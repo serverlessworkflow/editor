@@ -16,7 +16,6 @@
 
 import { render, screen } from "@testing-library/react";
 import { DiagramEditor } from "../../src/diagram-editor";
-import userEvent from "@testing-library/user-event";
 import { vi, test, expect, afterEach, describe } from "vitest";
 
 describe("DiagramEditor Component", () => {
@@ -24,18 +23,14 @@ describe("DiagramEditor Component", () => {
     vi.restoreAllMocks();
   });
 
-  test("Render DiagramEditor Component", async () => {
-    const content = "Sample Content";
+  test("Renders react flow Diagram component", async () => {
+    const locale = "en";
     const isReadOnly = true;
-    const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
 
-    render(<DiagramEditor content={content} isReadOnly={isReadOnly} />);
+    render(<DiagramEditor locale={locale} isReadOnly={isReadOnly} />);
 
-    const user = userEvent.setup();
-    const button = screen.getByRole("button", { name: /Click me!/i });
+    const reactFlowContainer = screen.getByTestId("diagram-container");
 
-    await user.click(button);
-
-    expect(alertMock).toHaveBeenCalledWith("Hello from Diagram!");
+    expect(reactFlowContainer).toBeInTheDocument();
   });
 });

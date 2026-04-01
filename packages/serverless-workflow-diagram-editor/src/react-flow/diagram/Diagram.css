@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { expect, describe, it } from "vitest";
+.diagram-container {
+    height: 100%;
+    position: relative;
+}
 
-describe("MyComponent", () => {
-  it("Just a sample test", () => {
-    expect(true).toBeTruthy();
-  });
-});
+.diagram-background {
+    --xy-background-pattern-color: #ccc;
+    background-color: #E5E4E2;
+}

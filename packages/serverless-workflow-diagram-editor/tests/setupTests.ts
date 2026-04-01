@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { afterEach } from "vitest";
+import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest"; // This extends vitest's expect with jest-dom matchers
 
@@ -22,3 +22,13 @@ import "@testing-library/jest-dom/vitest"; // This extends vitest's expect with 
 afterEach(() => {
   cleanup();
 });
+
+// Mock ResizeObserver
+vi.stubGlobal(
+  "ResizeObserver",
+  class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  },
+);

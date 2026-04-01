@@ -15,26 +15,27 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { composeStories } from "@storybook/react-vite";
-import * as stories from "../../stories/DiagramEditor.stories";
+import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { vi, test, expect, afterEach, describe } from "vitest";
 
-// Composes all stories in the file
-const { Component } = composeStories(stories);
-
-describe("Story - DiagramEditor component", () => {
+describe("Diagram Component", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test("Renders react flow Diagram component", async () => {
-    const locale = "en";
-    const isReadOnly = true;
+  test("Renders react flow nodes", async () => {
+    render(<Diagram />);
 
-    render(<Component locale={locale} isReadOnly={isReadOnly} />);
+    const node1 = screen.getByText("Node 1");
+    const node2 = screen.getByText("Node 2");
+    const node3 = screen.getByText("Node 3");
+    const node4 = screen.getByText("Node 4");
+    const node5 = screen.getByText("Node 5");
 
-    const reactFlowContainer = screen.getByTestId("diagram-container");
-
-    expect(reactFlowContainer).toBeInTheDocument();
+    expect(node1).toBeInTheDocument();
+    expect(node2).toBeInTheDocument();
+    expect(node3).toBeInTheDocument();
+    expect(node4).toBeInTheDocument();
+    expect(node5).toBeInTheDocument();
   });
 });

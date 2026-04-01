@@ -15,6 +15,7 @@ catalog:
   "@types/react-dom": ^19.2.3
   "@vitest/coverage-v8": ^4.1.0
   "@vitest/ui": ^4.1.0
+  "@xyflow/react": ^12.10.1
   husky: ^9.1.7
   jsdom: ^25.0.0
   lint-staged: ^16.4.0
