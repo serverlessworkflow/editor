@@ -6,7 +6,6 @@
     "src"
   ],
   "type": "module",
-  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "pnpm clean && tsc -p tsconfig.json",
