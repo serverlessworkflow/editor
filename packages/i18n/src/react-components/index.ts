@@ -14,5 +14,8 @@
  * limitations under the License.
  */
 
-export { TranslationProvider, useLanguage } from "./TranslationProvider";
-export { default as i18n } from "./i18n";
+export * from "./I18nContext";
+export * from "./I18nDictionariesProvider";
+export * from "./I18nHtml";
+export * from "./I18nWrapped";
+export * from "./I18nWrappedTemplate";
