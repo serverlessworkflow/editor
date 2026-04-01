@@ -1,15 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
-  "types": ["node"],
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
+    "baseUrl": ".",
     "declaration": true,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "@serverlessworkflow/i18n": ["./i18n/src"]
-    }
+    "declarationMap": true,
+    "sourceMap": true,
+
+    "rootDirs": ["./src", "./tests"],
+    "outDir": "./dist"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "dist-storybook"]
 }
