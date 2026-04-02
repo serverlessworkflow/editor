@@ -18,7 +18,7 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import { vi, test, expect, afterEach, describe } from "vitest";
 import { useDiagramEditorContext } from "../../src/store/diagramEditorContext";
-import { DiagramContextProvider } from "../../src/store/DiagramEditorContextProvider";
+import { DiagramEditorContextProvider } from "../../src/store/DiagramEditorContextProvider";
 
 const TestComponent: React.FC = () => {
   const { isReadOnly, locale } = useDiagramEditorContext();
@@ -36,16 +36,16 @@ const TestComponent: React.FC = () => {
   );
 };
 
-describe("DiagramContextProvider Component", () => {
+describe("DiagramEditorContextProvider Component", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
   test("Consume properties from context", async () => {
     render(
-      <DiagramContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
-      </DiagramContextProvider>,
+      </DiagramEditorContextProvider>,
     );
 
     const readOnlyElement = screen.getByTestId("test-read-only");
@@ -61,15 +61,15 @@ describe("DiagramContextProvider Component", () => {
 
   test("Context provider props changes shall cause internal component to reload", async () => {
     const { rerender } = render(
-      <DiagramContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
-      </DiagramContextProvider>,
+      </DiagramEditorContextProvider>,
     );
 
     rerender(
-      <DiagramContextProvider isReadOnly={false} locale={"pt"}>
+      <DiagramEditorContextProvider isReadOnly={false} locale={"pt"}>
         <TestComponent />
-      </DiagramContextProvider>,
+      </DiagramEditorContextProvider>,
     );
 
     const readOnlyElementChanged = screen.getByTestId("test-read-only");
@@ -85,15 +85,15 @@ describe("DiagramContextProvider Component", () => {
 
   test("Context provider same props shall not cause internal component to reload", async () => {
     const { rerender } = render(
-      <DiagramContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
-      </DiagramContextProvider>,
+      </DiagramEditorContextProvider>,
     );
 
     rerender(
-      <DiagramContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
-      </DiagramContextProvider>,
+      </DiagramEditorContextProvider>,
     );
 
     const readOnlyElementChanged = screen.getByTestId("test-read-only");

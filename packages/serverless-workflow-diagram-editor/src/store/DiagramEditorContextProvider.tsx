@@ -20,7 +20,9 @@ import { DiagramEditorContext, DiagramEditorContextType } from "./diagramEditorC
 
 export type ContextProviderProps = Omit<DiagramEditorProps, "ref">;
 
-export const DiagramContextProvider = (props: React.PropsWithChildren<ContextProviderProps>) => {
+export const DiagramEditorContextProvider = (
+  props: React.PropsWithChildren<ContextProviderProps>,
+) => {
   // Initialize states with props values
   const [isReadOnly, setIsReadOnly] = React.useState<boolean>(props.isReadOnly);
   const [locale, setLocale] = React.useState<string>(props.locale);

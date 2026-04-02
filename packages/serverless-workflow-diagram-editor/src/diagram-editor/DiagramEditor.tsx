@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
-import { DiagramContextProvider } from "../store/DiagramEditorContextProvider";
+import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
 
 /**
  * DiagramEditor component API
@@ -52,9 +52,9 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <DiagramContextProvider {...props}>
+      <DiagramEditorContextProvider {...props}>
         <Diagram ref={diagramRef} divRef={diagramDivRef} />
-      </DiagramContextProvider>
+      </DiagramEditorContextProvider>
     </>
   );
 };

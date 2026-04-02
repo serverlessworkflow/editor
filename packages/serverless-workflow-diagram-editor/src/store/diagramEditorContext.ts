@@ -32,7 +32,7 @@ export const useDiagramEditorContext = () => {
   const context = React.useContext(DiagramEditorContext);
 
   if (context === undefined) {
-    throw new Error("useDiagramContext must be used within an DiagramContextProvider");
+    throw new Error("useDiagramContext must be used within an DiagramEditorContextProvider");
   }
 
   return context;
