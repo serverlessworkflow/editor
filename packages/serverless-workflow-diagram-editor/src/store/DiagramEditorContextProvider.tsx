@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DiagramEditorProps } from "../diagram-editor/DiagramEditor";
-import { DiagramEditorContext, DiagramEditorContextType } from "./diagramEditorContext";
+import { DiagramEditorContext, DiagramEditorContextType } from "./DiagramEditorContext";
 
 export type ContextProviderProps = Omit<DiagramEditorProps, "ref">;
 

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import { vi, test, expect, afterEach, describe } from "vitest";
-import { useDiagramEditorContext } from "../../src/store/diagramEditorContext";
+import { useDiagramEditorContext } from "../../src/store/DiagramEditorContext";
 import { DiagramEditorContextProvider } from "../../src/store/DiagramEditorContextProvider";
 
 const TestComponent: React.FC = () => {
