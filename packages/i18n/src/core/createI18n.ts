@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./I18nContext";
-export * from "./I18nDictionariesProvider";
-export * from "./I18nHtml";
-export * from "./I18nWrapped";
-export * from "./I18nWrappedTemplate";
+export type Dictionary = Record<string, string>;
+export type Dictionaries = Record<string, Dictionary>;
+
+export function createI18n(dictionaries: Dictionaries, locale: string) {
+  function t(key: string): string {
+    return dictionaries[locale]?.[key] ?? key;
+  }
+
+  return {
+    t,
+    locale,
+  };
+}

@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-import { CSSProperties } from "react";
-import {
-  swdEditorDictionaries,
-  SwdEditorI18nContext,
-  swdEditorI18nDefaults,
-  useSwdEditorI18n,
-} from "../i18n";
-import { I18nDictionariesProvider } from "@serverlessworkflow/i18n/dist/react-components";
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
-
+import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
+import { dictionaries } from "../i18n/locales";
 /**
  * DiagramEditor component API
  */
@@ -34,23 +27,15 @@ export type DiagramEditorRef = {
 
 export type DiagramEditorProps = {
   isReadOnly: boolean;
-  locale: string;
+  locale?: string;
+};
+
+const Content = () => {
+  const { t } = useI18n();
+  return <p>{t("save")}</p>;
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
-  return (
-    <I18nDictionariesProvider
-      defaults={swdEditorI18nDefaults}
-      dictionaries={swdEditorDictionaries}
-      initialLocale={props.locale}
-      ctx={SwdEditorI18nContext}
-    >
-      <DiagramEditorInner {...props} />
-    </I18nDictionariesProvider>
-  );
-};
-
-export const DiagramEditorInner = (props: DiagramEditorProps) => {
   // TODO: i18n
   // TODO: store, context
   // TODO: ErrorBoundary / fallback
@@ -58,7 +43,8 @@ export const DiagramEditorInner = (props: DiagramEditorProps) => {
   // Refs
   const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
   const diagramRef = React.useRef<DiagramRef | null>(null);
-  const { i18n } = useSwdEditorI18n();
+  const supportedLocales = Object.keys(dictionaries);
+  const locale = detectLocale(supportedLocales);
 
   // Allow imperatively controlling the Editor
   // React.useImperativeHandle(
@@ -73,8 +59,10 @@ export const DiagramEditorInner = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <Diagram ref={diagramRef} divRef={diagramDivRef} />
-      <p>{i18n.hello}</p>
+      <I18nProvider locale={locale} dictionaries={dictionaries}>
+        <Diagram ref={diagramRef} divRef={diagramDivRef} />
+        <Content />
+      </I18nProvider>
     </>
   );
 };

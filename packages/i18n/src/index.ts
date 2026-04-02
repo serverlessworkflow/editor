@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-export interface Wrapped<Name> {
-  nameValue: Name;
-}
-
-export function wrapped<Name extends string>(wrappedName: Name): Wrapped<Name> {
-  return { nameValue: wrappedName };
-}
-
-export type ExtractWrappedComponentNames<Component> =
-  Component extends Wrapped<infer Name> ? Name : never;
+export * from "./react/I18nProvider";
+export * from "./core/createI18n";
+export * from "./utils/detectLocale";

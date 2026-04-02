@@ -14,5 +14,10 @@
  * limitations under the License.
  */
 
-export * from "./SwdEditorI18n";
-export * from "./setup";
+import type { TranslationKeys } from "./en";
+
+export const fr: Record<TranslationKeys, string> = {
+  save: "Sauvegarder",
+  delete: "Supprimer",
+  cancel: "Annuler",
+};

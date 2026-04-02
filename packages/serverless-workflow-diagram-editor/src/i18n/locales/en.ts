@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { SwdEditorI18n } from "../SwdEditorI18n";
+export const en = {
+  save: "Save",
+  delete: "Delete",
+  cancel: "Cancel",
+} as const;
 
-export const en: SwdEditorI18n = {
-  hello: "Welcome to the editor",
-};
+export type TranslationKeys = keyof typeof en;

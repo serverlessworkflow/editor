@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
-export interface I18nChannelApi {
-  editorI18n_getLocale(): Promise<string>;
+export function detectLocale(supportedLocales: readonly string[], fallback: string = "en"): string {
+  if (typeof navigator === "undefined") {
+    return fallback;
+  }
+  const languages =
+    navigator.languages && navigator.languages.length > 0
+      ? navigator.languages
+      : [navigator.language];
+
+  const normalizedSupported = supportedLocales.map((l) => l.toLowerCase().trim());
+  for (const lang of languages) {
+    if (!lang) continue;
+
+    const short = lang.split("-")[0]?.toLowerCase().trim();
+    if (short && normalizedSupported.includes(short)) {
+      return short;
+    }
+  }
+  return fallback;
 }

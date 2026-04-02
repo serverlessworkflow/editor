@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 
-export { en } from "./en";
+import { en } from "./en";
+import { fr } from "./fr";
+
+export const dictionaries = {
+  en,
+  fr,
+};
