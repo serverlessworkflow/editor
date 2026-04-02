@@ -27,23 +27,30 @@ export const DiagramEditorContextProvider = (
   const [isReadOnly, setIsReadOnly] = React.useState<boolean>(props.isReadOnly);
   const [locale, setLocale] = React.useState<string>(props.locale);
 
+  const updateIsReadOnly = React.useCallback((isReadOnly: boolean) => {
+    setIsReadOnly((prev) => (prev !== isReadOnly ? isReadOnly : prev));
+  }, []);
+
+  const updateLocale = React.useCallback((locale: string) => {
+    setLocale((prev) => (prev !== locale ? locale : prev));
+  }, []);
+
+  // Update states on props changes
+  React.useEffect(() => {
+    updateIsReadOnly(props.isReadOnly);
+    updateLocale(props.locale);
+  }, [props, updateIsReadOnly, updateLocale]);
+
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(
     () => ({
       isReadOnly,
       locale,
-      updateIsReadOnly: (isReadOnly: boolean) =>
-        setIsReadOnly((prev) => (prev !== isReadOnly ? isReadOnly : prev)),
-      updateLocale: (locale: string) => setLocale((prev) => (prev !== locale ? locale : prev)),
+      updateIsReadOnly,
+      updateLocale,
     }),
-    [isReadOnly, locale],
+    [isReadOnly, locale, updateIsReadOnly, updateLocale],
   );
-
-  // Update states on props changes
-  React.useEffect(() => {
-    context.updateIsReadOnly(props.isReadOnly);
-    context.updateLocale(props.locale);
-  }, [props, context]);
 
   return (
     <DiagramEditorContext.Provider value={context}>{props.children}</DiagramEditorContext.Provider>
