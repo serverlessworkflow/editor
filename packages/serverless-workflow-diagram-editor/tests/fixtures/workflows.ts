@@ -22,7 +22,7 @@
 export const BASIC_VALID_WORKFLOW_YAML = `
   document:
     dsl: 1.0.0
-    name: valid_workflow_yaml
+    name: valid-workflow-yaml
     version: 1.0.0
     namespace: default
   do:
@@ -34,7 +34,7 @@ export const BASIC_VALID_WORKFLOW_YAML = `
 export const BASIC_VALID_WORKFLOW_JSON = JSON.stringify({
   document: {
     dsl: "1.0.0",
-    name: "valid_workflow_json",
+    name: "valid-workflow-json",
     version: "1.0.0",
     namespace: "default",
   },

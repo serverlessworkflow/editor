@@ -14,29 +14,42 @@
  * limitations under the License.
  */
 
+import yaml from "js-yaml";
 import { Classes, Specification, validate } from "@serverlessworkflow/sdk";
 
-export type WorkflowParseResult =
-  | { success: true; workflow: Specification.Workflow }
-  | { success: false; error: Error };
+export type WorkflowParseResult = {
+  model: Specification.Workflow | null;
+  errors: Error[];
+};
 
-export function deserializeWorkflow(text: string): Specification.Workflow {
-  return Classes.Workflow.deserialize(text);
-}
-
-export function validateWorkflow(workflow: Specification.Workflow): void {
-  validate("Workflow", workflow);
+export function validateWorkflow(model: Specification.Workflow): Error[] {
+  try {
+    validate("Workflow", model);
+    return [];
+  } catch (err) {
+    // TODO: Parse individual validation errors from the SDK into separate Error objects when we are ready to render them.
+    return [err instanceof Error ? err : new Error(String(err))];
+  }
 }
 
 export function parseWorkflow(text: string): WorkflowParseResult {
+  let raw: Partial<Specification.Workflow>;
+
   try {
-    const workflow = deserializeWorkflow(text);
-    validateWorkflow(workflow);
-    return { success: true, workflow };
+    raw = yaml.load(text, { schema: yaml.DEFAULT_SCHEMA }) as Partial<Specification.Workflow>;
   } catch (err) {
     return {
-      success: false,
-      error: err instanceof Error ? err : new Error(String(err)),
+      model: null,
+      errors: [err instanceof Error ? err : new Error(String(err))],
     };
   }
+
+  if (raw == null || typeof raw !== "object") {
+    return { model: null, errors: [new Error("Not a valid workflow object")] };
+  }
+
+  const model = new Classes.Workflow(raw) as Specification.Workflow;
+  const errors = validateWorkflow(model);
+
+  return { model, errors };
 }

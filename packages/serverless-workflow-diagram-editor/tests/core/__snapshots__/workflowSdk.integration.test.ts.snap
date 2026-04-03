@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`parseWorkflow > parses valid 'JSON' and returns model with no errors 1`] = `
+{
+  "errors": [],
+  "model": t {
+    "do": t [
+      t {
+        "step1": t {
+          "set": t {
+            "variable": "my first workflow",
+          },
+        },
+      },
+    ],
+    "document": t {
+      "dsl": "1.0.0",
+      "name": "valid-workflow-json",
+      "namespace": "default",
+      "version": "1.0.0",
+    },
+  },
+}
+`;
+
+exports[`parseWorkflow > parses valid 'YAML' and returns model with no errors 1`] = `
+{
+  "errors": [],
+  "model": t {
+    "do": t [
+      t {
+        "step1": t {
+          "set": t {
+            "variable": "my first workflow",
+          },
+        },
+      },
+    ],
+    "document": t {
+      "dsl": "1.0.0",
+      "name": "valid-workflow-yaml",
+      "namespace": "default",
+      "version": "1.0.0",
+    },
+  },
+}
+`;
+
+exports[`parseWorkflow > returns model and errors for invalid but parseable 'JSON' 1`] = `
+{
+  "errors": [
+    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+  ],
+  "model": t {
+    "do": t [
+      t {
+        "step1": t {
+          "set": t {
+            "variable": "my first invalid json workflow",
+          },
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAML' 1`] = `
+{
+  "errors": [
+    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+  ],
+  "model": t {
+    "do": t [
+      t {
+        "step1": t {
+          "set": t {
+            "variable": "my first invalid yaml workflow",
+          },
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`validateWorkflow > returns errors for an invalid workflow 1`] = `
+[
+  [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+]
+`;
