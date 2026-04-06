@@ -39,7 +39,7 @@ export const DiagramEditorContextProvider = (
   React.useEffect(() => {
     updateIsReadOnly(props.isReadOnly);
     updateLocale(props.locale);
-  }, [props, updateIsReadOnly, updateLocale]);
+  }, [props.isReadOnly, props.locale, updateIsReadOnly, updateLocale]);
 
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(

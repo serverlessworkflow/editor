@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import { vi, test, expect, afterEach, describe } from "vitest";
+import { vi, expect, afterEach, describe, it } from "vitest";
 import { useDiagramEditorContext } from "../../src/store/DiagramEditorContext";
 import { DiagramEditorContextProvider } from "../../src/store/DiagramEditorContextProvider";
 
@@ -41,7 +41,7 @@ describe("DiagramEditorContextProvider Component", () => {
     vi.restoreAllMocks();
   });
 
-  test("Consume properties from context", async () => {
+  it("Consume properties from context", async () => {
     render(
       <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
@@ -59,7 +59,7 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(renderCount).toHaveTextContent(/1/i);
   });
 
-  test("Context provider props changes shall cause internal component to reload", async () => {
+  it("Context provider props changes shall cause internal component to reload", async () => {
     const { rerender } = render(
       <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
@@ -83,7 +83,7 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(renderCount).toHaveTextContent(/3/i);
   });
 
-  test("Context provider same props shall not cause internal component to reload", async () => {
+  it("Context provider same props shall not cause internal component to reload", async () => {
     const { rerender } = render(
       <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
         <TestComponent />
