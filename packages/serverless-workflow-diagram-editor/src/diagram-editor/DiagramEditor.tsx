@@ -52,7 +52,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <DiagramEditorContextProvider {...props}>
+      <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={props.locale}>
         <Diagram ref={diagramRef} divRef={diagramDivRef} />
       </DiagramEditorContextProvider>
     </>
