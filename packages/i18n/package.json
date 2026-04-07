@@ -17,7 +17,7 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "build:dev": "pnpm clean && tsc -p tsconfig.json",
-    "build:prod": "pnpm run build",
+    "build:prod": "pnpm run build:dev",
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
