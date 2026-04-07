@@ -43,8 +43,10 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
   // Refs
   const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
   const diagramRef = React.useRef<DiagramRef | null>(null);
-  const supportedLocales = Object.keys(dictionaries);
-  const locale = detectLocale(supportedLocales);
+  const locale = React.useMemo(() => {
+    const supportedLocales = Object.keys(dictionaries);
+    return props.locale ?? detectLocale(supportedLocales);
+  }, [props.locale]);
 
   // Allow imperatively controlling the Editor
   // React.useImperativeHandle(
