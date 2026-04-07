@@ -28,11 +28,11 @@ export const DiagramEditorContextProvider = (
   const [locale, setLocale] = React.useState<string>(props.locale);
 
   const updateIsReadOnly = React.useCallback((isReadOnly: boolean) => {
-    setIsReadOnly((prev) => (prev !== isReadOnly ? isReadOnly : prev));
+    setIsReadOnly(isReadOnly);
   }, []);
 
   const updateLocale = React.useCallback((locale: string) => {
-    setLocale((prev) => (prev !== locale ? locale : prev));
+    setLocale(locale);
   }, []);
 
   // Update states on props changes
