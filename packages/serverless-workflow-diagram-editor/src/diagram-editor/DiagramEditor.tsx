@@ -28,6 +28,7 @@ export type DiagramEditorRef = {
 export type DiagramEditorProps = {
   isReadOnly: boolean;
   locale?: string;
+  ref?: React.Ref<DiagramEditorRef>;
 };
 
 const Content = () => {
@@ -35,36 +36,38 @@ const Content = () => {
   return <p>{t("save")}</p>;
 };
 
-export const DiagramEditor = (props: DiagramEditorProps) => {
-  // TODO: i18n
-  // TODO: store, context
-  // TODO: ErrorBoundary / fallback
+export const DiagramEditor = React.forwardRef<DiagramEditorRef, DiagramEditorProps>(
+  (props, ref) => {
+    // TODO: i18n
+    // TODO: store, context
+    // TODO: ErrorBoundary / fallback
 
-  // Refs
-  const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
-  const diagramRef = React.useRef<DiagramRef | null>(null);
-  const locale = React.useMemo(() => {
-    const supportedLocales = Object.keys(dictionaries);
-    return props.locale ?? detectLocale(supportedLocales);
-  }, [props.locale]);
+    // Refs
+    const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
+    const diagramRef = React.useRef<DiagramRef | null>(null);
+    const locale = React.useMemo(() => {
+      const supportedLocales = Object.keys(dictionaries);
+      return props.locale ?? detectLocale(supportedLocales);
+    }, [props.locale]);
 
-  // Allow imperatively controlling the Editor
-  // React.useImperativeHandle(
-  //   ref,
-  //   () => ({
-  //     doSomething: () => {
-  //       TODO: to be implemented, it is just a placeholder
-  //     },
-  //   }),
-  //   [],
-  // );
+    // Allow imperatively controlling the Editor
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        doSomething: () => {
+          // TODO: to be implemented, it is just a placeholder
+        },
+      }),
+      [],
+    );
 
-  return (
-    <>
-      <I18nProvider locale={locale} dictionaries={dictionaries}>
-        <Diagram ref={diagramRef} divRef={diagramDivRef} />
-        <Content />
-      </I18nProvider>
-    </>
-  );
-};
+    return (
+      <>
+        <I18nProvider locale={locale} dictionaries={dictionaries}>
+          <Diagram ref={diagramRef} divRef={diagramDivRef} />
+          <Content />
+        </I18nProvider>
+      </>
+    );
+  },
+);
