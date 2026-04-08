@@ -27,7 +27,7 @@
   """
   publish = "packages/serverless-workflow-diagram-editor/dist-storybook"
   ignore = """
-    set -e
+    set -e -o pipefail
     git fetch --no-tags --depth=1 origin main:refs/remotes/origin/main
     npm i -g "pnpm@$PNPM_VERSION"
     ! pnpm -F '...[origin/main]' -rc exec 'echo "$PNPM_PACKAGE_NAME"' | grep -Fqx "$PREVIEW_PACKAGE_NAME"
