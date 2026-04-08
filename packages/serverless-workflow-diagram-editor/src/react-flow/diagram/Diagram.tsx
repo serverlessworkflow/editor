@@ -52,7 +52,6 @@ export type DiagramProps = {
 
 export const Diagram = ({ divRef, ref }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
-
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
 

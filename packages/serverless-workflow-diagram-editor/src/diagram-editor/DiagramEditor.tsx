@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
+import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
 
 /**
  * DiagramEditor component API
@@ -30,9 +31,8 @@ export type DiagramEditorProps = {
   ref?: React.Ref<DiagramEditorRef>;
 };
 
-export const DiagramEditor = ({ ref }: DiagramEditorProps) => {
+export const DiagramEditor = (props: DiagramEditorProps) => {
   // TODO: i18n
-  // TODO: store, context
   // TODO: ErrorBoundary / fallback
 
   // Refs
@@ -41,7 +41,7 @@ export const DiagramEditor = ({ ref }: DiagramEditorProps) => {
 
   // Allow imperatively controlling the Editor
   React.useImperativeHandle(
-    ref,
+    props.ref,
     () => ({
       doSomething: () => {
         // TODO: to be implemented, it is just a placeholder
@@ -52,7 +52,9 @@ export const DiagramEditor = ({ ref }: DiagramEditorProps) => {
 
   return (
     <>
-      <Diagram ref={diagramRef} divRef={diagramDivRef} />
+      <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={props.locale}>
+        <Diagram ref={diagramRef} divRef={diagramDivRef} />
+      </DiagramEditorContextProvider>
     </>
   );
 };
