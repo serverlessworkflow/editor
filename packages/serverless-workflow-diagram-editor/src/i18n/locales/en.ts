@@ -15,9 +15,7 @@
  */
 
 export const en = {
-  save: "Save",
-  delete: "Delete",
-  cancel: "Cancel",
+  helloMessage: "Hello from Serverless Workflow Specification Editor!",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

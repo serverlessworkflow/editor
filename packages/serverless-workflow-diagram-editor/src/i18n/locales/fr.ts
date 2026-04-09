@@ -17,7 +17,5 @@
 import type { TranslationKeys } from "./en";
 
 export const fr: Record<TranslationKeys, string> = {
-  save: "Sauvegarder",
-  delete: "Supprimer",
-  cancel: "Annuler",
+  helloMessage: "Bonjour depuis l’éditeur de spécifications Serverless Workflow!",
 };

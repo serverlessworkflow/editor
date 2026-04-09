@@ -34,7 +34,7 @@ export type DiagramEditorProps = {
 
 const Content = () => {
   const { t } = useI18n();
-  return <p>{t("save")}</p>;
+  return <p>{t("helloMessage")}</p>;
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
@@ -65,8 +65,8 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
     <>
       <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={locale}>
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <Diagram ref={diagramRef} divRef={diagramDivRef} />
           <Content />
+          <Diagram ref={diagramRef} divRef={diagramDivRef} />
         </I18nProvider>
       </DiagramEditorContextProvider>
     </>
