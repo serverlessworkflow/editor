@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
+import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
 import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
 /**
@@ -27,7 +28,7 @@ export type DiagramEditorRef = {
 
 export type DiagramEditorProps = {
   isReadOnly: boolean;
-  locale?: string;
+  locale: string;
   ref?: React.Ref<DiagramEditorRef>;
 };
 
@@ -36,38 +37,38 @@ const Content = () => {
   return <p>{t("save")}</p>;
 };
 
-export const DiagramEditor = React.forwardRef<DiagramEditorRef, DiagramEditorProps>(
-  (props, ref) => {
-    // TODO: i18n
-    // TODO: store, context
-    // TODO: ErrorBoundary / fallback
+export const DiagramEditor = (props: DiagramEditorProps) => {
+  // TODO: i18n
+  // TODO: store, context
+  // TODO: ErrorBoundary / fallback
 
-    // Refs
-    const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
-    const diagramRef = React.useRef<DiagramRef | null>(null);
-    const locale = React.useMemo(() => {
-      const supportedLocales = Object.keys(dictionaries);
-      return props.locale ?? detectLocale(supportedLocales);
-    }, [props.locale]);
+  // Refs
+  const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
+  const diagramRef = React.useRef<DiagramRef | null>(null);
+  const locale = React.useMemo(() => {
+    const supportedLocales = Object.keys(dictionaries);
+    return props.locale ?? detectLocale(supportedLocales);
+  }, [props.locale]);
 
-    // Allow imperatively controlling the Editor
-    React.useImperativeHandle(
-      ref,
-      () => ({
-        doSomething: () => {
-          // TODO: to be implemented, it is just a placeholder
-        },
-      }),
-      [],
-    );
+  // Allow imperatively controlling the Editor
+  React.useImperativeHandle(
+    props.ref,
+    () => ({
+      doSomething: () => {
+        // TODO: to be implemented, it is just a placeholder
+      },
+    }),
+    [],
+  );
 
-    return (
-      <>
+  return (
+    <>
+      <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={locale}>
         <I18nProvider locale={locale} dictionaries={dictionaries}>
           <Diagram ref={diagramRef} divRef={diagramDivRef} />
           <Content />
         </I18nProvider>
-      </>
-    );
-  },
-);
+      </DiagramEditorContextProvider>
+    </>
+  );
+};
