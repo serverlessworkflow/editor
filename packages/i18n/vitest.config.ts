@@ -20,14 +20,13 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [
     tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
+      projects: ["./tsconfig.json"],
     }),
   ],
   test: {
     globals: true,
     environment: "jsdom",
     setupFiles: ["./tests/setupTests.ts"],
-    css: false,
+    css: true,
   },
 });

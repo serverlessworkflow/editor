@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import type { TranslationKeys } from "./en";
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
-});
+export const fr: Record<TranslationKeys, string> = {
+  helloMessage: "Bonjour depuis l’éditeur de spécifications Serverless Workflow!",
+};

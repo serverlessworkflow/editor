@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+export type Dictionary = Record<string, string>;
+export type Dictionaries = Record<string, Dictionary>;
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
-});
+export function createI18n(dictionaries: Dictionaries, locale: string) {
+  function t(key: string): string {
+    return dictionaries[locale]?.[key] ?? key;
+  }
+
+  return {
+    t,
+    locale,
+  };
+}

@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { I18nProvider, useI18n } from "../src/react/I18nProvider";
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
+const dictionaries = {
+  en: { save: "Save" },
+};
+
+const TestComponent = () => {
+  const { t } = useI18n();
+  return <span>{t("save")}</span>;
+};
+
+describe("I18nProvider", () => {
+  it("provides translation", () => {
+    render(
+      <I18nProvider locale="en" dictionaries={dictionaries}>
+        <TestComponent />
+      </I18nProvider>,
+    );
+
+    expect(screen.getByText("Save")).toBeInTheDocument();
+  });
 });
