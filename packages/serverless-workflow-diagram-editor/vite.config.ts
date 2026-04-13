@@ -23,7 +23,7 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: "src/index.ts",
-      fileName: "index",
+      fileName: (format) => (format === "es" ? "index.js" : `index.${format}.js`),
       formats: ["es"],
     },
     rollupOptions: {
