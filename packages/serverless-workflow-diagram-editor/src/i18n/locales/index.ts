@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { en } from "./en";
+import { fr } from "./fr";
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
-});
+export const dictionaries = {
+  en,
+  fr,
+};

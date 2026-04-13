@@ -17,7 +17,8 @@
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
-
+import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
+import { dictionaries } from "../i18n/locales";
 /**
  * DiagramEditor component API
  */
@@ -31,13 +32,23 @@ export type DiagramEditorProps = {
   ref?: React.Ref<DiagramEditorRef>;
 };
 
+const Content = () => {
+  const { t } = useI18n();
+  return <p>{t("helloMessage")}</p>;
+};
+
 export const DiagramEditor = (props: DiagramEditorProps) => {
   // TODO: i18n
+  // TODO: store, context
   // TODO: ErrorBoundary / fallback
 
   // Refs
   const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
   const diagramRef = React.useRef<DiagramRef | null>(null);
+  const locale = React.useMemo(() => {
+    const supportedLocales = Object.keys(dictionaries);
+    return props.locale ?? detectLocale(supportedLocales);
+  }, [props.locale]);
 
   // Allow imperatively controlling the Editor
   React.useImperativeHandle(
@@ -52,8 +63,11 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={props.locale}>
-        <Diagram ref={diagramRef} divRef={diagramDivRef} />
+      <DiagramEditorContextProvider isReadOnly={props.isReadOnly} locale={locale}>
+        <I18nProvider locale={locale} dictionaries={dictionaries}>
+          <Content />
+          <Diagram ref={diagramRef} divRef={diagramDivRef} />
+        </I18nProvider>
       </DiagramEditorContextProvider>
     </>
   );

@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+export const en = {
+  helloMessage: "Hello from Serverless Workflow Specification Editor!",
+} as const;
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
-});
+export type TranslationKeys = keyof typeof en;
