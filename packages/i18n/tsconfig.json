@@ -4,8 +4,9 @@
     "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-
+    "sourceMap": false,
+    "emitDeclarationOnly": true,
+    "noEmitOnError": true,
     "rootDirs": ["./src", "./tests"],
     "outDir": "./dist"
   },
