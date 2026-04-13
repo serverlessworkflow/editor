@@ -17,6 +17,7 @@
 import { render, screen } from "@testing-library/react";
 import { DiagramEditor } from "../../src/diagram-editor";
 import { vi, test, expect, afterEach, describe } from "vitest";
+import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 describe("DiagramEditor Component", () => {
   afterEach(() => {
@@ -27,7 +28,7 @@ describe("DiagramEditor Component", () => {
     const locale = "en";
     const isReadOnly = true;
 
-    render(<DiagramEditor locale={locale} isReadOnly={isReadOnly} />);
+    render(<DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />);
 
     const reactFlowContainer = screen.getByTestId("diagram-container");
 

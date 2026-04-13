@@ -15,13 +15,14 @@
  */
 
 import * as React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { vi, expect, afterEach, describe, it } from "vitest";
 import { useDiagramEditorContext } from "../../src/store/DiagramEditorContext";
 import { DiagramEditorContextProvider } from "../../src/store/DiagramEditorContextProvider";
+import { BASIC_INVALID_WORKFLOW_YAML, BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 const TestComponent: React.FC = () => {
-  const { isReadOnly, locale } = useDiagramEditorContext();
+  const { isReadOnly, locale, model, errors } = useDiagramEditorContext();
   const renderCount = React.useRef<number>(0);
 
   // Increments on every render cycle
@@ -31,6 +32,8 @@ const TestComponent: React.FC = () => {
     <div data-testid="test-wrapper">
       <p data-testid="test-read-only">{`${isReadOnly}`}</p>
       <p data-testid="test-locale">{`${locale}`}</p>
+      <p data-testid="test-model">{`${model ? model.document?.name : "null"}`}</p>
+      <p data-testid="test-errors">{`${errors.length}`}</p>
       <p data-testid="test-render">{`${renderCount.current}`}</p>
     </div>
   );
@@ -43,7 +46,11 @@ describe("DiagramEditorContextProvider Component", () => {
 
   it("Consume properties from context", async () => {
     render(
-      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
         <TestComponent />
       </DiagramEditorContextProvider>,
     );
@@ -55,19 +62,27 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElement).toHaveTextContent(/true/i);
     expect(readOnlyLocale).toHaveTextContent(/en/i);
 
-    // Only one rendering cycle is expected
-    expect(renderCount).toHaveTextContent(/1/i);
+    // 2 rendering cycles are expected: 1- first render, 2- content useEffect triggers state update
+    expect(renderCount).toHaveTextContent(/2/i);
   });
 
   it("Context provider props changes shall cause internal component to reload", async () => {
     const { rerender } = render(
-      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
         <TestComponent />
       </DiagramEditorContextProvider>,
     );
 
     rerender(
-      <DiagramEditorContextProvider isReadOnly={false} locale={"pt"}>
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={false}
+        locale={"pt"}
+      >
         <TestComponent />
       </DiagramEditorContextProvider>,
     );
@@ -79,19 +94,27 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElementChanged).toHaveTextContent(/false/i);
     expect(readOnlyLocaleChanged).toHaveTextContent(/pt/i);
 
-    // 3 rendering cycles are expected 1- first render, 2- forced by rerender and 3- caused by state updates
-    expect(renderCount).toHaveTextContent(/3/i);
+    // 4 rendering cycles are expected 1- first render, 2- content useEffect triggers state update, 3- forced by rerender and 4- isReadOnly/locale useeffect state update
+    expect(renderCount).toHaveTextContent(/4/i);
   });
 
   it("Context provider same props shall not cause internal component to reload", async () => {
     const { rerender } = render(
-      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
         <TestComponent />
       </DiagramEditorContextProvider>,
     );
 
     rerender(
-      <DiagramEditorContextProvider isReadOnly={true} locale={"en"}>
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
         <TestComponent />
       </DiagramEditorContextProvider>,
     );
@@ -103,7 +126,96 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElementChanged).toHaveTextContent(/true/i);
     expect(readOnlyLocaleChanged).toHaveTextContent(/en/i);
 
-    // 2 rendering cycles are expected 1- first render and 2- forced by rerender
-    expect(renderCount).toHaveTextContent(/2/i);
+    // 3 rendering cycles are expected 1- first render, 2- content useEffect triggers state update and 3- forced by rerender
+    expect(renderCount).toHaveTextContent(/3/i);
+  });
+
+  it("Parses valid workflow content into model with no errors", async () => {
+    render(
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <TestComponent />
+      </DiagramEditorContextProvider>,
+    );
+
+    const modelElement = await screen.findByTestId("test-model");
+    const errorsElement = screen.getByTestId("test-errors");
+
+    await waitFor(() => {
+      expect(modelElement).toHaveTextContent("valid-workflow-yaml");
+      expect(errorsElement).toHaveTextContent("0");
+    });
+  });
+
+  it("Parses invalid workflow content into model with errors", async () => {
+    render(
+      <DiagramEditorContextProvider
+        content={BASIC_INVALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <TestComponent />
+      </DiagramEditorContextProvider>,
+    );
+
+    const modelElement = screen.getByTestId("test-model");
+    const errorsElement = screen.getByTestId("test-errors");
+
+    await waitFor(() => {
+      // Model is still returned as parsing succeeded but has validation errors
+      expect(modelElement).toBeInTheDocument();
+      expect(errorsElement).toHaveTextContent("1");
+    })
+  });
+
+  it("Parses empty workflow content into null model with errors", async () => {
+    render(
+      <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+        <TestComponent />
+      </DiagramEditorContextProvider>,
+    );
+
+    const modelElement = screen.getByTestId("test-model");
+    const errorsElement = screen.getByTestId("test-errors");
+
+    await waitFor(() => {
+      // Model is null as parsing failed and errors are returned
+      expect(modelElement).toHaveTextContent("null");
+      expect(errorsElement).toHaveTextContent("1");
+    })
+  });
+
+  it("Updates model when content prop changes", async () => {
+    const { rerender } = render(
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <TestComponent />
+      </DiagramEditorContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("test-model")).toHaveTextContent("valid-workflow-yaml");
+      expect(screen.getByTestId("test-errors")).toHaveTextContent("0");
+    });
+
+    rerender(
+      <DiagramEditorContextProvider
+        content={BASIC_INVALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <TestComponent />
+      </DiagramEditorContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("test-errors")).toHaveTextContent("1");
+    })
   });
 });

@@ -15,6 +15,8 @@
  */
 
 import * as React from "react";
+import type { Specification } from "@serverlessworkflow/sdk";
+import { parseWorkflow } from "../core";
 import { DiagramEditorProps } from "../diagram-editor/DiagramEditor";
 import { DiagramEditorContext, DiagramEditorContextType } from "./DiagramEditorContext";
 
@@ -26,6 +28,9 @@ export const DiagramEditorContextProvider = (
   // Initialize states with props values
   const [isReadOnly, setIsReadOnly] = React.useState<boolean>(props.isReadOnly);
   const [locale, setLocale] = React.useState<string>(props.locale);
+
+  const [model, setModel] = React.useState<Specification.Workflow | null>(null);
+  const [errors, setErrors] = React.useState<Error[]>([]);
 
   const updateIsReadOnly = React.useCallback((isReadOnly: boolean) => {
     setIsReadOnly(isReadOnly);
@@ -41,15 +46,23 @@ export const DiagramEditorContextProvider = (
     updateLocale(props.locale);
   }, [props.isReadOnly, props.locale, updateIsReadOnly, updateLocale]);
 
+  React.useEffect(() => {
+    const result = parseWorkflow(props.content);
+    setModel(result.model);
+    setErrors(result.errors);
+  }, [props.content]);
+
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(
     () => ({
       isReadOnly,
       locale,
+      model,
+      errors,
       updateIsReadOnly,
       updateLocale,
     }),
-    [isReadOnly, locale, updateIsReadOnly, updateLocale],
+    [isReadOnly, locale, model, errors, updateIsReadOnly, updateLocale],
   );
 
   return (
