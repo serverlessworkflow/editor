@@ -175,3 +175,8 @@ vite.config.ts.timestamp-*
 
 # Apache RAT
 .rat-reports
+
+# playwright test results
+test-results/
+playwright-report/
+blob-report/

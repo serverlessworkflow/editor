@@ -1,0 +1,17 @@
+{
+  "name": "@serverlessworkflow/playwright",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  },
+  "packageManager": "pnpm@10.31.0"
+}
