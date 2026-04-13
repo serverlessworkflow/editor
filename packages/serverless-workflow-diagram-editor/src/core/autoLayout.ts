@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./graph";
-export * from "./autoLayout";
+import { ExtendedGraph, Position, Size } from "./graph";
+
+export function applyAutoLayout(graph: ExtendedGraph): ExtendedGraph {
+  const graphClone = structuredClone(graph);
+
+  // TODO: This is just a temporary implementation until the actual auto-layout engine is integrated
+  const nodeSize: Size = { height: 50, width: 70 };
+  let position: Position = { x: 0, y: 0 };
+
+  // TODO: Containment is not supported for now.
+  graphClone.nodes.forEach((node) => {
+    node.size = { ...nodeSize };
+    node.position = { ...position };
+    position.y = position.y + 100;
+  });
+
+  return graphClone;
+}
