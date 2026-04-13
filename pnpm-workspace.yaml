@@ -22,7 +22,7 @@ catalog:
   husky: ^9.1.7
   jsdom: ^25.0.0
   lint-staged: ^16.4.0
-  oxfmt: ^0.41.0
+  oxfmt: ^0.45.0
   oxlint: ^1.56.0
   react: ^19.2.4
   react-dom: ^19.2.4
