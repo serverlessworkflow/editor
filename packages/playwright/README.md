@@ -24,7 +24,7 @@ This document explains how to set up and run Playwright end-to-end (E2E) tests f
 
 - Configure Playwright in playwright.config.ts for the package which you want to write tests for.
 - Add an endpoint for that package and make sure it is the same port where the package/app starts.
-- Navigate to tests folder and create a file with the package name which you want to write test for and write all the tests in it.
+- Navigate to tests folder and create a file with the package name which you want to write tests for and write all the tests in it.
 
 ## Steps for testing
 

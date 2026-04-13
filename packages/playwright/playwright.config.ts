@@ -27,7 +27,7 @@ export default defineConfig({
   webServer: {
     command: "pnpm --filter @serverlessworkflow/diagram-editor start",
     url: "http://localhost:6006",
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
 });

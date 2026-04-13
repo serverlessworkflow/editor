@@ -165,6 +165,9 @@ importers:
       '@playwright/test':
         specifier: ^1.59.1
         version: 1.59.1
+      '@types/node':
+        specifier: 'catalog:'
+        version: 25.5.0
 
   packages/serverless-workflow-diagram-editor:
     dependencies:
