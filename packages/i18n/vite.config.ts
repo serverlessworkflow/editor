@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
