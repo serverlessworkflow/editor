@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { describe, it, expect, vi } from "vitest";
+import { detectLocale } from "../src/utils/detectLocale";
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
+describe("detectLocale", () => {
+  it("detects supported language", () => {
+    vi.stubGlobal("navigator", {
+      languages: ["fr-FR"],
+    });
+
+    const result = detectLocale(["en", "fr"]);
+    expect(result).toBe("fr");
+  });
+
+  it("falls back if no match", () => {
+    vi.stubGlobal("navigator", {
+      languages: ["de-DE"],
+    });
+
+    const result = detectLocale(["en", "fr"]);
+    expect(result).toBe("en");
+  });
 });

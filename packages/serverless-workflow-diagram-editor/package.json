@@ -38,6 +38,7 @@
     "build:storybook": "pnpm clean:storybook && storybook build --output-dir ./dist-storybook"
   },
   "dependencies": {
+    "@serverlessworkflow/i18n": "workspace:*",
     "@serverlessworkflow/sdk": "catalog:",
     "@xyflow/react": "catalog:",
     "js-yaml": "catalog:"

@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { describe, it, expect } from "vitest";
+import { createI18n } from "../src/core/createI18n";
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-  },
+describe("createI18n", () => {
+  const dictionaries = {
+    en: { save: "Save" },
+    fr: { save: "Enregistrer" },
+  };
+
+  it("returns correct translation", () => {
+    const i18n = createI18n(dictionaries, "en");
+    expect(i18n.t("save")).toBe("Save");
+  });
+
+  it("returns key if missing", () => {
+    const i18n = createI18n(dictionaries, "fr");
+    expect(i18n.t("cancel")).toBe("cancel");
+  });
 });
