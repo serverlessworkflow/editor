@@ -17,6 +17,8 @@
 import { test, expect } from "@playwright/test";
 
 test("diagram editor renders correctly", async ({ page }) => {
+  await page.screenshot({ path: "ci-debug.png" });
+
   await page.goto("/iframe.html?id=example-diagrameditor--component", {
     waitUntil: "networkidle",
   });
