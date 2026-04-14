@@ -49,8 +49,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm -r build
+      - name: Build and test
+        run: pnpm build:prod
 
       - name: Install Playwright browsers
         run: pnpm --filter @serverlessworkflow/playwright exec playwright install --with-deps
