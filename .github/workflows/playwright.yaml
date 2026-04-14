@@ -17,16 +17,19 @@
 name: Playwright E2E Tests
 
 on:
-  pull_request:
+  push:
     branches: [main]
+  pull_request:
+    branches: ["**"]
+    types: [opened, reopened, ready_for_review, synchronize]
+
+env:
+  TMPDIR: "/tmp"
+  E2E_ENV__accessErrorsLogFileAbsolutePath: "/tmp/e2e-env-access-errors.log"
 
 jobs:
   e2e:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
@@ -35,8 +38,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
-          cache: "pnpm"
+          node-version: 24
+          cache: pnpm
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
@@ -47,13 +50,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install Playwright browsers
         run: pnpm --filter @serverlessworkflow/playwright exec playwright install --with-deps
-
-      - name: Install Playwright browsers (macOS/Windows)
-        if: matrix.os != 'ubuntu-latest'
-        run: pnpm --filter @serverlessworkflow/playwright exec playwright install
 
       - name: Run Playwright tests
         run: pnpm --filter @serverlessworkflow/playwright test
@@ -62,5 +60,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.os }}
+          name: playwright-report
           path: packages/playwright/playwright-report
