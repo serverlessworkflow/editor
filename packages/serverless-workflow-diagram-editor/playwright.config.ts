@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.test.json"],
-    }),
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-    // exclude: ["tests/e2e/**"],
+  testDir: "./tests/e2e",
+  testMatch: "**/*.e2e.ts",
+
+  use: {
+    baseURL: "http://localhost:6006",
+    headless: true,
+  },
+
+  webServer: {
+    command: "pnpm start",
+    url: "http://localhost:6006",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
   },
 });
