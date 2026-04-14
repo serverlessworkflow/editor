@@ -110,6 +110,9 @@ importers:
 
   .:
     devDependencies:
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.59.1
       husky:
         specifier: 'catalog:'
         version: 9.1.7

@@ -59,6 +59,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright browsers
+        if: matrix.os == 'ubuntu-latest'
+        run: pnpm playwright:install:ci
+
+      - name: Install Playwright browsers (macOS/Windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: pnpm playwright:install
+
       - name: Check for dependency mismatches
         run: pnpm dependencies:check
 
