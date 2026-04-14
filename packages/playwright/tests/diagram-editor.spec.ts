@@ -17,17 +17,10 @@
 import { test, expect } from "@playwright/test";
 
 test("diagram editor renders correctly", async ({ page }) => {
-  await page.screenshot({ path: "ci-debug.png" });
-
-  await page.goto("/iframe.html?id=example-diagrameditor--component", {
-    waitUntil: "networkidle",
-  });
+  await page.goto("/iframe.html?id=example-diagrameditor--component");
 
   // Wait for main container
-  await page.waitForSelector('[data-testid="diagram-container"]', {
-    state: "visible",
-    timeout: 15000,
-  });
+  await expect(page.getByTestId("diagram-container")).toBeVisible();
 
   // Check at least one specific node
   await expect(page.getByTestId("rf__node-n1")).toBeVisible();
@@ -40,5 +33,10 @@ test("diagram editor renders correctly", async ({ page }) => {
   const edges = page.locator('[data-testid^="rf__edge-"]');
   await expect(edges).toHaveCount(5);
 
-  await page.screenshot({ path: "ci-debug.png" });
+  // Verify the diagram rendered at least one node and one edge
+  const nodesCount = page.locator('[data-testid^="rf__node-"]');
+  await expect(await nodesCount.count()).toBeGreaterThan(0);
+
+  const edgesCount = page.locator('[data-testid^="rf__edge-"]');
+  await expect(await edgesCount.count()).toBeGreaterThan(0);
 });
