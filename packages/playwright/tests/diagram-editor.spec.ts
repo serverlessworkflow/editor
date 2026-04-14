@@ -22,10 +22,10 @@ test("diagram editor renders correctly", async ({ page }) => {
   });
 
   // Wait for main container
-  // await page.waitForSelector('[data-testid="diagram-container"]', {
-  //   state: "visible",
-  //   timeout: 15000,
-  // });
+  await page.waitForSelector('[data-testid="diagram-container"]', {
+    state: "visible",
+    timeout: 15000,
+  });
 
   // Check at least one specific node
   await expect(page.getByTestId("rf__node-n1")).toBeVisible();
@@ -37,4 +37,6 @@ test("diagram editor renders correctly", async ({ page }) => {
   // Check total edges
   const edges = page.locator('[data-testid^="rf__edge-"]');
   await expect(edges).toHaveCount(5);
+
+  await page.screenshot({ path: "ci-debug.png" });
 });
