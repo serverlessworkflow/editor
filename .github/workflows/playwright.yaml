@@ -43,7 +43,7 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
