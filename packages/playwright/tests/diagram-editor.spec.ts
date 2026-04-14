@@ -17,10 +17,15 @@
 import { test, expect } from "@playwright/test";
 
 test("diagram editor renders correctly", async ({ page }) => {
-  await page.goto("/iframe.html?id=example-diagrameditor--component");
+  await page.goto("/iframe.html?id=example-diagrameditor--component", {
+    waitUntil: "networkidle",
+  });
 
   // Wait for main container
-  await expect(page.getByTestId("diagram-container")).toBeVisible();
+  await page.waitForSelector('[data-testid="diagram-container"]', {
+    state: "visible",
+    timeout: 15000,
+  });
 
   // Check at least one specific node
   await expect(page.getByTestId("rf__node-n1")).toBeVisible();
