@@ -45,8 +45,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Playwright browsers
+      - name: Install Playwright browsers (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         run: pnpm --filter @serverlessworkflow/playwright exec playwright install --with-deps
+
+      - name: Install Playwright browsers (macOS/Windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: pnpm --filter @serverlessworkflow/playwright exec playwright install
 
       - name: Run Playwright tests
         run: pnpm --filter @serverlessworkflow/playwright test
