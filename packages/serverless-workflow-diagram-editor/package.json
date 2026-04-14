@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "catalog:",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "catalog:",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
     "@storybook/addon-vitest": "catalog:",
