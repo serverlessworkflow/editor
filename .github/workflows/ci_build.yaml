@@ -62,13 +62,5 @@ jobs:
       - name: Check for dependency mismatches
         run: pnpm dependencies:check
 
-      - name: Install Playwright browsers (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: pnpm -r --if-present run playwright install --with-deps
-
-      - name: Install Playwright browsers (macOS/Windows)
-        if: matrix.os != 'ubuntu-latest'
-        run: pnpm -r --if-present run playwright install
-
       - name: Build and test
         run: pnpm build:prod
