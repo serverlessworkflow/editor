@@ -29,8 +29,7 @@ export const DiagramEditorContextProvider = (
   const [isReadOnly, setIsReadOnly] = React.useState<boolean>(props.isReadOnly);
   const [locale, setLocale] = React.useState<string>(props.locale);
 
-  const [model, setModel] = React.useState<Specification.Workflow | null>(null);
-  const [errors, setErrors] = React.useState<Error[]>([]);
+  const { model, errors } = React.useMemo(() => parseWorkflow(props.content), [props.content]);
 
   const updateIsReadOnly = React.useCallback((isReadOnly: boolean) => {
     setIsReadOnly(isReadOnly);
@@ -45,12 +44,6 @@ export const DiagramEditorContextProvider = (
     updateIsReadOnly(props.isReadOnly);
     updateLocale(props.locale);
   }, [props.isReadOnly, props.locale, updateIsReadOnly, updateLocale]);
-
-  React.useEffect(() => {
-    const result = parseWorkflow(props.content);
-    setModel(result.model);
-    setErrors(result.errors);
-  }, [props.content]);
 
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(

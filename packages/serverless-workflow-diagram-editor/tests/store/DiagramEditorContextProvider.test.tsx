@@ -62,8 +62,8 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElement).toHaveTextContent(/true/i);
     expect(readOnlyLocale).toHaveTextContent(/en/i);
 
-    // 2 rendering cycles are expected: 1- first render, 2- content useEffect triggers state update
-    expect(renderCount).toHaveTextContent(/2/i);
+    // Only one rendering cycle is expected
+    expect(renderCount).toHaveTextContent(/1/i);
   });
 
   it("Context provider props changes shall cause internal component to reload", async () => {
@@ -94,8 +94,8 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElementChanged).toHaveTextContent(/false/i);
     expect(readOnlyLocaleChanged).toHaveTextContent(/pt/i);
 
-    // 4 rendering cycles are expected 1- first render, 2- content useEffect triggers state update, 3- forced by rerender and 4- isReadOnly/locale useeffect state update
-    expect(renderCount).toHaveTextContent(/4/i);
+    // 3 rendering cycles are expected 1- first render, 2- forced by rerender and 3- caused by state updates
+    expect(renderCount).toHaveTextContent(/3/i);
   });
 
   it("Context provider same props shall not cause internal component to reload", async () => {
@@ -126,8 +126,8 @@ describe("DiagramEditorContextProvider Component", () => {
     expect(readOnlyElementChanged).toHaveTextContent(/true/i);
     expect(readOnlyLocaleChanged).toHaveTextContent(/en/i);
 
-    // 3 rendering cycles are expected 1- first render, 2- content useEffect triggers state update and 3- forced by rerender
-    expect(renderCount).toHaveTextContent(/3/i);
+    // 2 rendering cycles are expected 1- first render and 2- forced by rerender
+    expect(renderCount).toHaveTextContent(/2/i);
   });
 
   it("Parses valid workflow content into model with no errors", async () => {
@@ -168,7 +168,7 @@ describe("DiagramEditorContextProvider Component", () => {
       // Model is still returned as parsing succeeded but has validation errors
       expect(modelElement).toBeInTheDocument();
       expect(errorsElement).toHaveTextContent("1");
-    })
+    });
   });
 
   it("Parses empty workflow content into null model with errors", async () => {
@@ -185,7 +185,7 @@ describe("DiagramEditorContextProvider Component", () => {
       // Model is null as parsing failed and errors are returned
       expect(modelElement).toHaveTextContent("null");
       expect(errorsElement).toHaveTextContent("1");
-    })
+    });
   });
 
   it("Updates model when content prop changes", async () => {
@@ -216,6 +216,6 @@ describe("DiagramEditorContextProvider Component", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("test-errors")).toHaveTextContent("1");
-    })
+    });
   });
 });
