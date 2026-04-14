@@ -74,5 +74,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.os }}
           path: packages/playwright/playwright-report
