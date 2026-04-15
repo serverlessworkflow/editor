@@ -23,7 +23,7 @@ test("diagram editor renders correctly", async ({ page }) => {
   await expect(page.getByTestId("diagram-container")).toBeVisible();
 
   // Check at least one specific node
-  await expect(page.getByTestId("rf__node-n1")).toBeVisible();
+  await expect(page.getByTestId("rf__node-n1")).toContainText("Node 1");
 
   // Check total nodes
   const nodes = page.locator('[data-testid^="rf__node-"]');
@@ -32,11 +32,4 @@ test("diagram editor renders correctly", async ({ page }) => {
   // Check total edges
   const edges = page.locator('[data-testid^="rf__edge-"]');
   await expect(edges).toHaveCount(5);
-
-  // Verify the diagram rendered at least one node and one edge
-  const nodesCount = page.locator('[data-testid^="rf__node-"]');
-  await expect(await nodesCount.count()).toBeGreaterThan(0);
-
-  const edgesCount = page.locator('[data-testid^="rf__edge-"]');
-  await expect(await edgesCount.count()).toBeGreaterThan(0);
 });

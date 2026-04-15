@@ -17,12 +17,11 @@
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./tests/e2e",
+  testDir: "./tests-e2e",
   testMatch: "**/*.e2e.ts",
 
   use: {
     baseURL: "http://localhost:6006",
-    headless: true,
   },
 
   webServer: {

@@ -177,6 +177,5 @@ vite.config.ts.timestamp-*
 .rat-reports
 
 # playwright test results
-test-results/
-playwright-report/
-blob-report/
+**/test-results/
+**/playwright-report/
