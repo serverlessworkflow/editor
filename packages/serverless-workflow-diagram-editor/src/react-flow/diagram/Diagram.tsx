@@ -54,6 +54,7 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
+  const [colorMode] = React.useState<RF.ColorMode>("system");
 
   const onNodesChange = React.useCallback<RF.OnNodesChange>(
     (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
@@ -89,6 +90,7 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
         preventScrolling={true}
         selectionOnDrag={true}
         fitView
+        colorMode={colorMode}
       >
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
 
