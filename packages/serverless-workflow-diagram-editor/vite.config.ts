@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
   build: {
     emptyOutDir: false,
     sourcemap: true,
@@ -30,10 +32,4 @@ export default defineConfig({
       external: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
     },
   },
-  plugins: [
-    tsconfigPaths({
-      // Provide an array of paths to the tsconfig files you want to use
-      projects: ["./tsconfig.json"],
-    }),
-  ],
 });
