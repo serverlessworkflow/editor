@@ -67,7 +67,6 @@
     "rimraf": "catalog:",
     "storybook": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

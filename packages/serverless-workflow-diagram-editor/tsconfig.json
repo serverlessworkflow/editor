@@ -2,13 +2,12 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "vite/client"],
-    "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": false,
     "emitDeclarationOnly": true,
     "noEmitOnError": true,
-    "rootDirs": ["./src", "./tests"],
+    "rootDir": "./src",
     "outDir": "./dist"
   },
   "include": ["src/**/*"],
