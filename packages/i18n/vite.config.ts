@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   resolve: {
