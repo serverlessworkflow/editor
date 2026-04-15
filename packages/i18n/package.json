@@ -28,7 +28,6 @@
     "@types/react-dom": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {
