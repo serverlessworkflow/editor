@@ -72,3 +72,13 @@ jobs:
 
       - name: Build and test
         run: pnpm build:prod
+
+      - name: Upload Playwright Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.os }}
+          path: |
+            packages/**/playwright-report/
+            packages/**/test-results/
+          retention-days: 30
