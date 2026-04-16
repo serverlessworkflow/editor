@@ -1,6 +1,17 @@
 {
   "name": "@serverlessworkflow/i18n",
   "version": "1.0.0",
+  "description": "Serverless workflow internationalization component",
+  "keywords": [],
+  "homepage": "https://github.com/serverlessworkflow/editor",
+  "bugs": {
+    "url": "https://github.com/serverlessworkflow/editor/issues"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverlessworkflow/editor.git"
+  },
   "files": [
     "dist",
     "src"
