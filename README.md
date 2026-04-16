@@ -50,9 +50,7 @@ pnpm run build:prod
 editor/
 ├── .github/                    # CI workflows, issue templates, Dependabot
 ├── .husky/                     # Git hooks (commit-msg, pre-commit)
-├── packages/
-│   ├── i18n/                   # Internationalization utility package
-│   └── serverless-workflow-diagram-editor/  # Main diagram editor package
+├── packages/                   # Monorepo workspace packages
 ├── .oxfmtrc.json               # Formatter config (oxfmt)
 ├── .oxlintrc.json              # Linter config (oxlint)
 ├── .syncpackrc.json            # Monorepo package version consistency
@@ -62,10 +60,6 @@ editor/
 ```
 
 ### Key Packages
-
-#### packages/i18n/
-
-Internationalization utilities providing multi-language support. Includes React context providers and automatic locale detection.
 
 #### packages/serverless-workflow-diagram-editor/
 
