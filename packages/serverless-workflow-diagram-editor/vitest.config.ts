@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
+import { defineConfig, configDefaults } from "vitest/config";
 
 export default defineConfig({
   resolve: {
@@ -25,6 +25,6 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/setupTests.ts"],
     css: false,
-    exclude: ["tests-e2e", "node_modules", "dist"],
+    exclude: [...configDefaults.exclude, "**/tests-e2e/**"],
   },
 });
