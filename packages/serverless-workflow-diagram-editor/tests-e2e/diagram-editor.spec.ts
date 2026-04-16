@@ -17,7 +17,7 @@
 import { test, expect } from "@playwright/test";
 
 test("diagram editor renders correctly", async ({ page }) => {
-  await page.goto("/iframe.html?id=example-diagrameditor--component");
+  await page.goto("/iframe.html?id=example-diagram-editor--component");
 
   // Wait for main container
   await expect(page.getByTestId("diagram-container")).toBeVisible();
