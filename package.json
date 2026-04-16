@@ -21,7 +21,7 @@
     "build:prod": "pnpm -r --stream --if-present build:prod",
     "build:dev": "pnpm -r --stream --if-present build:dev",
     "prepare": "husky",
-    "playwright:install": "playwright install --with-deps"
+    "playwright:install:ci": "playwright install --with-deps"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
