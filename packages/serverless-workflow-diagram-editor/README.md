@@ -16,7 +16,7 @@
 
 # serverless-workflow-diagram-editor
 
-## Serverless Workflow Diagram Editor React component / npm package.
+Serverless Workflow Diagram Editor React component / npm package
 
 ## Building the Component
 
