@@ -56,6 +56,11 @@ jobs:
           version: 10.31.0
           cache: true
 
+      - name: Check package versions
+        shell: bash
+        run: |
+          pnpm -r exec node -e "process.exit(require('./package.json').version === '0.0.0' ? 0 : 1)"
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
