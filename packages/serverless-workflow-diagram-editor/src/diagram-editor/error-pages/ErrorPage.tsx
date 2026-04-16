@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
+type ErrorPageProps = {
+  title: string;
+  message?: string | undefined;
+  snippet?: string | undefined;
+};
 
-export const dictionaries = {
-  en,
+export const ErrorPage = ({ title, message, snippet }: ErrorPageProps) => {
+  // TODO: Apply styling later
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h2>{title}</h2>
+      {message ? <p>{message}</p> : null}
+      {snippet ? (
+        <pre>
+          <code>{snippet}</code>
+        </pre>
+      ) : null}
+    </div>
+  );
 };

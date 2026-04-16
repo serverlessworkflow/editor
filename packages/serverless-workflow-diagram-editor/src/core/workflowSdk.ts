@@ -45,7 +45,7 @@ export function parseWorkflow(text: string): WorkflowParseResult {
   }
 
   if (raw == null || typeof raw !== "object") {
-    return { model: null, errors: [new Error("Not a valid workflow object")] };
+    return { model: null, errors: [new Error("Not a valid workflow")] };
   }
 
   const model = new Classes.Workflow(raw) as Specification.Workflow;
