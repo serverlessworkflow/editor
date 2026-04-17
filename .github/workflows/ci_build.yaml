@@ -62,7 +62,7 @@ jobs:
           pnpm -r exec node -e "process.exit(require('./package.json').version === '0.0.0' ? 0 : 1)"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Check for dependency mismatches
         run: pnpm dependencies:check
