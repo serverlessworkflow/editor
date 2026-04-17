@@ -23,7 +23,7 @@ import {
 export const DiagramEditor = ({ ...props }: DiagramEditorProps) => {
   return (
     <div style={{ height: "100vh" }}>
-      <Component isReadOnly={props.isReadOnly} locale={props.locale} />
+      <Component content={props.content} isReadOnly={props.isReadOnly} locale={props.locale} />
     </div>
   );
 };
