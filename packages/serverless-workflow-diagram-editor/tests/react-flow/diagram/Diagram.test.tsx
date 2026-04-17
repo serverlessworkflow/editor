@@ -15,27 +15,21 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { vi, test, expect, afterEach, describe } from "vitest";
+import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 
 describe("Diagram Component", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test("Renders react flow nodes", async () => {
+  test("render Diagram component and canvas", () => {
     render(<Diagram />);
 
-    const node1 = screen.getByText("Node 1");
-    const node2 = screen.getByText("Node 2");
-    const node3 = screen.getByText("Node 3");
-    const node4 = screen.getByText("Node 4");
-    const node5 = screen.getByText("Node 5");
+    const diagram = screen.getByTestId("diagram-container");
+    const canvas = screen.getByTestId("react-flow-canvas");
 
-    expect(node1).toBeInTheDocument();
-    expect(node2).toBeInTheDocument();
-    expect(node3).toBeInTheDocument();
-    expect(node4).toBeInTheDocument();
-    expect(node5).toBeInTheDocument();
+    expect(diagram).toBeInTheDocument();
+    expect(canvas).toBeInTheDocument();
   });
 });

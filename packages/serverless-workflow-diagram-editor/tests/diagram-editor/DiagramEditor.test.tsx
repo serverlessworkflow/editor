@@ -16,7 +16,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { DiagramEditor } from "../../src/diagram-editor";
-import { vi, test, expect, afterEach, describe, it } from "vitest";
+import { vi, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 describe("DiagramEditor Component", () => {

@@ -16,11 +16,17 @@
 
 import { ExtendedGraph, Position, Size } from "./graph";
 
+// Defaults
+export const DEFAULT_NODE_SIZE = {
+  height: 50,
+  width: 90,
+};
+
 export function applyAutoLayout(graph: ExtendedGraph): ExtendedGraph {
   const graphClone = structuredClone(graph);
 
   // TODO: This is just a temporary implementation until the actual auto-layout engine is integrated
-  const nodeSize: Size = { height: 50, width: 70 };
+  const nodeSize: Size = DEFAULT_NODE_SIZE;
   let position: Position = { x: 0, y: 0 };
 
   // TODO: Containment is not supported for now.
