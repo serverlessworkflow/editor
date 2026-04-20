@@ -27,7 +27,7 @@
   },
   "scripts": {
     "clean": "rimraf ./dist",
-    "build:dev": "pnpm clean && tsc -p tsconfig.json",
+    "build:dev": "pnpm clean && tsc -p tsconfig.json && vite build",
     "build:prod": "pnpm run build:dev && pnpm test",
     "test": "vitest run --passWithNoTests"
   },
@@ -39,6 +39,7 @@
     "@types/react-dom": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {
