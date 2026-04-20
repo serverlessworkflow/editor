@@ -37,54 +37,29 @@ describe("DiagramEditor Component", () => {
     expect(reactFlowContainer).toBeInTheDocument();
   });
 
-  it("applies light mode class", () => {
-    render(
-      <DiagramEditor
-        content={BASIC_VALID_WORKFLOW_YAML}
-        locale={locale}
-        isReadOnly={isReadOnly}
-        colorMode="light"
-      />,
-    );
+  it.each([
+    { colorMode: "light" as const, expectedDark: false },
+    { colorMode: "dark" as const, expectedDark: true },
+    { colorMode: "system" as const, expectedDark: false },
+    { colorMode: undefined, expectedDark: false },
+  ])(
+    "applies correct class when colorMode is set to $colorMode",
+    ({ colorMode, expectedDark }) => {
+      render(
+        <DiagramEditor
+          content={BASIC_VALID_WORKFLOW_YAML}
+          locale={locale}
+          isReadOnly={isReadOnly}
+          colorMode={colorMode}
+        />,
+      );
 
-    const reactFlowContainer = screen.getByTestId("diagram-container");
-    expect(reactFlowContainer).toHaveClass("colorMode-light");
-  });
-
-  it("applies dark mode class", () => {
-    render(
-      <DiagramEditor
-        content={BASIC_VALID_WORKFLOW_YAML}
-        locale={locale}
-        isReadOnly={isReadOnly}
-        colorMode="dark"
-      />,
-    );
-
-    const reactFlowContainer = screen.getByTestId("diagram-container");
-    expect(reactFlowContainer).toHaveClass("colorMode-dark");
-  });
-
-  it("applies system mode class", () => {
-    render(
-      <DiagramEditor
-        content={BASIC_VALID_WORKFLOW_YAML}
-        locale={locale}
-        isReadOnly={isReadOnly}
-        colorMode="system"
-      />,
-    );
-
-    const reactFlowContainer = screen.getByTestId("diagram-container");
-    expect(reactFlowContainer).toHaveClass("colorMode-system");
-  });
-
-  it("defaults to system mode when no colorMode is provided", () => {
-    render(
-      <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
-    );
-
-    const reactFlowContainer = screen.getByTestId("diagram-container");
-    expect(reactFlowContainer).toHaveClass("colorMode-system");
-  });
+      const decRoot = screen.getByTestId("dec-root");
+      if (expectedDark) {
+        expect(decRoot).toHaveClass("dark");
+      } else {
+        expect(decRoot).not.toHaveClass("dark");
+      }
+    },
+  );
 });

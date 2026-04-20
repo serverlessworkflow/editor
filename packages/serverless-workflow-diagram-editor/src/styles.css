@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
- /* The css to be updated after tailwind update */
-.headingContent {
-  color: #000000;
-  background-color: #F8F8F8;
-  margin: 0;
-  padding: 1%;
-}
+@import "tailwindcss" prefix(dec);
 
-.headingContent.colorMode-dark {
-    color: #F8F8F8;
-    background-color: #141414;
-}
+@custom-variant dark (&:where(.dec-root.dark, .dec-root.dark *));
 
-@media (prefers-color-scheme: dark) {
-    .headingContent.colorMode-system {
-        color: #F8F8F8;
-        background-color: #141414;
-    }
+/*
+  This file defines global styles for the editor.
+
+  Any global selectors must be carefully scoped within `.dec-root`
+  to avoid leaking into the host application.
+
+  Prefer component-level or locally scoped styles elsewhere.
+  Do not introduce unscoped global styles, as the editor is designed
+  to be embedded within other applications.
+
+  Tailwind utilities are prefixed with `dec:` (Diagram Editor Component)
+  to reduce the risk of conflicts with host application styles.
+*/
+.dec-root {
+  height: 100%;
 }

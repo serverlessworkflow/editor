@@ -22,6 +22,7 @@ import { DEFAULT_NODE_SIZE } from "../../core";
 import { ColorMode } from "../../types/colorMode";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
+import { ResolvedColorMode } from "../../types/colorMode";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -155,10 +156,10 @@ export type DiagramRef = {
 export type DiagramProps = {
   divRef?: React.RefObject<HTMLDivElement | null>;
   ref?: React.Ref<DiagramRef>;
-  colorMode?: ColorMode;
+  colorMode?: ResolvedColorMode;
 };
 
-export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => {
+export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
@@ -183,7 +184,7 @@ export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => 
   );
 
   return (
-    <div ref={divRef} className={`diagram-container colorMode-${colorMode}`} data-testid={"diagram-container"}>
+    <div ref={divRef} className="diagram-container" data-testid={"diagram-container"}>
       <RF.ReactFlow
         nodeTypes={NodeTypes}
         nodes={nodes}

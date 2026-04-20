@@ -15,3 +15,4 @@
  */
 
 export type ColorMode = "light" | "dark" | "system";
+export type ResolvedColorMode = "light" | "dark";
