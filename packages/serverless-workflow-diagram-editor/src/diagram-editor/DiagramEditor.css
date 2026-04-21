@@ -1,0 +1,16 @@
+/* Content wrapper */
+.content {
+  color: #000000;
+  margin: 0;
+  padding: 1%;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .content {
+    color: #F8F8F8;
+    background-color: #141414;
+    margin: 0;
+    padding: 1%;
+  }
+}

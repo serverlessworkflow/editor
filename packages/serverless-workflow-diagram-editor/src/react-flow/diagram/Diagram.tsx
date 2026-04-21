@@ -54,7 +54,7 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
-  const [colorMode, setColorMode] = React.useState<RF.ColorMode>("system");
+  const [colorMode] = React.useState<RF.ColorMode>("system");
 
   const onNodesChange = React.useCallback<RF.OnNodesChange>(
     (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
@@ -64,9 +64,6 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
     (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
     [],
   );
-  const onChange: React.ChangeEventHandler<HTMLSelectElement> = (evt) => {
-    setColorMode(evt.target.value as RF.ColorMode);
-  };
 
   React.useImperativeHandle(
     ref,
@@ -95,13 +92,6 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
         fitView
         colorMode={colorMode}
       >
-        <RF.Panel position="top-right">
-          <select className="xy-theme__select" onChange={onChange} data-testid="colormode-select">
-            <option value="dark">dark</option>
-            <option value="light">light</option>
-            <option value="system">system</option>
-          </select>
-        </RF.Panel>
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
 
         <RF.Controls
@@ -111,7 +101,7 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
         >
           <RF.ControlButton onClick={() => setMinimapVisible(!minimapVisible)}>M</RF.ControlButton>
         </RF.Controls>
-        <RF.Background className="diagram-background" variant={RF.BackgroundVariant.Cross} />
+        <RF.Background variant={RF.BackgroundVariant.Cross} />
       </RF.ReactFlow>
     </div>
   );

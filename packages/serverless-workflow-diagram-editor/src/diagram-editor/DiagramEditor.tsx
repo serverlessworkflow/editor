@@ -19,6 +19,7 @@ import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
 import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
+import "./DiagramEditor.css";
 /**
  * DiagramEditor component API
  */
@@ -70,7 +71,9 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         locale={locale}
       >
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <Content />
+          <div className="content">
+            <Content />
+          </div>
           <Diagram ref={diagramRef} divRef={diagramDivRef} />
         </I18nProvider>
       </DiagramEditorContextProvider>
