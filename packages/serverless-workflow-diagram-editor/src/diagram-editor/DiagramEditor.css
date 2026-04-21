@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-.content {
+.headingContent {
   color: #000000;
   margin: 0;
   padding: 1%;
 }
 
 @media (prefers-color-scheme: dark) {
-  .content {
+  .headingContent {
     color: #F8F8F8;
     background-color: #141414;
     margin: 0;

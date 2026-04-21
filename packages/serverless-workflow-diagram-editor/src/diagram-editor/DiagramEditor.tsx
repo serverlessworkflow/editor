@@ -71,7 +71,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         locale={locale}
       >
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <div className="content">
+          <div className="headingContent">
             <Content />
           </div>
           <Diagram ref={diagramRef} divRef={diagramDivRef} />

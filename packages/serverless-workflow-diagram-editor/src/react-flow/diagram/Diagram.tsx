@@ -48,13 +48,13 @@ export type DiagramRef = {
 export type DiagramProps = {
   divRef?: React.RefObject<HTMLDivElement | null>;
   ref?: React.Ref<DiagramRef>;
+  colorMode?: RF.ColorMode;
 };
 
-export const Diagram = ({ divRef, ref }: DiagramProps) => {
+export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
-  const [colorMode] = React.useState<RF.ColorMode>("system");
 
   const onNodesChange = React.useCallback<RF.OnNodesChange>(
     (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
