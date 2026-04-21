@@ -101,7 +101,7 @@ export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => 
         >
           <RF.ControlButton onClick={() => setMinimapVisible(!minimapVisible)}>M</RF.ControlButton>
         </RF.Controls>
-        <RF.Background variant={RF.BackgroundVariant.Cross} />
+        <RF.Background className="diagram-background" variant={RF.BackgroundVariant.Cross} />
       </RF.ReactFlow>
     </div>
   );
