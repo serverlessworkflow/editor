@@ -14,21 +14,4 @@
  * limitations under the License.
  */
 
-import {
-  DiagramEditor as Component,
-  DiagramEditorProps,
-} from "../src/diagram-editor/DiagramEditor";
-
-/** Primary UI component for user interaction */
-export const DiagramEditor = ({ ...props }: DiagramEditorProps) => {
-  return (
-    <div style={{ height: "100vh" }}>
-      <Component
-        content={props.content}
-        isReadOnly={props.isReadOnly}
-        locale={props.locale}
-        colorMode={props.colorMode}
-      />
-    </div>
-  );
-};
+export type ColorMode = "light" | "dark" | "system";

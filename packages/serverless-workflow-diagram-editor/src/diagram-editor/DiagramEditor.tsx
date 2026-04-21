@@ -20,6 +20,8 @@ import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvi
 import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
 import "./DiagramEditor.css";
+import { ColorMode } from "../types/colorMode";
+
 /**
  * DiagramEditor component API
  */
@@ -32,6 +34,7 @@ export type DiagramEditorProps = {
   isReadOnly: boolean;
   locale: string;
   ref?: React.Ref<DiagramEditorRef>;
+  colorMode?: ColorMode;
 };
 
 const Content = () => {
@@ -51,6 +54,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
     const supportedLocales = Object.keys(dictionaries);
     return props.locale ?? detectLocale(supportedLocales);
   }, [props.locale]);
+  const colorMode = props.colorMode ?? "system";
 
   // Allow imperatively controlling the Editor
   React.useImperativeHandle(
@@ -74,7 +78,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
           <div className="headingContent">
             <Content />
           </div>
-          <Diagram ref={diagramRef} divRef={diagramDivRef} />
+          <Diagram ref={diagramRef} divRef={diagramDivRef} colorMode={colorMode} />
         </I18nProvider>
       </DiagramEditorContextProvider>
     </>

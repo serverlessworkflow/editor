@@ -38,5 +38,6 @@ export const Component: Story = {
     isReadOnly: true,
     locale: "en",
     content: "", // TODO: Replace with a sample workflow YAML once diagram renders from model
+    colorMode: "system",
   },
 };

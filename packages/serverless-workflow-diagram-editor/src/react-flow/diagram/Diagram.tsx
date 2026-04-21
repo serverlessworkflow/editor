@@ -18,8 +18,13 @@ import * as React from "react";
 import * as RF from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
+import { ColorMode } from "../../types/colorMode";
 
-const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
+const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
+  maxZoom: 1,
+  minZoom: 0.1,
+  duration: 400,
+};
 
 // TODO: Nodes and Edges are hardcoded for now to generate a renderable basic workflow
 // It shall be replaced by the actual implementation based on graph structure
@@ -48,7 +53,7 @@ export type DiagramRef = {
 export type DiagramProps = {
   divRef?: React.RefObject<HTMLDivElement | null>;
   ref?: React.Ref<DiagramRef>;
-  colorMode?: RF.ColorMode;
+  colorMode?: ColorMode;
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => {
