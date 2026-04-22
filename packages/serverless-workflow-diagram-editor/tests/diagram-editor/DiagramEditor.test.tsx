@@ -27,7 +27,7 @@ describe("DiagramEditor Component", () => {
   const locale = "en";
   const isReadOnly = true;
 
-  test("Renders react flow Diagram component", async () => {
+  test("Renders react flow Diagram component", () => {
     render(
       <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );
