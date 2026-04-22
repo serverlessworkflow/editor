@@ -15,3 +15,4 @@
  */
 
 export * from "./diagram-editor";
+export * from "./types/colorMode";

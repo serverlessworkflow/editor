@@ -15,13 +15,13 @@
  */
 
 .diagram-container {
-    height: 100%;
-    position: relative;
+  height: 100%;
+  position: relative;
 }
 
 .diagram-background {
-    --xy-background-pattern-color: #ccc;
-    background-color: #E5E4E2;
+  --xy-background-pattern-color: #ccc;
+  background-color: #e5e4e2;
 }
 
 @media (prefers-color-scheme: dark) {
