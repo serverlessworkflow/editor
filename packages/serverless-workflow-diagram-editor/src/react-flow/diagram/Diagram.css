@@ -19,13 +19,18 @@
   position: relative;
 }
 
-.diagram-background {
+.diagram-container .diagram-background {
   --xy-background-pattern-color: #ccc;
   background-color: #e5e4e2;
 }
 
+.diagram-container.colorMode-dark .diagram-background{ 
+    --xy-background-pattern-color: inherit;
+    background-color: inherit;
+}
+
 @media (prefers-color-scheme: dark) {
-    .diagram-background{ 
+    .diagram-container.colorMode-system .diagram-background{ 
         --xy-background-pattern-color: inherit;
         background-color: inherit;
     }

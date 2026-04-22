@@ -21,11 +21,14 @@
   padding: 1%;
 }
 
-@media (prefers-color-scheme: dark) {
-  .headingContent {
+.headingContent.colorMode-dark {
     color: #F8F8F8;
     background-color: #141414;
-    margin: 0;
-    padding: 1%;
-  }
+}
+
+@media (prefers-color-scheme: dark) {
+    .headingContent.colorMode-system {
+        color: #F8F8F8;
+        background-color: #141414;
+    }
 }

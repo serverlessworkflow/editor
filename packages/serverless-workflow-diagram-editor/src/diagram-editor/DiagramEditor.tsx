@@ -75,10 +75,10 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         locale={locale}
       >
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <div className="headingContent">
-            <Content />
-          </div>
-          <Diagram ref={diagramRef} divRef={diagramDivRef} colorMode={colorMode} />
+            <div className={`headingContent colorMode-${colorMode}`}>
+              <Content />
+            </div>
+            <Diagram ref={diagramRef} divRef={diagramDivRef} colorMode={colorMode} />
         </I18nProvider>
       </DiagramEditorContextProvider>
     </>

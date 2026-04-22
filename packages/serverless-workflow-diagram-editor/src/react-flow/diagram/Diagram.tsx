@@ -81,7 +81,7 @@ export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => 
   );
 
   return (
-    <div ref={divRef} className={"diagram-container"} data-testid={"diagram-container"}>
+    <div ref={divRef} className={`diagram-container colorMode-${colorMode}`} data-testid={"diagram-container"}>
       <RF.ReactFlow
         nodes={nodes}
         edges={edges}
