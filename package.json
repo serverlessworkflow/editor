@@ -20,9 +20,11 @@
     "format:check": "oxfmt --config .oxfmtrc.json --check",
     "build:prod": "pnpm -r --stream --if-present build:prod",
     "build:dev": "pnpm -r --stream --if-present build:dev",
-    "prepare": "husky"
+    "prepare": "husky",
+    "playwright:install:ci": "playwright install --with-deps"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",
     "oxfmt": "catalog:",

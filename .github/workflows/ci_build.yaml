@@ -64,8 +64,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Playwright browsers
+        run: pnpm playwright:install:ci
+
       - name: Check for dependency mismatches
         run: pnpm dependencies:check
 
       - name: Build and test
         run: pnpm build:prod
+
+      - name: Upload Playwright Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.os }}
+          path: |
+            packages/**/playwright-report/
+            packages/**/test-results/
+          retention-days: 30

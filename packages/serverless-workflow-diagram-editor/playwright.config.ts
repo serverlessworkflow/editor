@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  resolve: {
-    tsconfigPaths: true,
+  testDir: "tests-e2e",
+
+  use: {
+    baseURL: "http://localhost:6006",
   },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+
+  webServer: {
+    command: "pnpm start",
+    url: "http://localhost:6006",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
   },
 });

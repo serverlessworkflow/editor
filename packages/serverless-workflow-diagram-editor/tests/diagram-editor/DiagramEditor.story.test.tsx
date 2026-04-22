@@ -32,7 +32,9 @@ describe("Story - DiagramEditor component", () => {
     const locale = "en";
     const isReadOnly = true;
 
-    render(<Component content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />);
+    render(
+      <Component content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
+    );
 
     const reactFlowContainer = screen.getByTestId("diagram-container");
 
