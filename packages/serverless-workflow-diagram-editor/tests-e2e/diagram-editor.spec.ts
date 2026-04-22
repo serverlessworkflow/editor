@@ -29,7 +29,7 @@ test("diagram editor renders correctly", async ({ page }) => {
   const nodes = page.locator('[data-testid^="rf__node-"]');
   await expect(nodes).toHaveCount(5);
 
-  // Check total edges
+  // Check total edge
   const edges = page.locator('[data-testid^="rf__edge-"]');
   await expect(edges).toHaveCount(5);
 });
