@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-import { describe, it, expect } from "vitest";
-import { parseWorkflow, validateWorkflow } from "../../src/core";
+import { describe, it, expect, expectTypeOf } from "vitest";
+import {
+  parseWorkflow,
+  validateWorkflow,
+  buildGraph,
+  ExtendedGraphNode,
+  ExtendedGraph,
+  ExtendedGraphEdge,
+} from "../../src/core";
 import {
   BASIC_VALID_WORKFLOW_YAML,
   BASIC_VALID_WORKFLOW_JSON,
   BASIC_INVALID_WORKFLOW_YAML,
   BASIC_INVALID_WORKFLOW_JSON,
+  BASIC_VALID_WORKFLOW_JSON_TASKS,
+  EMPTY_WORKFLOW_JSON,
 } from "../fixtures/workflows";
 import { Classes, Specification } from "@serverlessworkflow/sdk";
 
@@ -79,5 +88,27 @@ describe("validateWorkflow", () => {
     const errors = validateWorkflow(invalid);
     expect(errors).toHaveLength(1);
     expect(errors).toMatchSnapshot();
+  });
+});
+
+describe("buildGraph", () => {
+  it("returns a loaded extended graph object from model", () => {
+    const { model } = parseWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+    expect(model).not.toBeNull();
+
+    const graph = buildGraph(model!);
+
+    expectTypeOf(graph).toEqualTypeOf<ExtendedGraph>();
+    expectTypeOf(graph!.nodes).toEqualTypeOf<ExtendedGraphNode[]>();
+    expectTypeOf(graph!.edges).toEqualTypeOf<ExtendedGraphEdge[]>();
+    expect(graph).toMatchSnapshot();
+  });
+
+  it("buildGraph exception", () => {
+    const { model } = parseWorkflow(EMPTY_WORKFLOW_JSON);
+    expect(model).not.toBeNull();
+
+    // A model without tasks is invalid however it produces a viable model instance
+    expect(() => buildGraph(model!)).toThrow("Cannot read properties of undefined (reading '0')");
   });
 });

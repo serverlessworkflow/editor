@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+import type { Specification } from "@serverlessworkflow/sdk";
 import * as React from "react";
 
 export type DiagramEditorContextType = {
   isReadOnly: boolean;
   locale: string;
+  model: Specification.Workflow | null;
+  errors: Error[];
 
   updateIsReadOnly: (isReadOnly: boolean) => void;
   updateLocale: (locale: string) => void;

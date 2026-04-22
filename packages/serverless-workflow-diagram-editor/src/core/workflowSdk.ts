@@ -15,16 +15,17 @@
  */
 
 import yaml from "js-yaml";
-import { Classes, Specification, validate } from "@serverlessworkflow/sdk";
+import * as sdk from "@serverlessworkflow/sdk";
+import { ExtendedGraph, solveEdgeTypes } from "./graph";
 
 export type WorkflowParseResult = {
-  model: Specification.Workflow | null;
+  model: sdk.Specification.Workflow | null;
   errors: Error[];
 };
 
-export function validateWorkflow(model: Specification.Workflow): Error[] {
+export function validateWorkflow(model: sdk.Specification.Workflow): Error[] {
   try {
-    validate("Workflow", model);
+    sdk.validate("Workflow", model);
     return [];
   } catch (err) {
     // TODO: Parse individual validation errors from the SDK into separate Error objects when we are ready to render them.
@@ -33,10 +34,10 @@ export function validateWorkflow(model: Specification.Workflow): Error[] {
 }
 
 export function parseWorkflow(text: string): WorkflowParseResult {
-  let raw: Partial<Specification.Workflow>;
+  let raw: Partial<sdk.Specification.Workflow>;
 
   try {
-    raw = yaml.load(text, { schema: yaml.DEFAULT_SCHEMA }) as Partial<Specification.Workflow>;
+    raw = yaml.load(text, { schema: yaml.DEFAULT_SCHEMA }) as Partial<sdk.Specification.Workflow>;
   } catch (err) {
     return {
       model: null,
@@ -48,8 +49,12 @@ export function parseWorkflow(text: string): WorkflowParseResult {
     return { model: null, errors: [new Error("Not a valid workflow object")] };
   }
 
-  const model = new Classes.Workflow(raw) as Specification.Workflow;
+  const model = new sdk.Classes.Workflow(raw) as sdk.Specification.Workflow;
   const errors = validateWorkflow(model);
 
   return { model, errors };
+}
+
+export function buildGraph(model: sdk.Specification.Workflow): ExtendedGraph {
+  return solveEdgeTypes(sdk.buildGraph(model));
 }

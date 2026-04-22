@@ -18,6 +18,7 @@ import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
 import * as stories from "../../stories/DiagramEditor.stories";
 import { vi, test, expect, afterEach, describe } from "vitest";
+import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 // Composes all stories in the file
 const { Component } = composeStories(stories);
@@ -31,7 +32,9 @@ describe("Story - DiagramEditor component", () => {
     const locale = "en";
     const isReadOnly = true;
 
-    render(<Component locale={locale} isReadOnly={isReadOnly} />);
+    render(
+      <Component content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
+    );
 
     const reactFlowContainer = screen.getByTestId("diagram-container");
 

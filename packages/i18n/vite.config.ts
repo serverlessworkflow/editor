@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./graph";
-export * from "./autoLayout";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
+  build: {
+    emptyOutDir: false,
+    sourcemap: true,
+    lib: {
+      entry: "src/index.ts",
+      fileName: (format) => (format === "es" ? "index.js" : `index.${format}.js`),
+      formats: ["es"],
+    },
+    rollupOptions: {
+      external: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
+    },
+  },
+});

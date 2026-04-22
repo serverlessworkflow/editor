@@ -43,3 +43,24 @@ pnpm run build:dev
 # Or build all packages in the monorepo (production)
 pnpm run build:prod
 ```
+
+## Repository Structure
+
+```
+editor/
+├── .github/                    # CI workflows, issue templates, Dependabot
+├── .husky/                     # Git hooks (commit-msg, pre-commit)
+├── packages/                   # Monorepo workspace packages
+├── .oxfmtrc.json               # Formatter config (oxfmt)
+├── .oxlintrc.json              # Linter config (oxlint)
+├── .syncpackrc.json            # Monorepo package version consistency
+├── netlify.toml                # Netlify configuration for Storybook preview deployment
+├── pnpm-workspace.yaml         # pnpm workspace definition
+└── tsconfig.base.json          # Shared TypeScript config
+```
+
+### Key Packages
+
+#### packages/serverless-workflow-diagram-editor/
+
+The visual diagram editor for the [Serverless Workflow Specification](https://github.com/serverlessworkflow/specification/). Built with React Flow for interactive diagram rendering and includes Storybook for component development.
