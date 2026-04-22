@@ -24,10 +24,10 @@ describe("DiagramEditor Component", () => {
     vi.restoreAllMocks();
   });
 
-  test("Renders react flow Diagram component", async () => {
-    const locale = "en";
-    const isReadOnly = true;
+  const locale = "en";
+  const isReadOnly = true;
 
+  test("Renders react flow Diagram component", async () => {
     render(
       <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );
@@ -35,5 +35,56 @@ describe("DiagramEditor Component", () => {
     const reactFlowContainer = screen.getByTestId("diagram-container");
 
     expect(reactFlowContainer).toBeInTheDocument();
+  });
+
+  test("applies light mode class", () => {
+    render(
+      <DiagramEditor
+        content={BASIC_VALID_WORKFLOW_YAML}
+        locale={locale}
+        isReadOnly={isReadOnly}
+        colorMode="light"
+      />,
+    );
+
+    const reactFlowContainer = screen.getByTestId("diagram-container");
+    expect(reactFlowContainer).toHaveClass("colorMode-light");
+  });
+
+  test("applies dark mode class", () => {
+    render(
+      <DiagramEditor
+        content={BASIC_VALID_WORKFLOW_YAML}
+        locale={locale}
+        isReadOnly={isReadOnly}
+        colorMode="dark"
+      />,
+    );
+
+    const reactFlowContainer = screen.getByTestId("diagram-container");
+    expect(reactFlowContainer).toHaveClass("colorMode-dark");
+  });
+
+  test("applies system mode class", () => {
+    render(
+      <DiagramEditor
+        content={BASIC_VALID_WORKFLOW_YAML}
+        locale={locale}
+        isReadOnly={isReadOnly}
+        colorMode="system"
+      />,
+    );
+
+    const reactFlowContainer = screen.getByTestId("diagram-container");
+    expect(reactFlowContainer).toHaveClass("colorMode-system");
+  });
+
+  test("defaults to system mode when no colorMode is provided", () => {
+    render(
+      <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
+    );
+
+    const reactFlowContainer = screen.getByTestId("diagram-container");
+    expect(reactFlowContainer).toHaveClass("colorMode-system");
   });
 });
