@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-import type { TranslationKeys } from "./en";
-
-export const fr: Record<TranslationKeys, string> = {
-  helloMessage: "Bonjour depuis l’éditeur de spécifications Serverless Workflow!",
-};
+export { renderWithProviders } from "./render-helpers";
+export { t } from "./translation-helpers";

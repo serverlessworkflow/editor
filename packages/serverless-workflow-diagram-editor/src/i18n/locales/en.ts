@@ -15,7 +15,9 @@
  */
 
 export const en = {
-  helloMessage: "Hello from Serverless Workflow Specification Editor!",
+  "workflowError.title": "Workflow Error",
+  "workflowError.default": "There was an error loading the workflow.",
+  "workflowError.parsing.title": "Parsing Error",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

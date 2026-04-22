@@ -17,7 +17,7 @@
 import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
 import * as stories from "../../stories/DiagramEditor.stories";
-import { vi, test, expect, afterEach, describe } from "vitest";
+import { vi, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 // Composes all stories in the file
@@ -28,7 +28,7 @@ describe("Story - DiagramEditor component", () => {
     vi.restoreAllMocks();
   });
 
-  test("Renders react flow Diagram component", async () => {
+  it("Renders react flow Diagram component", async () => {
     const locale = "en";
     const isReadOnly = true;
 

@@ -15,14 +15,11 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-import { DiagramEditor } from "./DiagramEditor";
-import { BASIC_VALID_WORKFLOW_YAML } from "../tests/fixtures/workflows";
+import { ErrorPage } from "../src/diagram-editor/error-pages/ErrorPage";
 
 const meta = {
-  id: "diagram-editor",
-  title: "Example/Diagram-Editor",
-  component: DiagramEditor,
+  title: "Example/ErrorPage",
+  component: ErrorPage,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],
   parameters: {
@@ -30,15 +27,45 @@ const meta = {
     layout: "fullscreen",
   },
   args: {},
-} satisfies Meta<typeof DiagramEditor>;
+} satisfies Meta<typeof ErrorPage>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Component: Story = {
+export const TitleOnly: Story = {
   args: {
-    isReadOnly: true,
-    locale: "en",
-    content: BASIC_VALID_WORKFLOW_YAML, // TODO: Add better workflow sample when removing hardcoded nodes and edges in Diagram component
+    title: "Something went wrong",
+  },
+};
+
+export const WithMessage: Story = {
+  args: {
+    title: "Something went wrong",
+    message: "An unexpected error occurred while processing your request.",
+  },
+};
+
+export const WithSnippet: Story = {
+  args: {
+    title: "YAML Syntax Error",
+    snippet: `tasks:
+    - myTask
+    call: http
+      method: get,
+      endpoint: "http://example.com/api"
+      `,
+  },
+};
+
+export const WithMessageAndSnippet: Story = {
+  args: {
+    title: "YAML Syntax Error",
+    message: "Bad indentation",
+    snippet: `tasks:
+    - myTask
+    call: http
+      method: get,
+      endpoint: "http://example.com/api"
+      `,
   },
 };
