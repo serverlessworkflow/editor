@@ -20,6 +20,12 @@ Core package agnostic from the rendering library and its types.
 
 ## Modules
 
+`workflowSdk.ts` and `graph.ts` are the only places in the diagram editor that import from the SDK directly, keeping the rest of the editor decoupled from SDK implementation details.
+
 ### workflowSdk.ts
 
-Abstraction layer over the `@serverlessworkflow/sdk`. This is the only place in the diagram editor that imports from the SDK directly keeping the rest of the editor decoupled from SDK implementation details.
+Abstraction layer over the `@serverlessworkflow/sdk`.
+
+### graph.ts
+
+Add custom types to the original sdk `Graph` type.

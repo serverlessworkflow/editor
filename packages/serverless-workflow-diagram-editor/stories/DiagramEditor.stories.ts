@@ -19,7 +19,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DiagramEditor } from "./DiagramEditor";
 
 const meta = {
-  title: "Example/DiagramEditor",
+  id: "diagram-editor",
+  title: "Example/Diagram-Editor",
   component: DiagramEditor,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],

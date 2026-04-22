@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import type { Specification } from "@serverlessworkflow/sdk";
 import { parseWorkflow } from "../core";
 import { DiagramEditorProps } from "../diagram-editor/DiagramEditor";
 import { DiagramEditorContext, DiagramEditorContextType } from "./DiagramEditorContext";

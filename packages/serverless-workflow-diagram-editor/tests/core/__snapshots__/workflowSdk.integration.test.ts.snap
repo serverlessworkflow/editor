@@ -1,5 +1,101 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`buildGraph > returns a loaded extended graph object from model 1`] = `
+{
+  "edges": [
+    {
+      "destinationId": "root-exit-node",
+      "id": "/do/4/step5-root-exit-node",
+      "label": "",
+      "sourceId": "/do/4/step5",
+      "type": "default",
+    },
+    {
+      "destinationId": "/do/4/step5",
+      "id": "/do/3/step4-/do/4/step5",
+      "label": "",
+      "sourceId": "/do/3/step4",
+      "type": "default",
+    },
+    {
+      "destinationId": "/do/3/step4",
+      "id": "/do/2/step3-/do/3/step4",
+      "label": "",
+      "sourceId": "/do/2/step3",
+      "type": "default",
+    },
+    {
+      "destinationId": "/do/2/step3",
+      "id": "/do/1/step2-/do/2/step3",
+      "label": "",
+      "sourceId": "/do/1/step2",
+      "type": "default",
+    },
+    {
+      "destinationId": "/do/1/step2",
+      "id": "/do/0/step1-/do/1/step2",
+      "label": "",
+      "sourceId": "/do/0/step1",
+      "type": "default",
+    },
+    {
+      "destinationId": "/do/0/step1",
+      "id": "root-entry-node-/do/0/step1",
+      "label": "",
+      "sourceId": "root-entry-node",
+      "type": "default",
+    },
+  ],
+  "entryNode": {
+    "id": "root-entry-node",
+    "type": "start",
+  },
+  "exitNode": {
+    "id": "root-exit-node",
+    "type": "end",
+  },
+  "id": "root",
+  "label": undefined,
+  "nodes": [
+    {
+      "id": "root-entry-node",
+      "type": "start",
+    },
+    {
+      "id": "root-exit-node",
+      "type": "end",
+    },
+    {
+      "id": "/do/0/step1",
+      "label": "step1",
+      "type": "set",
+    },
+    {
+      "id": "/do/1/step2",
+      "label": "step2",
+      "type": "set",
+    },
+    {
+      "id": "/do/2/step3",
+      "label": "step3",
+      "type": "set",
+    },
+    {
+      "id": "/do/3/step4",
+      "label": "step4",
+      "type": "set",
+    },
+    {
+      "id": "/do/4/step5",
+      "label": "step5",
+      "type": "set",
+    },
+  ],
+  "parent": undefined,
+  "type": "root",
+}
+`;
+
 exports[`parseWorkflow > parses valid 'JSON' and returns model with no errors 1`] = `
 {
   "errors": [],

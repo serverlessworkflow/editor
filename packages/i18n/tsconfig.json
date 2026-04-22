@@ -3,7 +3,9 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
+    "emitDeclarationOnly": true,
+    "noEmitOnError": true,
     "rootDir": "./src",
     "outDir": "./dist"
   },

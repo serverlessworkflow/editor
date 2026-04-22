@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./graph";
-export * from "./autoLayout";
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "tests-e2e",
+
+  use: {
+    baseURL: "http://localhost:6006",
+  },
+
+  webServer: {
+    command: "pnpm start",
+    url: "http://localhost:6006",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
+});

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vitest/config";
+import { test, expect } from "@playwright/test";
 
-export default defineConfig({
-  resolve: {
-    tsconfigPaths: true,
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
-    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
-  },
+test("diagram editor renders correctly", async ({ page }) => {
+  await page.goto("/iframe.html?id=diagram-editor--component");
+
+  // Wait for main container
+  await expect(page.getByTestId("diagram-container")).toBeVisible();
+
+  // Check at least one specific node
+  await expect(page.getByTestId("rf__node-n1")).toContainText("Node 1");
+
+  // Check total nodes
+  const nodes = page.locator('[data-testid^="rf__node-"]');
+  await expect(nodes).toHaveCount(5);
+
+  // Check total edge
+  const edges = page.locator('[data-testid^="rf__edge-"]');
+  await expect(edges).toHaveCount(5);
 });
