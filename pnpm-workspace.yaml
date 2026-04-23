@@ -31,7 +31,7 @@ catalog:
   storybook: ^10.3.5
   syncpack: ^14.3.0
   typescript: ^6.0.2
-  vite: ^8.0.8
+  vite: ^8.0.10
   vitest: ^4.1.4
 cleanupUnusedCatalogs: true
 onlyBuiltDependencies:
