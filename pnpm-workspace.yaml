@@ -16,7 +16,7 @@ catalog:
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
   "@playwright/test": ^1.59.1
-  "@vitest/coverage-v8": ^4.1.4
+  "@vitest/coverage-v8": ^4.1.5
   "@vitest/ui": ^4.1.4
   "@xyflow/react": ^12.10.2
   husky: ^9.1.7
