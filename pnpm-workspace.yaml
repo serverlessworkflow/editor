@@ -2,6 +2,7 @@ packages:
   - packages/*
 catalog:
   "@chromatic-com/storybook": ^5.1.2
+  "@playwright/test": ^1.59.1
   "@serverlessworkflow/sdk": ^1.0.1
   "@storybook/addon-a11y": ^10.3.5
   "@storybook/addon-docs": ^10.3.5
@@ -15,24 +16,23 @@ catalog:
   "@types/node": ^25.6.0
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
-  "@playwright/test": ^1.59.1
-  "@vitest/coverage-v8": ^4.1.4
-  "@vitest/ui": ^4.1.4
+  "@vitest/coverage-v8": ^4.1.5
+  "@vitest/ui": ^4.1.5
   "@xyflow/react": ^12.10.2
   husky: ^9.1.7
   "js-yaml": ^4.1.1
   jsdom: ^29.0.2
   lint-staged: ^16.4.0
-  oxfmt: ^0.45.0
-  oxlint: ^1.60.0
+  oxfmt: ^0.46.0
+  oxlint: ^1.61.0
   react: ^19.2.5
   react-dom: ^19.2.5
   rimraf: ^6.1.3
   storybook: ^10.3.5
   syncpack: ^14.3.0
-  typescript: ^6.0.2
-  vite: ^8.0.8
-  vitest: ^4.1.4
+  typescript: ^6.0.3
+  vite: ^8.0.10
+  vitest: ^4.1.5
 cleanupUnusedCatalogs: true
 onlyBuiltDependencies:
   - "@swc/core"
