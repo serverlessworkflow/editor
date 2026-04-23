@@ -17,7 +17,7 @@
 import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
 import * as stories from "../../stories/DiagramEditor.stories";
-import { vi, test, expect, afterEach, describe } from "vitest";
+import { vi, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 // Composes all stories in the file
@@ -31,7 +31,7 @@ describe("Story - DiagramEditor component", () => {
   const locale = "en";
   const isReadOnly = true;
 
-  test("Renders react flow Diagram component", () => {
+  it("Renders react flow Diagram component", () => {
     render(
       <Component content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );
@@ -41,7 +41,7 @@ describe("Story - DiagramEditor component", () => {
     expect(reactFlowContainer).toBeInTheDocument();
   });
 
-  test("applies light mode class", () => {
+  it("applies light mode class", () => {
     render(
       <Component
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -55,7 +55,7 @@ describe("Story - DiagramEditor component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-light");
   });
 
-  test("applies dark mode class", () => {
+  it("applies dark mode class", () => {
     render(
       <Component
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -69,7 +69,7 @@ describe("Story - DiagramEditor component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-dark");
   });
 
-  test("applies system mode class", () => {
+  it("applies system mode class", () => {
     render(
       <Component
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -83,7 +83,7 @@ describe("Story - DiagramEditor component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-system");
   });
 
-  test("defaults to system mode when no colorMode is provided", () => {
+  it("defaults to system mode when no colorMode is provided", () => {
     render(
       <Component content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );

@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
- /* The css to be updated after tailwind update */
-.headingContent {
-  color: #000000;
-  background-color: #F8F8F8;
-  margin: 0;
-  padding: 1%;
-}
+type ErrorPageProps = {
+  title: string;
+  message?: string | undefined;
+  snippet?: string | undefined;
+};
 
-.headingContent.colorMode-dark {
-    color: #F8F8F8;
-    background-color: #141414;
-}
-
-@media (prefers-color-scheme: dark) {
-    .headingContent.colorMode-system {
-        color: #F8F8F8;
-        background-color: #141414;
-    }
-}
+export const ErrorPage = ({ title, message, snippet }: ErrorPageProps) => {
+  // TODO: Apply styling later
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h2>{title}</h2>
+      {message ? <p>{message}</p> : null}
+      {snippet ? (
+        <pre>
+          <code>{snippet}</code>
+        </pre>
+      ) : null}
+    </div>
+  );
+};

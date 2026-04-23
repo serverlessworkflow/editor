@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
- /* The css to be updated after tailwind update */
-.headingContent {
-  color: #000000;
-  background-color: #F8F8F8;
-  margin: 0;
-  padding: 1%;
-}
+import { en } from "../../src/i18n/locales/en";
 
-.headingContent.colorMode-dark {
-    color: #F8F8F8;
-    background-color: #141414;
-}
+/**
+ * Gets the translated text for a given translation key.
+ * Uses the actual translation dictionary to ensure tests stay in sync with translations.
+ * Example usage:
+ * expect(screen.getByText(t("workflowError.title"))).toBeInTheDocument();
+ * Instead of: expect(screen.getByText("Workflow Error")).toBeInTheDocument();
+ */
 
-@media (prefers-color-scheme: dark) {
-    .headingContent.colorMode-system {
-        color: #F8F8F8;
-        background-color: #141414;
-    }
-}
+export const t = (key: keyof typeof en): string => {
+  return en[key];
+};

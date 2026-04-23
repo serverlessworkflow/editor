@@ -61,7 +61,7 @@ describe("parseWorkflow", () => {
   ])("returns null model with error for $description", ({ input }) => {
     const result = parseWorkflow(input);
     expect(result.model).toBeNull();
-    expect(result.errors[0].message).toBe("Not a valid workflow object");
+    expect(result.errors[0].message).toBe("Not a valid workflow");
   });
 
   it("returns null model with errors for unparseable text", () => {

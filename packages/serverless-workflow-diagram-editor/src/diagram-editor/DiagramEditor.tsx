@@ -17,8 +17,10 @@
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
-import { I18nProvider, useI18n, detectLocale } from "@serverlessworkflow/i18n";
+import { I18nProvider, detectLocale } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
+import { useDiagramEditorContext } from "../store/DiagramEditorContext";
+import { ParsingErrorPage } from "./error-pages/ParsingErrorPage";
 import "./DiagramEditor.css";
 import { ColorMode } from "../types/colorMode";
 
@@ -37,14 +39,24 @@ export type DiagramEditorProps = {
   colorMode?: ColorMode;
 };
 
-const Content = () => {
-  const { t } = useI18n();
-  return <p>{t("helloMessage")}</p>;
+const DiagramEditorContent = ({
+  diagramRef,
+  diagramDivRef,
+  colorMode,
+}: {
+  diagramRef: React.RefObject<DiagramRef | null>;
+  diagramDivRef: React.RefObject<HTMLDivElement | null>;
+  colorMode: ColorMode;
+}) => {
+  const { model } = useDiagramEditorContext();
+  return model === null ? (
+    <ParsingErrorPage />
+  ) : (
+    <Diagram ref={diagramRef} divRef={diagramDivRef} colorMode={colorMode} />
+  );
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
-  // TODO: i18n
-  // TODO: store, context
   // TODO: ErrorBoundary / fallback
 
   // Refs
@@ -54,7 +66,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
     const supportedLocales = Object.keys(dictionaries);
     return props.locale ?? detectLocale(supportedLocales);
   }, [props.locale]);
-  const colorMode = props.colorMode ?? "system";
+  const colorMode: ColorMode = props.colorMode ?? "system";
 
   // Allow imperatively controlling the Editor
   React.useImperativeHandle(
@@ -75,10 +87,11 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         locale={locale}
       >
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-            <div className={`headingContent colorMode-${colorMode}`}>
-              <Content />
-            </div>
-            <Diagram ref={diagramRef} divRef={diagramDivRef} colorMode={colorMode} />
+          <DiagramEditorContent
+            diagramRef={diagramRef}
+            diagramDivRef={diagramDivRef}
+            colorMode={colorMode}
+          />
         </I18nProvider>
       </DiagramEditorContextProvider>
     </>
