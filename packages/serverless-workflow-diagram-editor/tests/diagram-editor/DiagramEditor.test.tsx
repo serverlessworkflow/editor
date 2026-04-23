@@ -16,7 +16,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { DiagramEditor } from "../../src/diagram-editor";
-import { vi, test, expect, afterEach, describe } from "vitest";
+import { vi, test, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 
 describe("DiagramEditor Component", () => {
@@ -27,7 +27,7 @@ describe("DiagramEditor Component", () => {
   const locale = "en";
   const isReadOnly = true;
 
-  test("Renders react flow Diagram component", () => {
+  it("Renders react flow Diagram component", () => {
     render(
       <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );
@@ -37,7 +37,7 @@ describe("DiagramEditor Component", () => {
     expect(reactFlowContainer).toBeInTheDocument();
   });
 
-  test("applies light mode class", () => {
+  it("applies light mode class", () => {
     render(
       <DiagramEditor
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -51,7 +51,7 @@ describe("DiagramEditor Component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-light");
   });
 
-  test("applies dark mode class", () => {
+  it("applies dark mode class", () => {
     render(
       <DiagramEditor
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -65,7 +65,7 @@ describe("DiagramEditor Component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-dark");
   });
 
-  test("applies system mode class", () => {
+  it("applies system mode class", () => {
     render(
       <DiagramEditor
         content={BASIC_VALID_WORKFLOW_YAML}
@@ -79,7 +79,7 @@ describe("DiagramEditor Component", () => {
     expect(reactFlowContainer).toHaveClass("colorMode-system");
   });
 
-  test("defaults to system mode when no colorMode is provided", () => {
+  it("defaults to system mode when no colorMode is provided", () => {
     render(
       <DiagramEditor content={BASIC_VALID_WORKFLOW_YAML} locale={locale} isReadOnly={isReadOnly} />,
     );
