@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-
-export const dictionaries = {
-  en,
-};
+export type ColorMode = "light" | "dark" | "system";

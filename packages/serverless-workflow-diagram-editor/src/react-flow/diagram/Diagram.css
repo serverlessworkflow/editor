@@ -15,11 +15,23 @@
  */
 
 .diagram-container {
-    height: 100%;
-    position: relative;
+  height: 100%;
+  position: relative;
 }
 
-.diagram-background {
-    --xy-background-pattern-color: #ccc;
-    background-color: #E5E4E2;
+.diagram-container .diagram-background {
+  --xy-background-pattern-color: #ccc;
+  background-color: #e5e4e2;
+}
+
+.diagram-container.colorMode-dark .diagram-background{ 
+    --xy-background-pattern-color: inherit;
+    background-color: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+    .diagram-container.colorMode-system .diagram-background{ 
+        --xy-background-pattern-color: inherit;
+        background-color: inherit;
+    }
 }

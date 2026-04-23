@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-
-export const dictionaries = {
-  en,
-};
+export { renderWithProviders } from "./render-helpers";
+export { t } from "./translation-helpers";

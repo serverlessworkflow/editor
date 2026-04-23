@@ -18,8 +18,13 @@ import * as React from "react";
 import * as RF from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
+import { ColorMode } from "../../types/colorMode";
 
-const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
+const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
+  maxZoom: 1,
+  minZoom: 0.1,
+  duration: 400,
+};
 
 // TODO: Nodes and Edges are hardcoded for now to generate a renderable basic workflow
 // It shall be replaced by the actual implementation based on graph structure
@@ -48,9 +53,10 @@ export type DiagramRef = {
 export type DiagramProps = {
   divRef?: React.RefObject<HTMLDivElement | null>;
   ref?: React.Ref<DiagramRef>;
+  colorMode?: ColorMode;
 };
 
-export const Diagram = ({ divRef, ref }: DiagramProps) => {
+export const Diagram = ({ divRef, ref, colorMode = "system" }: DiagramProps) => {
   const [minimapVisible, setMinimapVisible] = React.useState(false);
   const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
   const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
@@ -75,7 +81,11 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
   );
 
   return (
-    <div ref={divRef} className={"diagram-container"} data-testid={"diagram-container"}>
+    <div
+      ref={divRef}
+      className={`diagram-container colorMode-${colorMode}`}
+      data-testid={"diagram-container"}
+    >
       <RF.ReactFlow
         nodes={nodes}
         edges={edges}
@@ -89,6 +99,7 @@ export const Diagram = ({ divRef, ref }: DiagramProps) => {
         preventScrolling={true}
         selectionOnDrag={true}
         fitView
+        colorMode={colorMode}
       >
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
 

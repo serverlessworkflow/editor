@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
+import { en } from "../../src/i18n/locales/en";
 
-export const dictionaries = {
-  en,
+/**
+ * Gets the translated text for a given translation key.
+ * Uses the actual translation dictionary to ensure tests stay in sync with translations.
+ * Example usage:
+ * expect(screen.getByText(t("workflowError.title"))).toBeInTheDocument();
+ * Instead of: expect(screen.getByText("Workflow Error")).toBeInTheDocument();
+ */
+
+export const t = (key: keyof typeof en): string => {
+  return en[key];
 };
