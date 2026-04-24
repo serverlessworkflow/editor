@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   DiagramEditor as Component,
   DiagramEditorProps,
