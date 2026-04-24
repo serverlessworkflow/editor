@@ -20,7 +20,7 @@ import {
   DiagramEditorProps,
 } from "../src/diagram-editor/DiagramEditor";
 
-export const DiagramEditorDragNDrop = ({ ...props }: Omit<DiagramEditorProps, "content">) => {
+export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content">) => {
   const [content, setContent] = useState("");
 
   const handleFileRead = (file: File) => {
@@ -97,9 +97,7 @@ export const DiagramEditorDragNDrop = ({ ...props }: Omit<DiagramEditorProps, "c
           data-testid="story-workflow-file-upload"
         />
       </div>
-      {content && (
-        <Component content={content} isReadOnly={props.isReadOnly} locale={props.locale} />
-      )}
+      {content && <Component {...props} content={content} />}
     </div>
   );
 };
