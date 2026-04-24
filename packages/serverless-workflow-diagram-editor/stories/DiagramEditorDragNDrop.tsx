@@ -68,6 +68,7 @@ export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content"
     if (!file) return;
 
     handleFileRead(file);
+    e.target.value = "";
   };
 
   /* TODO: Remove this console log when the DiagramEditor is using the content from the param  */
