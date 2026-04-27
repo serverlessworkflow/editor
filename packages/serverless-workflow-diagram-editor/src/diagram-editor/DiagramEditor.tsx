@@ -23,6 +23,7 @@ import { useDiagramEditorContext } from "../store/DiagramEditorContext";
 import { ParsingErrorPage } from "./error-pages/ParsingErrorPage";
 import "./DiagramEditor.css";
 import { ColorMode } from "../types/colorMode";
+import { DiagramEditorErrorBoundary } from "./error-pages/DiagramEditorErrorBoundary";
 
 /**
  * DiagramEditor component API
@@ -58,6 +59,10 @@ const DiagramEditorContent = ({
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
   // TODO: ErrorBoundary / fallback
+  const errorBoundaryProps = {
+    title: "workflowError.title",
+    message: "workflowError.default",
+  };
 
   // Refs
   const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
@@ -81,19 +86,21 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <DiagramEditorContextProvider
-        content={props.content}
-        isReadOnly={props.isReadOnly}
-        locale={locale}
-      >
-        <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <DiagramEditorContent
-            diagramRef={diagramRef}
-            diagramDivRef={diagramDivRef}
-            colorMode={colorMode}
-          />
-        </I18nProvider>
-      </DiagramEditorContextProvider>
+      <DiagramEditorErrorBoundary {...errorBoundaryProps}>
+        <DiagramEditorContextProvider
+          content={props.content}
+          isReadOnly={props.isReadOnly}
+          locale={locale}
+        >
+          <I18nProvider locale={locale} dictionaries={dictionaries}>
+            <DiagramEditorContent
+              diagramRef={diagramRef}
+              diagramDivRef={diagramDivRef}
+              colorMode={colorMode}
+            />
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </DiagramEditorErrorBoundary>
     </>
   );
 };
