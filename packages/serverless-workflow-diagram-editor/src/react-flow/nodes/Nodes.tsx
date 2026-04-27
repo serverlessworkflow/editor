@@ -50,11 +50,11 @@ interface PlaceholderProps {
 function PlaceholderContent({ id, data, selected, type }: PlaceholderProps) {
   return (
     <div
-      className={`custom-node-container ${selected ? "selected" : ""}`}
-      data-testid={`${type}-node-${id}`}
+      className={`dec:rounded dec:border dec:border-gray-300 dec:dark:border-gray-600 dec:bg-white dec:dark:bg-gray-800  dec:text-gray-900 dec:dark:text-gray-100${selected ?' dec:ring-2 dec:ring-blue-400' : ""}`}
+       data-testid={`${type}-node-${id}`}
     >
       <RF.Handle type="target" position={RF.Position.Top} />
-      <div className="node-label-container" data-testid={`${type}-label-${id}`}>
+      <div className="dec:whitespace-pre dec:p-[7px]" data-testid={`${type}-label-${id}`}>
         {`${type}\n${data.label}`}
       </div>
       <RF.Handle type="source" position={RF.Position.Bottom} />

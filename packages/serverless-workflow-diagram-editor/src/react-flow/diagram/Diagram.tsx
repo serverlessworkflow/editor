@@ -19,7 +19,6 @@ import * as RF from "@xyflow/react";
 import { GraphNodeType } from "@serverlessworkflow/sdk";
 import { NodeTypes } from "../nodes/Nodes";
 import { DEFAULT_NODE_SIZE } from "../../core";
-import { ColorMode } from "../../types/colorMode";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
 import { ResolvedColorMode } from "../../types/colorMode";
@@ -184,7 +183,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   );
 
   return (
-    <div ref={divRef} className="diagram-container" data-testid={"diagram-container"}>
+    <div ref={divRef} className="dec:h-full dec:relative" data-testid={"diagram-container"}>
       <RF.ReactFlow
         nodeTypes={NodeTypes}
         nodes={nodes}
