@@ -86,7 +86,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
 
   return (
     <>
-      <DiagramEditorErrorBoundary {...errorBoundaryProps}>
+      <DiagramEditorErrorBoundary {...errorBoundaryProps} resetKey={props.content}>
         <DiagramEditorContextProvider
           content={props.content}
           isReadOnly={props.isReadOnly}

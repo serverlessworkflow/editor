@@ -26,6 +26,7 @@ type DiagramEditorErrorBoundaryProps = {
   children: React.ReactNode;
   title?: string;
   message?: string;
+  resetKey?: string;
 };
 
 export class DiagramEditorErrorBoundary extends React.Component<
@@ -42,7 +43,7 @@ export class DiagramEditorErrorBoundary extends React.Component<
   }
 
   componentDidUpdate(prevProps: DiagramEditorErrorBoundaryProps) {
-    if (prevProps.children !== this.props.children) {
+    if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
       this.setState({ hasError: false, error: undefined });
     }
   }

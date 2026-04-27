@@ -85,11 +85,11 @@ describe("DiagramEditorErrorBoundary", () => {
     spy.mockRestore();
   });
 
-  it("resets error boundary when children change", () => {
+  it("resets error boundary when resetKey changes", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     const { rerender } = render(
-      <DiagramEditorErrorBoundary>
+      <DiagramEditorErrorBoundary resetKey="key-1">
         <ThrowError />
       </DiagramEditorErrorBoundary>,
     );
@@ -97,7 +97,7 @@ describe("DiagramEditorErrorBoundary", () => {
     expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
 
     rerender(
-      <DiagramEditorErrorBoundary>
+      <DiagramEditorErrorBoundary resetKey="key-2">
         <SafeComponent />
       </DiagramEditorErrorBoundary>,
     );
