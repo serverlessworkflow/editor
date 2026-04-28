@@ -16,6 +16,32 @@
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ErrorPage } from "../src/diagram-editor/error-pages/ErrorPage";
+import { PropsWithChildren } from "react";
+import { ColorMode } from "../src/types/colorMode";
+import { useResolvedColorMode } from "../src/hooks/useResolvedColorMode";
+
+type ErrorPageProps = {
+  title: string;
+  message?: string | undefined;
+  snippet?: string | undefined;
+};
+
+type ErrorPageStoryProps = ErrorPageProps & {
+  colorMode?: ColorMode;
+};
+
+/* Simulates the "dec-root" wrapper of the DiagramEditor so we can toggle light/dark/system color modes independently. */
+const DecRoot = ({ colorMode, children }: PropsWithChildren<{ colorMode: ColorMode }>) => {
+  const resolved = useResolvedColorMode(colorMode);
+  return (
+    <div
+      className={`dec-root${resolved === "dark" ? " dark" : ""}`}
+      style={{ backgroundColor: resolved === "dark" ? "#1a1a1a" : "#fff", minHeight: "100vh" }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const meta = {
   title: "Example/ErrorPage",
@@ -26,11 +52,31 @@ const meta = {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
   },
-  args: {},
-} satisfies Meta<typeof ErrorPage>;
+  argTypes: {
+    colorMode: {
+      control: { type: "select" },
+      options: ["light", "dark", "system"],
+      description:
+        "The color mode to use for the error page. 'system' will use the user's system preference.",
+    },
+  },
+  args: {
+    colorMode: "system",
+  },
+  decorators: [
+    (Story, context) => {
+      const { colorMode, ...storyArgs } = context.args;
+      return (
+        <DecRoot colorMode={colorMode ?? "system"}>
+          <Story args={storyArgs} />
+        </DecRoot>
+      );
+    },
+  ],
+} satisfies Meta<ErrorPageStoryProps>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<ErrorPageStoryProps>;
 
 export const TitleOnly: Story = {
   args: {
