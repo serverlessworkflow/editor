@@ -21,8 +21,8 @@ import { I18nProvider, detectLocale } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
 import { useDiagramEditorContext } from "../store/DiagramEditorContext";
 import { ParsingErrorPage } from "./error-pages/ParsingErrorPage";
-import "./DiagramEditor.css";
-import { ColorMode } from "../types/colorMode";
+import { ColorMode, ResolvedColorMode } from "../types/colorMode";
+import { useResolvedColorMode } from "../hooks/useResolvedColorMode";
 import { DiagramEditorErrorBoundary } from "./error-pages/DiagramEditorErrorBoundary";
 
 /**
@@ -47,9 +47,10 @@ const DiagramEditorContent = ({
 }: {
   diagramRef: React.RefObject<DiagramRef | null>;
   diagramDivRef: React.RefObject<HTMLDivElement | null>;
-  colorMode: ColorMode;
+  colorMode: ResolvedColorMode;
 }) => {
   const { model } = useDiagramEditorContext();
+  throw new Error("Manual crash for testing");
   return model === null ? (
     <ParsingErrorPage />
   ) : (
@@ -72,6 +73,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
     return props.locale ?? detectLocale(supportedLocales);
   }, [props.locale]);
   const colorMode: ColorMode = props.colorMode ?? "system";
+  const resolvedColorMode = useResolvedColorMode(colorMode);
 
   // Allow imperatively controlling the Editor
   React.useImperativeHandle(
@@ -85,7 +87,10 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
   );
 
   return (
-    <>
+    <div
+      className={`dec-root${resolvedColorMode === "dark" ? " dark" : ""}`}
+      data-testid={"dec-root"}
+    >
       <DiagramEditorErrorBoundary {...errorBoundaryProps} resetKey={props.content}>
         <DiagramEditorContextProvider
           content={props.content}
@@ -96,11 +101,11 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
             <DiagramEditorContent
               diagramRef={diagramRef}
               diagramDivRef={diagramDivRef}
-              colorMode={colorMode}
+              colorMode={resolvedColorMode}
             />
           </I18nProvider>
         </DiagramEditorContextProvider>
       </DiagramEditorErrorBoundary>
-    </>
+    </div>
   );
 };

@@ -14,53 +14,12 @@
  * limitations under the License.
  */
 
-.diagram-container {
-  height: 100%;
-  position: relative;
-}
-
-.diagram-container .diagram-background {
+.diagram-background {
   --xy-background-pattern-color: #ccc;
   background-color: #e5e4e2;
 }
 
-.diagram-container.colorMode-dark .diagram-background{ 
+.dark .diagram-background{ 
     --xy-background-pattern-color: inherit;
     background-color: inherit;
-}
-
-@media (prefers-color-scheme: dark) {
-    .diagram-container.colorMode-system .diagram-background{ 
-        --xy-background-pattern-color: inherit;
-        background-color: inherit;
-    }
-}
-
-/* React flow Nodes */
-
-.node-label-container {
-    white-space: pre;
-    padding: 7px; 
-}
-
-.custom-node-container {
-    border-radius: 5px;
-    background: white;
-    border: 1px solid #000;
-    transition: border ease, box-shadow ease;
-    height: calc(100% - 2px); /* compensate for the border */
-    width: calc(100% - 2px); /* compensate for the border */
-}
-
-.custom-node-container:hover {
-    border: 1px solid #000;
-    box-shadow: 0 0 10px rgba(0, 65, 208, 0.3);
-    height: calc(100% - 2px); /* compensate for the border */
-    width: calc(100% - 2px); /* compensate for the border */
-}
-
-.custom-node-container.selected {
-    background: #aebbd5;
-    border: 1px solid #000;
-    box-shadow: 0 0 10px rgba(1, 79, 248, 0.3);
 }

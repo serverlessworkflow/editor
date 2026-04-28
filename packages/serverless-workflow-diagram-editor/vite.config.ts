@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  plugins: [tailwindcss()],
   resolve: {
     tsconfigPaths: true,
   },
@@ -26,6 +27,7 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       fileName: (format) => (format === "es" ? "index.js" : `index.${format}.js`),
+      cssFileName: "styles",
       formats: ["es"],
     },
     rollupOptions: {

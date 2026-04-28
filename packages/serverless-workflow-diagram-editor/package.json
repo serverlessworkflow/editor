@@ -22,7 +22,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -52,6 +53,7 @@
     "@storybook/addon-docs": "catalog:",
     "@storybook/addon-vitest": "catalog:",
     "@storybook/react-vite": "catalog:",
+    "@tailwindcss/vite": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
@@ -63,12 +65,14 @@
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "jsdom": "catalog:",
+    "lucide-react": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "catalog:",
     "storybook": "catalog:",
+    "tailwindcss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },

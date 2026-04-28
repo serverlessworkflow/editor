@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AlertTriangle } from "lucide-react";
 
 type ErrorPageProps = {
   title: string;
@@ -21,13 +22,19 @@ type ErrorPageProps = {
 };
 
 export const ErrorPage = ({ title, message, snippet }: ErrorPageProps) => {
-  // TODO: Apply styling later
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>{title}</h2>
-      {message ? <p>{message}</p> : null}
+    <div className="dec:p-6">
+      <div className="dec:flex dec:items-center dec:gap-2">
+        <AlertTriangle className="dec:size-5 dec:shrink-0 dec:text-red-600 dec:dark:text-red-400" />
+        <h2 className="dec:text-base dec:font-semibold dec:text-gray-900 dec:dark:text-gray-100">
+          {title}
+        </h2>
+      </div>
+      {message ? (
+        <p className="dec:mt-1 dec:text-sm dec:text-gray-600 dec:dark:text-gray-100">{message}</p>
+      ) : null}
       {snippet ? (
-        <pre>
+        <pre className="dec:mt-3 dec:p-3 dec:overflow-x-auto dec:rounded dec:bg-gray-100 dec:text-sm dec:text-gray-800 dec:dark:bg-gray-800 dec:dark:text-gray-200">
           <code>{snippet}</code>
         </pre>
       ) : null}

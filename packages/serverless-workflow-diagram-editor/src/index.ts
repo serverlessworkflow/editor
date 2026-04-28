@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
+import "./styles.css";
 export * from "./diagram-editor";
 export * from "./types/colorMode";
