@@ -50,7 +50,6 @@ const DiagramEditorContent = ({
   colorMode: ResolvedColorMode;
 }) => {
   const { model } = useDiagramEditorContext();
-  throw new Error("Manual crash for testing");
   return model === null ? (
     <ParsingErrorPage />
   ) : (
