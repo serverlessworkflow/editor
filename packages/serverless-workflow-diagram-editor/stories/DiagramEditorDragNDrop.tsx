@@ -90,8 +90,18 @@ export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content"
         }}
       >
         <div>Drop a workflow file here (.yaml, .yml, .json)</div>
-        <div>or</div>
+        <div>
+          or{" "}
+          <label
+            htmlFor="file-upload"
+            className="dec:text-blue-600 dec:underline dec:cursor-pointer"
+          >
+            upload a file
+          </label>
+        </div>
         <input
+          id="file-upload"
+          className="dec:hidden"
           type="file"
           accept=".yaml,.yml,.json"
           onChange={handleFileChange}
