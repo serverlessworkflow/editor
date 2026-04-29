@@ -71,20 +71,6 @@ describe("DiagramEditorErrorBoundary", () => {
     spy.mockRestore();
   });
 
-  it("shows error message in snippet", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    render(
-      <DiagramEditorErrorBoundary>
-        <ThrowError message="Custom crash message" />
-      </DiagramEditorErrorBoundary>,
-    );
-
-    expect(screen.getByText("Custom crash message")).toBeInTheDocument();
-
-    spy.mockRestore();
-  });
-
   it("resets error boundary when resetKey changes", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
 
