@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/* layer order (Priority: lowest -> highest) */
+@layer 
+  base, 
+  react-flow-overrides, 
+  custom-nodes;
+
 @import "tailwindcss" prefix(dec);
 
 @custom-variant dark (&:where(.dec-root.dark, .dec-root.dark *));
@@ -31,6 +37,11 @@
   Tailwind utilities are prefixed with `dec:` (Diagram Editor Component)
   to reduce the risk of conflicts with host application styles.
 */
-.dec-root {
-  height: 100%;
+
+/* global reset styles and element defaults */
+@layer base {
+  .dec-root {
+    @apply
+      dec:h-full;
+  }
 }

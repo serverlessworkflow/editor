@@ -14,12 +14,106 @@
  * limitations under the License.
  */
 
-.diagram-background {
-  --xy-background-pattern-color: #ccc;
-  background-color: #e5e4e2;
+@reference "../../styles.css";
+
+/* react flow overrides */
+@layer react-flow-overrides {
+  .dec-root .diagram-background {
+    --xy-background-pattern-color: #ccc;
+    background-color: #e5e4e2;
+  }
+
+  .dec-root.dark .diagram-background{ 
+      --xy-background-pattern-color: inherit;
+      background-color: inherit;
+  }
+
+  /* react flow pointer behavior */
+  .dec-root .react-flow__pane {
+    cursor: default !important;
+  }
+
+  /* node hovering */
+  .dec-root .react-flow__node {
+    cursor: pointer !important; 
+  }
+
+  /* node dragging */
+  .dec-root .react-flow__node.dragging {
+    cursor: grabbing !important;
+  }
+
+  /* dragging the pane (panning) */
+  .dec-root .react-flow__pane.dragging {
+    cursor: grab !important;
+  }
+
+  .dec-root .react-flow__pane.selection {
+    cursor: grab !important;
+  }
+
+  /* space is held and pan is active */
+  .dec-root .react-flow__pane:active {
+    cursor: grabbing !important;
+  }
 }
 
-.dark .diagram-background{ 
-    --xy-background-pattern-color: inherit;
-    background-color: inherit;
+/* custom nodes */
+@layer custom-nodes {
+  .dec-root .node-label-container {
+    @apply
+      dec:whitespace-pre 
+      dec:p-0.75
+      dec:text-black
+      dec:text-sm;
+  }
+
+  .dec-root.dark .node-label-container {
+    @apply
+      dec:text-white;
+  }
+
+  .dec-root .custom-node-container {
+    @apply 
+      dec:rounded-[5px] 
+      dec:bg-white 
+      dec:border dec:border-black 
+      dec:transition-[border,box-shadow] 
+      dec:h-full 
+      dec:w-full;
+  }
+
+  .dec-root.dark .custom-node-container {
+    @apply 
+      dec:bg-[rgb(85,83,83)] 
+      dec:border-[#e5e4e2];
+  }
+
+  .dec-root .custom-node-container:hover {
+    @apply
+      dec:hover:border dec:hover:border-black 
+      dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)] 
+      dec:hover:h-full 
+      dec:hover:w-full;
+  }
+
+  .dec-root.dark .custom-node-container:hover {
+    @apply
+      dec:hover:border-[#5dafd5] 
+      dec:hover:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+  }
+
+  .dec-root .custom-node-container.selected {
+    @apply
+      dec:bg-[#aebbd5] 
+      dec:border dec:border-black 
+      dec:shadow-[0_0_10px_rgba(1,79,248,0.3)];
+  }
+
+  .dec-root.dark .custom-node-container.selected {
+    @apply
+      dec:bg-[#727676] 
+      dec:border-[#4324dc] 
+      dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+  }
 }
