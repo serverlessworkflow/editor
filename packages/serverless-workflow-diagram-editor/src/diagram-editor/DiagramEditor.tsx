@@ -58,7 +58,6 @@ const DiagramEditorContent = ({
 };
 
 export const DiagramEditor = (props: DiagramEditorProps) => {
-  // TODO: ErorBoundary / fallback
   const errorBoundaryProps = {
     title: "workflowError.title",
     message: "workflowError.default",
