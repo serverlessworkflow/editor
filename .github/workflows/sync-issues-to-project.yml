@@ -21,6 +21,9 @@ on:
     types: [opened, closed]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest
