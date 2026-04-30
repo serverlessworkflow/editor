@@ -53,7 +53,6 @@ describe("Story - DiagramEditorDragNDrop component", () => {
 
     render(<Component locale={locale} isReadOnly={isReadOnly} />);
 
-    const wfFileDND = screen.getByTestId("story-workflow-file-dnd");
     const wfFileUploadInput = screen.getByTestId("story-workflow-file-upload");
     const reactFlowContainer = screen.queryByTestId("diagram-container");
 
