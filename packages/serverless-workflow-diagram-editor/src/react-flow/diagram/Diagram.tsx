@@ -39,7 +39,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 0 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 1" },
+    data: { label: "CallNode" },
   },
   {
     id: "n2",
@@ -55,15 +55,15 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 200 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 3" },
+    data: { label: "SwitchNode" },
   },
   {
     id: "n4",
     type: GraphNodeType.Emit,
-    position: { x: 0, y: 300 },
+    position: { x: -100, y: 300 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 4" },
+    data: { label: "EmitNode" },
   },
   {
     id: "n5",
@@ -76,7 +76,7 @@ const initialNodes: RF.Node[] = [
   {
     id: "n6",
     type: GraphNodeType.Fork,
-    position: { x: 200, y: 300 },
+    position: { x: 300, y: 300 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
     data: { label: "Node 6" },
@@ -87,7 +87,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 400 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 7" },
+    data: { label: "ListenNode" },
   },
   {
     id: "n8",
@@ -95,7 +95,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 500 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 8" },
+    data: { label: "RaiseNode" },
   },
   {
     id: "n9",
@@ -103,7 +103,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 600 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 9" },
+    data: { label: "RunNode" },
   },
   {
     id: "n10",
@@ -111,7 +111,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 700 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 10" },
+    data: { label: "SetNode" },
   },
   {
     id: "n11",
@@ -127,7 +127,7 @@ const initialNodes: RF.Node[] = [
     position: { x: 100, y: 900 },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 12" },
+    data: { label: "WaitNode" },
   },
 ];
 
@@ -139,10 +139,12 @@ const initialEdges: RF.Edge[] = [
     type: GraphEdgeType.Default,
     data: {
       wayPoints: [
-        { x: 145, y: 60 },
-        { x: 170, y: 60 },
-        { x: 170, y: 85 },
-        { x: 145, y: 85 },
+        { x: 190, y: 60 },
+        { x: 190, y: 70 },
+        { x: 140, y: 70 },
+        { x: 140, y: 85 },
+        { x: 190, y: 85 },
+        { x: 190, y: 95 }, 
       ],
     },
   },

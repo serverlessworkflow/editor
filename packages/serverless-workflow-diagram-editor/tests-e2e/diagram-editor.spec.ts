@@ -23,7 +23,7 @@ test("diagram editor renders correctly", async ({ page }) => {
   await expect(page.getByTestId("diagram-container")).toBeVisible();
 
   // Check at least one specific node
-  await expect(page.getByTestId("rf__node-n1")).toContainText("Node 1");
+  await expect(page.getByTestId("rf__node-n1")).toContainText("CallNodeCALL");
 
   // Check total nodes
   const nodes = page.locator('[data-testid^="rf__node-"]');
