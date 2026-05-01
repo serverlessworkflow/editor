@@ -23,9 +23,9 @@
     background-color: #e5e4e2;
   }
 
-  .dec-root.dark .diagram-background{ 
-      --xy-background-pattern-color: inherit;
-      background-color: inherit;
+  .dec-root.dark .diagram-background {
+    --xy-background-pattern-color: inherit;
+    background-color: inherit;
   }
 
   /* react flow pointer behavior */
@@ -35,7 +35,7 @@
 
   /* node hovering */
   .dec-root .react-flow__node {
-    cursor: pointer !important; 
+    cursor: pointer !important;
   }
 
   /* node dragging */
@@ -61,59 +61,104 @@
 /* custom nodes */
 @layer custom-nodes {
   .dec-root .node-label-container {
-    @apply
-      dec:whitespace-pre 
-      dec:p-0.75
-      dec:text-black
-      dec:text-sm;
+    @apply dec:whitespace-pre 
+            dec:p-0.75
+            dec:text-black
+            dec:text-sm;
   }
 
   .dec-root.dark .node-label-container {
-    @apply
-      dec:text-white;
+    @apply dec:text-white;
   }
 
   .dec-root .custom-node-container {
-    @apply 
-      dec:rounded-[5px] 
-      dec:bg-white 
-      dec:border dec:border-black 
-      dec:transition-[border,box-shadow] 
-      dec:h-full 
-      dec:w-full;
+    @apply dec:rounded-[5px] 
+            dec:bg-white 
+            dec:border dec:border-black 
+            dec:transition-[border,box-shadow] 
+            dec:h-full 
+            dec:w-full;
   }
 
   .dec-root.dark .custom-node-container {
-    @apply 
-      dec:bg-[rgb(85,83,83)] 
-      dec:border-[#e5e4e2];
+    @apply dec:bg-[rgb(85,83,83)] 
+            dec:border-[#e5e4e2];
   }
 
   .dec-root .custom-node-container:hover {
-    @apply
-      dec:hover:border dec:hover:border-black 
-      dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)] 
-      dec:hover:h-full 
-      dec:hover:w-full;
+    @apply dec:hover:border dec:hover:border-black 
+            dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)] 
+            dec:hover:h-full 
+            dec:hover:w-full;
   }
 
   .dec-root.dark .custom-node-container:hover {
-    @apply
-      dec:hover:border-[#5dafd5] 
-      dec:hover:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+    @apply dec:hover:border-[#5dafd5] 
+            dec:hover:shadow-[0_0_10px_rgba(255,255,255,0.3)];
   }
 
   .dec-root .custom-node-container.selected {
-    @apply
-      dec:bg-[#aebbd5] 
-      dec:border dec:border-black 
-      dec:shadow-[0_0_10px_rgba(1,79,248,0.3)];
+    @apply dec:bg-[#aebbd5] 
+            dec:border dec:border-black 
+            dec:shadow-[0_0_10px_rgba(1,79,248,0.3)];
   }
 
   .dec-root.dark .custom-node-container.selected {
-    @apply
-      dec:bg-[#727676] 
-      dec:border-[#4324dc] 
-      dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+    @apply dec:bg-[#727676] 
+            dec:border-[#4324dc] 
+            dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+  }
+}
+
+/* custom edges */
+/* React flow SVG components do not work with classes defined into layers */
+.dec-root .edge-line {
+  @apply dec:stroke-[#aea6a6] 
+        dec:stroke-2;
+}
+
+.dec-root .edge-line.error {
+  @apply dec:stroke-red-500 
+        dec:[stroke-dasharray:5_5];
+}
+
+.dec-root .edge-line.condition {
+  @apply dec:stroke-blue-500;
+}
+
+/* custom edge labels */
+@layer custom-edge-labels {
+  .dec-root .edge-label {
+    @apply dec:bg-white 
+            dec:border dec:border-[#ccc] 
+            dec:rounded-[3px] 
+            dec:py-0.5 dec:px-1.5 
+            dec:absolute 
+            dec:text-[10px]
+            dec:pointer-events-auto;
+  }
+
+  .dec-root.dark .edge-label {
+    @apply dec:bg-gray-800 
+            dec:border-gray-600 
+            dec:text-gray-200;
+  }
+
+  .dec-root .edge-label.error {
+    @apply dec:bg-red-50 
+            dec:border-red-500 
+            dec:text-red-500;
+  }
+
+  .dec-root .edge-label.condition {
+    @apply dec:bg-blue-50 
+            dec:border-blue-500 
+            dec:text-blue-500;
+  }
+
+  .dec-root.dark .edge-label.condition {
+    @apply dec:bg-gray-800 
+            dec:border-gray-600 
+            dec:text-gray-200;
   }
 }
