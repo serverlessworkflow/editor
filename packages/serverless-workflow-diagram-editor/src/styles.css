@@ -15,10 +15,10 @@
  */
 
 /* layer order (Priority: lowest -> highest) */
-@layer 
-  base, 
+@layer base, 
   react-flow-overrides, 
-  custom-nodes;
+  custom-nodes,
+  custom-edge-labels;
 
 @import "tailwindcss" prefix(dec);
 
@@ -41,7 +41,6 @@
 /* global reset styles and element defaults */
 @layer base {
   .dec-root {
-    @apply
-      dec:h-full;
+    @apply dec:h-full;
   }
 }
