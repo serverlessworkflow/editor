@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExtendedGraph, Position, Size } from "./graph";
+import { ReactFlowGraph } from "./diagramBuilder";
 
 // Defaults
 export const DEFAULT_NODE_SIZE = {
@@ -22,16 +22,30 @@ export const DEFAULT_NODE_SIZE = {
   width: 180,
 };
 
-export function applyAutoLayout(graph: ExtendedGraph): ExtendedGraph {
+export type Point = {
+  x: number;
+  y: number;
+};
+
+export type Position = Point;
+
+export type Size = {
+  height: number;
+  width: number;
+};
+
+export type WayPoints = Point[];
+
+export function applyAutoLayout(graph: ReactFlowGraph): ReactFlowGraph {
   const graphClone = structuredClone(graph);
 
   // TODO: This is just a temporary implementation until the actual auto-layout engine is integrated
-  const nodeSize: Size = DEFAULT_NODE_SIZE;
   let position: Position = { x: 0, y: 0 };
 
   // TODO: Containment is not supported for now.
   graphClone.nodes.forEach((node) => {
-    node.size = { ...nodeSize };
+    node.height = DEFAULT_NODE_SIZE.height;
+    node.width = DEFAULT_NODE_SIZE.width;
     node.position = { ...position };
     position.y = position.y + 100;
   });

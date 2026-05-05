@@ -13,8 +13,8 @@ catalogs:
       specifier: ^1.59.1
       version: 1.59.1
     '@serverlessworkflow/sdk':
-      specifier: ^1.0.1
-      version: 1.0.1
+      specifier: ^1.0.3-alpha1
+      version: 1.0.3-alpha1
     '@storybook/addon-a11y':
       specifier: ^10.3.6
       version: 10.3.6
@@ -179,7 +179,7 @@ importers:
         version: link:../i18n
       '@serverlessworkflow/sdk':
         specifier: 'catalog:'
-        version: 1.0.1
+        version: 1.0.3-alpha1
       '@xyflow/react':
         specifier: 'catalog:'
         version: 12.10.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -1127,9 +1127,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@serverlessworkflow/sdk@1.0.1':
-    resolution: {integrity: sha512-ds/FsRbFI/l1W89wWOZxzuiIAeuZLm3U5wtrDrpMrfHJBFex8hiYDDg0Db03V+CGEQZR6eki1KdnmvSX9JeBRg==}
-    engines: {node: '>=20.0', npm: '>=10.0.0'}
+  '@serverlessworkflow/sdk@1.0.3-alpha1':
+    resolution: {integrity: sha512-I0h+AMnWC/monzHYC6x7Cy3RzHHCSsOfDQkZQXyXu7vc2jYIs95Mk0XUJdCr+FDyamdErp72w0N9Oj58ybYthA==}
+    engines: {node: '>=22.0.0', npm: '>=10.0.0'}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -3179,7 +3179,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.60.1':
     optional: true
 
-  '@serverlessworkflow/sdk@1.0.1':
+  '@serverlessworkflow/sdk@1.0.3-alpha1':
     dependencies:
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)

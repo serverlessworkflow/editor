@@ -21,7 +21,7 @@
 
 export const BASIC_VALID_WORKFLOW_YAML = `
   document:
-    dsl: 1.0.0
+    dsl: 1.0.3
     name: valid-workflow-yaml
     version: 1.0.0
     namespace: default
@@ -33,7 +33,7 @@ export const BASIC_VALID_WORKFLOW_YAML = `
 
 export const BASIC_VALID_WORKFLOW_JSON = JSON.stringify({
   document: {
-    dsl: "1.0.0",
+    dsl: "1.0.3",
     name: "valid-workflow-json",
     version: "1.0.0",
     namespace: "default",
@@ -72,7 +72,7 @@ export const BASIC_INVALID_WORKFLOW_JSON = JSON.stringify({
 
 export const BASIC_VALID_WORKFLOW_JSON_TASKS = JSON.stringify({
   document: {
-    dsl: "1.0.0",
+    dsl: "1.0.3",
     name: "valid-workflow-json",
     version: "1.0.0",
     namespace: "default",
@@ -118,7 +118,7 @@ export const BASIC_VALID_WORKFLOW_JSON_TASKS = JSON.stringify({
 
 export const EMPTY_WORKFLOW_JSON = JSON.stringify({
   document: {
-    dsl: "1.0.0",
+    dsl: "1.0.3",
     name: "valid-workflow-json",
     version: "1.0.0",
     namespace: "default",

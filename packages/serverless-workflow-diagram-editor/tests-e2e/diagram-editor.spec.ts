@@ -23,13 +23,13 @@ test("diagram editor renders correctly", async ({ page }) => {
   await expect(page.getByTestId("diagram-container")).toBeVisible();
 
   // Check at least one specific node
-  await expect(page.getByTestId("rf__node-n1")).toContainText("CallNodeCALL");
+  await expect(page.getByTestId("rf__node-/do/0/step1")).toContainText("step1SET");
 
   // Check total nodes
   const nodes = page.locator('[data-testid^="rf__node-"]');
-  await expect(nodes).toHaveCount(12);
+  await expect(nodes).toHaveCount(3);
 
   // Check total edge
   const edges = page.locator('[data-testid^="rf__edge-"]');
-  await expect(edges).toHaveCount(13);
+  await expect(edges).toHaveCount(2);
 });

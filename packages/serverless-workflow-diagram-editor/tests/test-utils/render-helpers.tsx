@@ -35,8 +35,12 @@ export const createMockContextValue = (
   locale: "en",
   model: null,
   errors: [],
-  updateIsReadOnly: noop,
-  updateLocale: noop,
+  nodes: [],
+  edges: [],
+  setIsReadOnly: noop,
+  setLocale: noop,
+  setEdges: noop,
+  setNodes: noop,
   ...overrides,
 });
 

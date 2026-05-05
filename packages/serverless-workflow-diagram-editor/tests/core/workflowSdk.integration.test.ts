@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-import { describe, it, expect, expectTypeOf } from "vitest";
-import {
-  parseWorkflow,
-  validateWorkflow,
-  buildGraph,
-  ExtendedGraphNode,
-  ExtendedGraph,
-  ExtendedGraphEdge,
-} from "../../src/core";
+import { describe, it, expect } from "vitest";
+import { parseWorkflow, validateWorkflow, buildFlatGraph } from "../../src/core";
 import {
   BASIC_VALID_WORKFLOW_YAML,
   BASIC_VALID_WORKFLOW_JSON,
@@ -74,7 +67,7 @@ describe("parseWorkflow", () => {
 describe("validateWorkflow", () => {
   it("returns empty array for a valid workflow", () => {
     const valid = new Classes.Workflow({
-      document: { dsl: "1.0.0", name: "valid-workflow", version: "1.0.0", namespace: "default" },
+      document: { dsl: "1.0.3", name: "valid-workflow", version: "1.0.0", namespace: "default" },
       do: [{ step1: { set: { variable: "value" } } }],
     }) as Specification.Workflow;
     const errors = validateWorkflow(valid);
@@ -91,24 +84,21 @@ describe("validateWorkflow", () => {
   });
 });
 
-describe("buildGraph", () => {
+describe("buildFlatGraph", () => {
   it("returns a loaded extended graph object from model", () => {
     const { model } = parseWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
     expect(model).not.toBeNull();
 
-    const graph = buildGraph(model!);
+    const graph = buildFlatGraph(model!);
 
-    expectTypeOf(graph).toEqualTypeOf<ExtendedGraph>();
-    expectTypeOf(graph!.nodes).toEqualTypeOf<ExtendedGraphNode[]>();
-    expectTypeOf(graph!.edges).toEqualTypeOf<ExtendedGraphEdge[]>();
     expect(graph).toMatchSnapshot();
   });
 
-  it("buildGraph exception", () => {
+  it("buildFlatGraph exception", () => {
     const { model } = parseWorkflow(EMPTY_WORKFLOW_JSON);
     expect(model).not.toBeNull();
 
     // A model without tasks is invalid however it produces a viable model instance
-    expect(() => buildGraph(model!)).toThrow("Cannot read properties of undefined (reading '0')");
+    expect(() => buildFlatGraph(model!)).toThrow();
   });
 });

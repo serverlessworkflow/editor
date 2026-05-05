@@ -18,9 +18,9 @@ import { render, screen } from "@testing-library/react";
 import { vi, it, expect, afterEach, describe } from "vitest";
 import * as RF from "@xyflow/react";
 import { GraphNodeType } from "@serverlessworkflow/sdk";
-import { NodeTypes } from "../../../src/react-flow/nodes/Nodes";
-import { DEFAULT_NODE_SIZE } from "../../../src/core";
+import { ReactFlowNodeTypes } from "../../../src/react-flow/nodes/Nodes";
 import { taskNodeConfigMap, type LeafNodeType } from "../../../src/react-flow/nodes/taskNodeConfig";
+import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
 
 function testNode(id: string, type: string, y: number, label: string): RF.Node {
   return {
@@ -34,6 +34,7 @@ function testNode(id: string, type: string, y: number, label: string): RF.Node {
 }
 
 const allNodes: RF.Node[] = [
+  testNode("start", GraphNodeType.Start, 0, "Start"),
   testNode("n1", GraphNodeType.Call, 0, "Node 1"),
   testNode("n2", GraphNodeType.Do, 100, "Node 2"),
   testNode("n3", GraphNodeType.Switch, 200, "Node 3"),
@@ -46,9 +47,11 @@ const allNodes: RF.Node[] = [
   testNode("n10", GraphNodeType.Set, 900, "Node 10"),
   testNode("n11", GraphNodeType.Try, 1000, "Node 11"),
   testNode("n12", GraphNodeType.Wait, 1100, "Node 12"),
+  testNode("end", GraphNodeType.End, 0, "End"),
 ];
 
 const allEdges: RF.Edge[] = [
+  { id: "start-n1", source: "start", target: "n1" },
   { id: "n1-n2", source: "n1", target: "n2" },
   { id: "n2-n3", source: "n2", target: "n3" },
   { id: "n3-n4", source: "n3", target: "n4" },
@@ -62,6 +65,7 @@ const allEdges: RF.Edge[] = [
   { id: "n9-n10", source: "n9", target: "n10" },
   { id: "n10-n11", source: "n10", target: "n11" },
   { id: "n11-n12", source: "n11", target: "n12" },
+  { id: "n12-end", source: "n12", target: "end" },
 ];
 
 describe("React Flow custom node types", () => {
@@ -72,10 +76,11 @@ describe("React Flow custom node types", () => {
   it("render react flow custom node types", () => {
     render(
       <div>
-        <RF.ReactFlow nodeTypes={NodeTypes} nodes={allNodes} edges={allEdges} />
+        <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={allNodes} edges={allEdges} />
       </div>,
     );
 
+    expect(screen.getByTestId("start-node-start")).toBeInTheDocument();
     expect(screen.getByTestId("call-node-n1")).toBeInTheDocument();
     expect(screen.getByTestId("do-node-n2")).toBeInTheDocument();
     expect(screen.getByTestId("switch-node-n3")).toBeInTheDocument();
@@ -88,6 +93,7 @@ describe("React Flow custom node types", () => {
     expect(screen.getByTestId("set-node-n10")).toBeInTheDocument();
     expect(screen.getByTestId("try-node-n11")).toBeInTheDocument();
     expect(screen.getByTestId("wait-node-n12")).toBeInTheDocument();
+    expect(screen.getByTestId("end-node-end")).toBeInTheDocument();
   });
 
   describe("should render leaf nodes with TaskNodeContent", () => {
@@ -105,7 +111,7 @@ describe("React Flow custom node types", () => {
     it.each(leafNodes)("should render %s node with correct config", ({ id, type, testId }) => {
       render(
         <div>
-          <RF.ReactFlow nodeTypes={NodeTypes} nodes={allNodes} edges={allEdges} />
+          <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={allNodes} edges={allEdges} />
         </div>,
       );
 

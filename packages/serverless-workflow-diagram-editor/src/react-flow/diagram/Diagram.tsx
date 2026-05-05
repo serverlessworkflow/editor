@@ -16,217 +16,19 @@
 
 import * as React from "react";
 import * as RF from "@xyflow/react";
-import { GraphNodeType } from "@serverlessworkflow/sdk";
-import { NodeTypes } from "../nodes/Nodes";
-import { DEFAULT_NODE_SIZE, GraphEdgeType } from "../../core";
+import { ReactFlowNodeTypes } from "../nodes/Nodes";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
 import { ResolvedColorMode } from "../../types/colorMode";
-import { EdgeTypes } from "../edges/Edges";
+import { ReactFlowEdgeTypes } from "../edges/Edges";
+import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
+import { buildDiagramElements } from "./diagramBuilder";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
   minZoom: 0.1,
   duration: 400,
 };
-
-// TODO: Nodes and Edges are hardcoded for now to generate a renderable basic workflow
-// It shall be replaced by the actual implementation based on graph structure
-const initialNodes: RF.Node[] = [
-  {
-    id: "n1",
-    type: GraphNodeType.Call,
-    position: { x: 100, y: 0 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "CallNode" },
-  },
-  {
-    id: "n2",
-    type: GraphNodeType.Do,
-    position: { x: 100, y: 100 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 2" },
-  },
-  {
-    id: "n3",
-    type: GraphNodeType.Switch,
-    position: { x: 100, y: 200 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "SwitchNode" },
-  },
-  {
-    id: "n4",
-    type: GraphNodeType.Emit,
-    position: { x: -100, y: 300 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "EmitNode" },
-  },
-  {
-    id: "n5",
-    type: GraphNodeType.For,
-    position: { x: 100, y: 300 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 5" },
-  },
-  {
-    id: "n6",
-    type: GraphNodeType.Fork,
-    position: { x: 300, y: 300 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 6" },
-  },
-  {
-    id: "n7",
-    type: GraphNodeType.Listen,
-    position: { x: 100, y: 400 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "ListenNode" },
-  },
-  {
-    id: "n8",
-    type: GraphNodeType.Raise,
-    position: { x: 100, y: 500 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "RaiseNode" },
-  },
-  {
-    id: "n9",
-    type: GraphNodeType.Run,
-    position: { x: 100, y: 600 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "RunNode" },
-  },
-  {
-    id: "n10",
-    type: GraphNodeType.Set,
-    position: { x: 100, y: 700 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "SetNode" },
-  },
-  {
-    id: "n11",
-    type: GraphNodeType.Try,
-    position: { x: 100, y: 800 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "Node 11" },
-  },
-  {
-    id: "n12",
-    type: GraphNodeType.Wait,
-    position: { x: 100, y: 900 },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
-    data: { label: "WaitNode" },
-  },
-];
-
-const initialEdges: RF.Edge[] = [
-  {
-    id: "n1-n2",
-    source: "n1",
-    target: "n2",
-    type: GraphEdgeType.Default,
-    data: {
-      wayPoints: [
-        { x: 190, y: 60 },
-        { x: 190, y: 70 },
-        { x: 140, y: 70 },
-        { x: 140, y: 85 },
-        { x: 190, y: 85 },
-        { x: 190, y: 95 }, 
-      ],
-    },
-  },
-  {
-    id: "n2-n3",
-    source: "n2",
-    target: "n3",
-    type: GraphEdgeType.Default,
-    data: { label: "Default" },
-  },
-  {
-    id: "n3-n4",
-    source: "n3",
-    target: "n4",
-    type: GraphEdgeType.Condition,
-    data: { label: "Case 1" },
-  },
-  {
-    id: "n3-n5",
-    source: "n3",
-    target: "n5",
-    type: GraphEdgeType.Condition,
-    data: { label: "Case 2" },
-  },
-  {
-    id: "n3-n6",
-    source: "n3",
-    target: "n6",
-    type: GraphEdgeType.Condition,
-    data: { label: "Default" },
-    animated: true,
-  },
-  {
-    id: "n4-n7",
-    source: "n4",
-    target: "n7",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n5-n7",
-    source: "n5",
-    target: "n7",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n6-n7",
-    source: "n6",
-    target: "n7",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n7-n8",
-    source: "n7",
-    target: "n8",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n8-n9",
-    source: "n8",
-    target: "n9",
-    type: GraphEdgeType.Error,
-    animated: true,
-  },
-  {
-    id: "n9-n10",
-    source: "n9",
-    target: "n10",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n10-n11",
-    source: "n10",
-    target: "n11",
-    type: GraphEdgeType.Default,
-  },
-  {
-    id: "n11-n12",
-    source: "n11",
-    target: "n12",
-    type: GraphEdgeType.Default,
-  },
-];
 
 /**
  * Diagram component API
@@ -242,18 +44,9 @@ export type DiagramProps = {
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
-  const [minimapVisible, setMinimapVisible] = React.useState(false);
-  const [nodes, setNodes] = React.useState<RF.Node[]>(initialNodes);
-  const [edges, setEdges] = React.useState<RF.Edge[]>(initialEdges);
+  const { model, nodes, edges, setNodes, setEdges } = useDiagramEditorContext();
 
-  const onNodesChange = React.useCallback<RF.OnNodesChange>(
-    (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
-    [],
-  );
-  const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
-    (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
-    [],
-  );
+  const [minimapVisible, setMinimapVisible] = React.useState(false);
 
   React.useImperativeHandle(
     ref,
@@ -265,12 +58,28 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
     [],
   );
 
+  const onNodesChange = React.useCallback<RF.OnNodesChange>(
+    (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
+    [setNodes],
+  );
+  const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
+    (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
+    [setEdges],
+  );
+
+  // Rebuild nodes and edges as model changes
+  React.useEffect(() => {
+    const { nodes, edges } = buildDiagramElements(model);
+    setNodes(nodes);
+    setEdges(edges);
+  }, [model, setNodes, setEdges]);
+
   return (
     <div ref={divRef} className="dec:h-full dec:relative" data-testid={"diagram-container"}>
       <RF.ReactFlow
-        nodeTypes={NodeTypes}
+        nodeTypes={ReactFlowNodeTypes}
         nodes={nodes}
-        edgeTypes={EdgeTypes}
+        edgeTypes={ReactFlowEdgeTypes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}

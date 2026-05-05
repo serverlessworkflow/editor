@@ -14,94 +14,48 @@
  * limitations under the License.
  */
 
-import { Graph, GraphEdge, GraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
+import { FlatGraph, FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
 
-// Override / add multiple properties of a type in a generic way
-export type Override<T, NewProps> = Omit<T, keyof NewProps> & NewProps;
-
-// Supported edge types
-export enum GraphEdgeType {
-  Default = "default",
-  Error = "error",
-  Condition = "condition",
+export function getNodesByType(graph: FlatGraph, type: GraphNodeType): FlatGraphNode[] {
+  return graph.nodes.filter((node) => node.type === type);
 }
 
-export type Point = {
-  x: number;
-  y: number;
-};
+// Inner entry and exit nodes cannot be connected external nodes so connections shall be moved to parent node
+export function fixNodesConnections(graph: FlatGraph): FlatGraph {
+  const entryNodes = getNodesByType(graph, GraphNodeType.Entry);
+  const exitNodes = getNodesByType(graph, GraphNodeType.Exit);
 
-export type Position = Point;
+  // Build maps of {entryNodeId -> parentId} and {exitNodeId -> parentId}
+  const entryNodeToParent = new Map<string, string>();
+  entryNodes.forEach((node) => {
+    if (node.parentId) {
+      entryNodeToParent.set(node.id, node.parentId);
+    }
+  });
 
-export type Size = {
-  height: number;
-  width: number;
-};
+  const exitNodeToParent = new Map<string, string>();
+  exitNodes.forEach((node) => {
+    if (node.parentId) {
+      exitNodeToParent.set(node.id, node.parentId);
+    }
+  });
 
-export type WayPoints = Point[];
-
-// Add extra properties to GraphNode
-export type ExtendedGraphNode = Override<
-  GraphNode,
-  {
-    position?: Position;
-    size?: Size;
-  }
->;
-
-// Add extra properties to GraphEdge
-export type ExtendedGraphEdge = GraphEdge & {
-  type?: GraphEdgeType;
-  wayPoints?: WayPoints;
-};
-
-export type ExtendedGraph = Override<
-  Graph,
-  {
-    parent?: ExtendedGraph | null;
-    nodes: ExtendedGraphNode[];
-    edges: ExtendedGraphEdge[];
-    entryNode: ExtendedGraphNode;
-    exitNode: ExtendedGraphNode;
-  }
->;
-
-export function solveEdgeTypes(graph: ExtendedGraph): ExtendedGraph {
   const graphClone = structuredClone(graph);
 
-  // root level
-  setEdgeTypes(graphClone);
-  // children n level
-  graphClone.nodes.flat().forEach((node) => setEdgeTypes(node as ExtendedGraph));
+  // Single pass over edges to rewrite sourceId/targetId
+  graphClone.edges.forEach((edge) => {
+    // Move entry node incoming connections to parent
+    const entryParent = entryNodeToParent.get(edge.targetId);
+    if (entryParent) {
+      edge.targetId = entryParent;
+    }
+
+    // Move exit node outgoing connections to parent
+    const exitParent = exitNodeToParent.get(edge.sourceId);
+    if (exitParent) {
+      edge.sourceId = exitParent;
+    }
+  });
 
   return graphClone;
-}
-
-function setEdgeTypes(graph: ExtendedGraph): ExtendedGraph {
-  if (!graph.edges || !graph.nodes) {
-    return graph;
-  }
-
-  for (let i = 0; i < graph.nodes.length; i++) {
-    const graphNode = graph.nodes[i]! as ExtendedGraph;
-
-    for (let j = 0; j < graph.edges.length; j++) {
-      const graphEdge = graph.edges[j]!;
-
-      if (graphNode.id === graphEdge.sourceId) {
-        switch (graphNode.type) {
-          case GraphNodeType.Raise:
-            graphEdge.type = GraphEdgeType.Error;
-            break;
-          case GraphNodeType.Switch:
-            graphEdge.type = GraphEdgeType.Condition;
-            break;
-          default:
-            graphEdge.type = GraphEdgeType.Default;
-        }
-      }
-    }
-  }
-
-  return graph;
 }

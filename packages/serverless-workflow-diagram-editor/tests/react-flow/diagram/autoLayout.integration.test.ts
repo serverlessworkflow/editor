@@ -15,20 +15,23 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { applyAutoLayout, buildGraph, parseWorkflow } from "../../src/core";
-import { BASIC_VALID_WORKFLOW_JSON_TASKS } from "../fixtures/workflows";
+
+import { BASIC_VALID_WORKFLOW_JSON_TASKS } from "../../fixtures/workflows";
+import { applyAutoLayout } from "../../../src/react-flow/diagram/autoLayout";
+import { parseWorkflow } from "../../../src/core";
+import { buildDiagramElements } from "../../../src/react-flow/diagram/diagramBuilder";
 
 describe("applyAutoLayout", () => {
   it("apply auto-layout calculated layout to graph elements", () => {
     const result = parseWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
 
-    const graph = applyAutoLayout(buildGraph(result.model!));
+    const reacflowGraph = applyAutoLayout(buildDiagramElements(result.model));
 
-    expect(graph!.nodes).toHaveLength(7);
-    expect(graph!.edges).toHaveLength(6);
+    expect(reacflowGraph.nodes).toHaveLength(7);
+    expect(reacflowGraph.edges).toHaveLength(6);
 
     let y = 0;
-    graph!.nodes.forEach((node) => {
+    reacflowGraph.nodes.forEach((node) => {
       // TODO coordinates are fixed (y = y + 100) for now
       expect(node.position!.y).toBe(y);
       y += 100;

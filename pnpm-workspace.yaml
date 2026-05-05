@@ -3,7 +3,7 @@ packages:
 catalog:
   "@chromatic-com/storybook": ^5.1.2
   "@playwright/test": ^1.59.1
-  "@serverlessworkflow/sdk": ^1.0.1
+  "@serverlessworkflow/sdk": ^1.0.3-alpha1
   "@storybook/addon-a11y": ^10.3.6
   "@storybook/addon-docs": ^10.3.6
   "@storybook/addon-vitest": ^10.3.6

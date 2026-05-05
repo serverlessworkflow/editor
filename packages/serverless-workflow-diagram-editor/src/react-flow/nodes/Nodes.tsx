@@ -15,12 +15,14 @@
  */
 
 import type React from "react";
-import { GraphNodeType } from "@serverlessworkflow/sdk";
+import { GraphNodeType, type Specification } from "@serverlessworkflow/sdk";
 import * as RF from "@xyflow/react";
 import { type LeafNodeType, taskNodeConfigMap } from "./taskNodeConfig";
 
 // Node types must match sdk GraphNodeType enum
-export const NodeTypes: RF.NodeTypes = {
+export const ReactFlowNodeTypes: RF.NodeTypes = {
+  [GraphNodeType.Start]: StartNode,
+  [GraphNodeType.End]: EndNode,
   [GraphNodeType.Call]: CallNode,
   [GraphNodeType.Do]: DoNode,
   [GraphNodeType.Emit]: EmitNode,
@@ -35,9 +37,9 @@ export const NodeTypes: RF.NodeTypes = {
   [GraphNodeType.Wait]: WaitNode,
 };
 
-export type BaseNodeData = {
-  // TODO: It is a placeholder, add properties to be consumed internally by node components
+export type BaseNodeData<T = Specification.Task | void> = {
   label: string;
+  task?: T;
 };
 
 interface NodeContentProps {
@@ -93,78 +95,101 @@ function PlaceholderContent({ id, data, selected, type }: PlaceholderProps) {
   );
 }
 
+/* start node */
+export type StartNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Start>;
+export function StartNode({ id, data, selected, type }: RF.NodeProps<StartNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* end node */
+export type EndNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.End>;
+export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+}
+
 /* call node */
-export type CallNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Call>;
+export type CallNodeType = RF.Node<BaseNodeData<Specification.CallTask>, typeof GraphNodeType.Call>;
 export function CallNode({ id, data, selected, type }: RF.NodeProps<CallNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* do node */
-export type DoNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Do>;
+export type DoNodeType = RF.Node<BaseNodeData<Specification.DoTask>, typeof GraphNodeType.Do>;
 export function DoNode({ id, data, selected, type }: RF.NodeProps<DoNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* emit node */
-export type EmitNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Emit>;
+export type EmitNodeType = RF.Node<BaseNodeData<Specification.EmitTask>, typeof GraphNodeType.Emit>;
 export function EmitNode({ id, data, selected, type }: RF.NodeProps<EmitNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* for node */
-export type ForNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.For>;
+export type ForNodeType = RF.Node<BaseNodeData<Specification.ForTask>, typeof GraphNodeType.For>;
 export function ForNode({ id, data, selected, type }: RF.NodeProps<ForNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* fork node */
-export type ForkNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Fork>;
+export type ForkNodeType = RF.Node<BaseNodeData<Specification.ForkTask>, typeof GraphNodeType.Fork>;
 export function ForkNode({ id, data, selected, type }: RF.NodeProps<ForkNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* listen node */
-export type ListenNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Listen>;
+export type ListenNodeType = RF.Node<
+  BaseNodeData<Specification.ListenTask>,
+  typeof GraphNodeType.Listen
+>;
 export function ListenNode({ id, data, selected, type }: RF.NodeProps<ListenNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* raise node */
-export type RaiseNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Raise>;
+export type RaiseNodeType = RF.Node<
+  BaseNodeData<Specification.RaiseTask>,
+  typeof GraphNodeType.Raise
+>;
 export function RaiseNode({ id, data, selected, type }: RF.NodeProps<RaiseNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* run node */
-export type RunNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Run>;
+export type RunNodeType = RF.Node<BaseNodeData<Specification.RunTask>, typeof GraphNodeType.Run>;
 export function RunNode({ id, data, selected, type }: RF.NodeProps<RunNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* set node */
-export type SetNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Set>;
+export type SetNodeType = RF.Node<BaseNodeData<Specification.SetTask>, typeof GraphNodeType.Set>;
 export function SetNode({ id, data, selected, type }: RF.NodeProps<SetNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* switch node */
-export type SwitchNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Switch>;
+export type SwitchNodeType = RF.Node<
+  BaseNodeData<Specification.SwitchTask>,
+  typeof GraphNodeType.Switch
+>;
 export function SwitchNode({ id, data, selected, type }: RF.NodeProps<SwitchNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* try node */
-export type TryNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Try>;
+export type TryNodeType = RF.Node<BaseNodeData<Specification.TryTask>, typeof GraphNodeType.Try>;
 export function TryNode({ id, data, selected, type }: RF.NodeProps<TryNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* wait node */
-export type WaitNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Wait>;
+export type WaitNodeType = RF.Node<BaseNodeData<Specification.WaitTask>, typeof GraphNodeType.Wait>;
 export function WaitNode({ id, data, selected, type }: RF.NodeProps<WaitNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }

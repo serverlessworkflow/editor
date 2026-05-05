@@ -16,15 +16,20 @@
 
 import type { Specification } from "@serverlessworkflow/sdk";
 import * as React from "react";
+import type * as RF from "@xyflow/react";
 
 export type DiagramEditorContextType = {
   isReadOnly: boolean;
   locale: string;
   model: Specification.Workflow | null;
   errors: Error[];
+  nodes: RF.Node[];
+  edges: RF.Edge[];
 
-  updateIsReadOnly: (isReadOnly: boolean) => void;
-  updateLocale: (locale: string) => void;
+  setIsReadOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  setLocale: React.Dispatch<React.SetStateAction<string>>;
+  setNodes: React.Dispatch<React.SetStateAction<RF.Node[]>>;
+  setEdges: React.Dispatch<React.SetStateAction<RF.Edge[]>>;
 };
 
 export const DiagramEditorContext = React.createContext<DiagramEditorContextType | undefined>(
