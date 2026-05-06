@@ -18,10 +18,11 @@ import * as React from "react";
 import * as RF from "@xyflow/react";
 import { GraphNodeType } from "@serverlessworkflow/sdk";
 import { NodeTypes } from "../nodes/Nodes";
-import { DEFAULT_NODE_SIZE } from "../../core";
+import { DEFAULT_NODE_SIZE, GraphEdgeType } from "../../core";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
 import { ResolvedColorMode } from "../../types/colorMode";
+import { EdgeTypes } from "../edges/Edges";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -129,20 +130,100 @@ const initialNodes: RF.Node[] = [
     data: { label: "Node 12" },
   },
 ];
+
 const initialEdges: RF.Edge[] = [
-  { id: "n1-n2", source: "n1", target: "n2" },
-  { id: "n2-n3", source: "n2", target: "n3" },
-  { id: "n3-n4", source: "n3", target: "n4" },
-  { id: "n3-n5", source: "n3", target: "n5" },
-  { id: "n3-n6", source: "n3", target: "n6" },
-  { id: "n4-n7", source: "n4", target: "n7" },
-  { id: "n5-n7", source: "n5", target: "n7" },
-  { id: "n6-n7", source: "n6", target: "n7" },
-  { id: "n7-n8", source: "n7", target: "n8" },
-  { id: "n8-n9", source: "n8", target: "n9" },
-  { id: "n9-n10", source: "n9", target: "n10" },
-  { id: "n10-n11", source: "n10", target: "n11" },
-  { id: "n11-n12", source: "n11", target: "n12" },
+  {
+    id: "n1-n2",
+    source: "n1",
+    target: "n2",
+    type: GraphEdgeType.Default,
+    data: {
+      wayPoints: [
+        { x: 145, y: 60 },
+        { x: 170, y: 60 },
+        { x: 170, y: 85 },
+        { x: 145, y: 85 },
+      ],
+    },
+  },
+  {
+    id: "n2-n3",
+    source: "n2",
+    target: "n3",
+    type: GraphEdgeType.Default,
+    data: { label: "Default" },
+  },
+  {
+    id: "n3-n4",
+    source: "n3",
+    target: "n4",
+    type: GraphEdgeType.Condition,
+    data: { label: "Case 1" },
+  },
+  {
+    id: "n3-n5",
+    source: "n3",
+    target: "n5",
+    type: GraphEdgeType.Condition,
+    data: { label: "Case 2" },
+  },
+  {
+    id: "n3-n6",
+    source: "n3",
+    target: "n6",
+    type: GraphEdgeType.Condition,
+    data: { label: "Default" },
+    animated: true,
+  },
+  {
+    id: "n4-n7",
+    source: "n4",
+    target: "n7",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n5-n7",
+    source: "n5",
+    target: "n7",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n6-n7",
+    source: "n6",
+    target: "n7",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n7-n8",
+    source: "n7",
+    target: "n8",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n8-n9",
+    source: "n8",
+    target: "n9",
+    type: GraphEdgeType.Error,
+    animated: true,
+  },
+  {
+    id: "n9-n10",
+    source: "n9",
+    target: "n10",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n10-n11",
+    source: "n10",
+    target: "n11",
+    type: GraphEdgeType.Default,
+  },
+  {
+    id: "n11-n12",
+    source: "n11",
+    target: "n12",
+    type: GraphEdgeType.Default,
+  },
 ];
 
 /**
@@ -187,6 +268,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
       <RF.ReactFlow
         nodeTypes={NodeTypes}
         nodes={nodes}
+        edgeTypes={EdgeTypes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
@@ -199,6 +281,13 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         selectionOnDrag={true}
         fitView
         colorMode={colorMode}
+        defaultEdgeOptions={{
+          markerEnd: {
+            type: RF.MarkerType.ArrowClosed,
+            width: 10,
+            height: 10,
+          },
+        }}
         data-testid={"react-flow-canvas"}
       >
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
