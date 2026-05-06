@@ -19,7 +19,7 @@ import { ReactFlowGraph } from "./diagramBuilder";
 // Defaults
 export const DEFAULT_NODE_SIZE = {
   height: 60,
-  width: 180,
+  width: 200,
 };
 
 export type Point = {

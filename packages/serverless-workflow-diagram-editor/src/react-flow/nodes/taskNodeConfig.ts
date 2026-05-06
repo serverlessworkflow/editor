@@ -23,12 +23,14 @@ import {
   Megaphone,
   PenLine,
   Phone,
+  ShieldAlert,
   Terminal,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
 export type LeafNodeType =
   | typeof GraphNodeType.Call
+  | typeof GraphNodeType.Catch
   | typeof GraphNodeType.Emit
   | typeof GraphNodeType.Listen
   | typeof GraphNodeType.Raise
@@ -48,6 +50,11 @@ export const taskNodeConfigMap: Record<LeafNodeType, TaskNodeConfig> = {
     color: "#2563EB",
     icon: Phone,
     typeLabel: "CALL",
+  },
+  [GraphNodeType.Catch]: {
+    color: "#F97316",
+    icon: ShieldAlert,
+    typeLabel: "CATCH",
   },
   [GraphNodeType.Emit]: {
     color: "#8B5CF6",
