@@ -81,7 +81,7 @@
   }
 
   .dec-root.dark .custom-node-container {
-    @apply dec:bg-[rgb(85,83,83)] 
+    @apply dec:bg-[#2d3748]
             dec:border-[#e5e4e2];
   }
 
@@ -160,5 +160,76 @@
     @apply dec:bg-gray-800 
             dec:border-gray-600 
             dec:text-gray-200;
+  }
+
+  /* task leaf nodes */
+  .dec-root .dec-task-node-container {
+    @apply dec:rounded-lg
+      dec:bg-white
+      dec:shadow-sm
+      dec:transition-[border,box-shadow]
+      dec:h-full
+      dec:w-full;
+    border-top: 4px solid var(--task-node-color);
+  }
+
+  .dec-root.dark .dec-task-node-container {
+    @apply dec:bg-[#2d3748];
+  }
+
+  .dec-root .dec-task-node-container:hover {
+    @apply dec:shadow-[0_0_10px_rgba(0,65,208,0.3)];
+  }
+
+  .dec-root.dark .dec-task-node-container:hover {
+    @apply dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+  }
+
+  .dec-root .dec-task-node-container.selected {
+    @apply dec:shadow-[0_0_10px_rgba(59,130,246,0.8)];
+  }
+
+  .dec-root.dark .dec-task-node-container.selected {
+    @apply dec:bg-[#3d4a5c] 
+      dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
+  }
+
+  .dec-root .dec-task-node-content {
+    @apply dec:flex 
+      dec:items-center 
+      dec:gap-3 
+      dec:px-4 
+      dec:py-3;
+  }
+
+  .dec-root .dec-task-node-icon {
+    color: var(--task-node-color);
+  }
+
+  .dec-root .dec-task-node-label {
+    @apply dec:flex 
+    dec:flex-col 
+    dec:gap-0.5;
+  }
+
+  .dec-root .dec-task-node-name {
+    @apply dec:text-sm 
+    dec:text-black 
+    dec:leading-tight;
+  }
+
+  .dec-root.dark .dec-task-node-name {
+    @apply dec:text-white;
+  }
+
+  .dec-root .dec-task-node-type {
+    @apply dec:text-[9px] 
+    dec:uppercase 
+    dec:text-gray-500 
+    dec:leading-tight;
+  }
+
+  .dec-root.dark .dec-task-node-type {
+    @apply dec:text-gray-400;
   }
 }

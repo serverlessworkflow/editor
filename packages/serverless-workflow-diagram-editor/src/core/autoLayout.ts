@@ -18,8 +18,8 @@ import { ExtendedGraph, Position, Size } from "./graph";
 
 // Defaults
 export const DEFAULT_NODE_SIZE = {
-  height: 50,
-  width: 90,
+  height: 60,
+  width: 180,
 };
 
 export function applyAutoLayout(graph: ExtendedGraph): ExtendedGraph {
