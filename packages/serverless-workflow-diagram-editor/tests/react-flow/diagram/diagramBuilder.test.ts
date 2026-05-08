@@ -16,11 +16,12 @@
 
 import { describe, it, expect, beforeAll } from "vitest";
 import * as RF from "@xyflow/react";
-import { GraphNodeType } from "@serverlessworkflow/sdk";
+import { FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
 import {
   getEdgeType,
   edgeSourceAndTargetExist,
   buildDiagramElements,
+  getCatchContainerNodeIds,
 } from "../../../src/react-flow/diagram/diagramBuilder";
 import { EdgeTypes } from "../../../src/react-flow/edges/Edges";
 import { parseWorkflow } from "../../../src/core";
@@ -28,6 +29,7 @@ import {
   BASIC_VALID_WORKFLOW_JSON,
   BASIC_VALID_WORKFLOW_JSON_TASKS,
 } from "../../fixtures/workflows";
+import { createFlatGraph } from "../../test-utils/graph-helpers";
 
 // Type alias for diagram elements to reduce verbosity
 type DiagramElements = ReturnType<typeof buildDiagramElements>;
@@ -361,6 +363,141 @@ describe("diagramBuilder", () => {
 
         expect(diagram.nodes.length).toBeGreaterThan(0);
       });
+    });
+  });
+
+  describe("getCatchContainerNodeIds", () => {
+    it("should not include leaf catch nodes", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "end",
+            type: GraphNodeType.End,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/CatchError",
+            type: GraphNodeType.Catch,
+            label: "CatchError",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+      expect(result.size).toBe(0);
+    });
+
+    it("should include catch nodes that have children", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "end",
+            type: GraphNodeType.End,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/CatchContainer",
+            type: GraphNodeType.Catch,
+            label: "CatchContainer",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/CatchContainer-entry-node",
+            type: GraphNodeType.Entry,
+            parentId: "/do/0/CatchContainer",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/CatchContainer-exit-node",
+            type: GraphNodeType.Exit,
+            parentId: "/do/0/CatchContainer",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/CatchContainer/do/0/step1",
+            type: GraphNodeType.Set,
+            label: "step1",
+            parentId: "/do/0/CatchContainer",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+
+      expect(result.has("/do/0/CatchContainer")).toBe(true);
+      expect(result.size).toBe(1);
+    });
+
+    it("should not include non-catch nodes", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "end",
+            type: GraphNodeType.End,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/step1",
+            type: GraphNodeType.Set,
+            label: "step1",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/step2",
+            type: GraphNodeType.Call,
+            label: "step2",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+      expect(result.size).toBe(0);
+    });
+
+    it("should inclyde nested catch containers insode a parent container", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "end",
+            type: GraphNodeType.End,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/TryCatch",
+            type: GraphNodeType.TryCatch,
+            label: "TryCatch",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/TryCatch/catch",
+            type: GraphNodeType.Catch,
+            label: "catch",
+            parentId: "/do/0/TryCatch",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/TryCatch/catch/do/0/recover",
+            type: GraphNodeType.Set,
+            label: "recover",
+            parentId: "/do/0/TryCatch/catch",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+
+      expect(result.has("/do/0/TryCatch/catch")).toBe(true);
+      expect(result.has("/do/0/TryCatch")).toBe(false);
     });
   });
 });

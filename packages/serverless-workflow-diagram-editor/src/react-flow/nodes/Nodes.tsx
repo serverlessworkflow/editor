@@ -21,7 +21,9 @@ import { type LeafNodeType, taskNodeConfigMap } from "./taskNodeConfig";
 import { Info } from "lucide-react";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
 
-// Node types must match sdk GraphNodeType enum
+export const CATCH_CONTAINER_NODE_TYPE = "catch-container";
+/* Node types are primarily keyed by the sdk GraphNodeType enum, with custom
+   React Flow-only node types such as catch-container added where needed. */
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
   [GraphNodeType.End]: EndNode,
@@ -38,6 +40,7 @@ export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.TryCatch]: TryCatchNode,
   [GraphNodeType.Try]: TryNode,
   [GraphNodeType.Catch]: CatchNode,
+  [CATCH_CONTAINER_NODE_TYPE]: CatchContainerNode,
   [GraphNodeType.Wait]: WaitNode,
 };
 
@@ -248,6 +251,18 @@ export function TryNode({ id, data, selected, type }: RF.NodeProps<TryNodeType>)
 export type CatchNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Catch>;
 export function CatchNode({ id, data, selected, type }: RF.NodeProps<CatchNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* catch container node */
+export type CatchContainerNodeType = RF.Node<BaseNodeData, typeof CATCH_CONTAINER_NODE_TYPE>;
+export function CatchContainerNode({
+  id,
+  data,
+  selected,
+  type,
+}: RF.NodeProps<CatchContainerNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
 /* wait leaf node */
