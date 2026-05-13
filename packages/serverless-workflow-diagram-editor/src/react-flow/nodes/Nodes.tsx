@@ -18,6 +18,8 @@ import type React from "react";
 import { GraphNodeType, type Specification } from "@serverlessworkflow/sdk";
 import * as RF from "@xyflow/react";
 import { type LeafNodeType, taskNodeConfigMap } from "./taskNodeConfig";
+import { Info } from "lucide-react";
+import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
 
 // Node types must match sdk GraphNodeType enum
 export const ReactFlowNodeTypes: RF.NodeTypes = {
@@ -33,9 +35,27 @@ export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Run]: RunNode,
   [GraphNodeType.Set]: SetNode,
   [GraphNodeType.Switch]: SwitchNode,
+  [GraphNodeType.TryCatch]: TryCatchNode,
   [GraphNodeType.Try]: TryNode,
+  [GraphNodeType.Catch]: CatchNode,
   [GraphNodeType.Wait]: WaitNode,
 };
+
+const KNOWN_BADGES = new Set([
+  "http",
+  "grpc",
+  "asyncapi",
+  "openapi",
+  "a2a",
+  "mcp",
+  "container",
+  "script",
+  "shell",
+  "workflow",
+  "all",
+  "any",
+  "one",
+]);
 
 export type BaseNodeData<T = Specification.Task | void> = {
   label: string;
@@ -47,9 +67,34 @@ interface NodeContentProps {
   data: BaseNodeData;
   selected: boolean;
   type: string;
+  badge?: string | undefined;
 }
 
-function TaskNodeContent({ id, data, selected, type }: NodeContentProps) {
+interface BadgeProps {
+  badge: string;
+  testId: string;
+}
+
+function TaskNodeBadge({ badge, testId }: BadgeProps) {
+  const isUnknown = !KNOWN_BADGES.has(badge.toLowerCase());
+
+  if (isUnknown) {
+    /* TODO: instead of using the browser default to display tool tip like below, replace with tooltip component when we add it */
+    return (
+      <span title={badge} className="dec-task-node-badge-icon" data-testid={`${testId}-icon`}>
+        <Info size={18} />
+      </span>
+    );
+  }
+
+  return (
+    <span className="dec-task-node-badge" data-testid={testId}>
+      {badge}
+    </span>
+  );
+}
+
+function TaskNodeContent({ id, data, selected, type, badge }: NodeContentProps) {
   const config = taskNodeConfigMap[type as LeafNodeType];
   const Icon = config.icon;
   return (
@@ -65,6 +110,7 @@ function TaskNodeContent({ id, data, selected, type }: NodeContentProps) {
           <span className="dec-task-node-name">{data.label}</span>
           <span className="dec-task-node-type">{config.typeLabel}</span>
         </div>
+        {badge && <TaskNodeBadge badge={badge} testId={`${type}-node-${id}-badge`} />}
       </div>
       <RF.Handle type="source" position={RF.Position.Bottom} />
     </div>
@@ -109,49 +155,51 @@ export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>)
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* call node */
+/* call leaf node */
 export type CallNodeType = RF.Node<BaseNodeData<Specification.CallTask>, typeof GraphNodeType.Call>;
 export function CallNode({ id, data, selected, type }: RF.NodeProps<CallNodeType>) {
-  return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
+  const badge = data.task ? getCallSubType(data.task) : undefined;
+  return <TaskNodeContent id={id} data={data} selected={selected} type={type} badge={badge} />;
 }
 
-/* do node */
+/* do container node */
 export type DoNodeType = RF.Node<BaseNodeData<Specification.DoTask>, typeof GraphNodeType.Do>;
 export function DoNode({ id, data, selected, type }: RF.NodeProps<DoNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* emit node */
+/* emit leaf node */
 export type EmitNodeType = RF.Node<BaseNodeData<Specification.EmitTask>, typeof GraphNodeType.Emit>;
 export function EmitNode({ id, data, selected, type }: RF.NodeProps<EmitNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* for node */
+/* for container node */
 export type ForNodeType = RF.Node<BaseNodeData<Specification.ForTask>, typeof GraphNodeType.For>;
 export function ForNode({ id, data, selected, type }: RF.NodeProps<ForNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* fork node */
+/* fork container node */
 export type ForkNodeType = RF.Node<BaseNodeData<Specification.ForkTask>, typeof GraphNodeType.Fork>;
 export function ForkNode({ id, data, selected, type }: RF.NodeProps<ForkNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* listen node */
+/* listen leaf node */
 export type ListenNodeType = RF.Node<
   BaseNodeData<Specification.ListenTask>,
   typeof GraphNodeType.Listen
 >;
 export function ListenNode({ id, data, selected, type }: RF.NodeProps<ListenNodeType>) {
-  return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
+  const badge = data.task ? getListenSubType(data.task) : undefined;
+  return <TaskNodeContent id={id} data={data} selected={selected} type={type} badge={badge} />;
 }
 
-/* raise node */
+/* raise leaf node */
 export type RaiseNodeType = RF.Node<
   BaseNodeData<Specification.RaiseTask>,
   typeof GraphNodeType.Raise
@@ -160,19 +208,20 @@ export function RaiseNode({ id, data, selected, type }: RF.NodeProps<RaiseNodeTy
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* run node */
+/* run leaf node */
 export type RunNodeType = RF.Node<BaseNodeData<Specification.RunTask>, typeof GraphNodeType.Run>;
 export function RunNode({ id, data, selected, type }: RF.NodeProps<RunNodeType>) {
-  return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
+  const badge = data.task ? getRunSubType(data.task) : undefined;
+  return <TaskNodeContent id={id} data={data} selected={selected} type={type} badge={badge} />;
 }
 
-/* set node */
+/* set leaf node */
 export type SetNodeType = RF.Node<BaseNodeData<Specification.SetTask>, typeof GraphNodeType.Set>;
 export function SetNode({ id, data, selected, type }: RF.NodeProps<SetNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* switch node */
+/* switch leaf node */
 export type SwitchNodeType = RF.Node<
   BaseNodeData<Specification.SwitchTask>,
   typeof GraphNodeType.Switch
@@ -181,14 +230,27 @@ export function SwitchNode({ id, data, selected, type }: RF.NodeProps<SwitchNode
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* try node */
+/* try catch container node */
+export type TryCatchNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.TryCatch>;
+export function TryCatchNode({ id, data, selected, type }: RF.NodeProps<TryCatchNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* try container node */
 export type TryNodeType = RF.Node<BaseNodeData<Specification.TryTask>, typeof GraphNodeType.Try>;
 export function TryNode({ id, data, selected, type }: RF.NodeProps<TryNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }
 
-/* wait node */
+/* catch leaf node */
+export type CatchNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Catch>;
+export function CatchNode({ id, data, selected, type }: RF.NodeProps<CatchNodeType>) {
+  return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* wait leaf node */
 export type WaitNodeType = RF.Node<BaseNodeData<Specification.WaitTask>, typeof GraphNodeType.Wait>;
 export function WaitNode({ id, data, selected, type }: RF.NodeProps<WaitNodeType>) {
   return <TaskNodeContent id={id} data={data} selected={selected} type={type} />;

@@ -198,22 +198,25 @@
     @apply dec:flex 
       dec:items-center 
       dec:gap-3 
-      dec:px-4 
-      dec:py-3;
+      dec:px-3 
+      dec:py-2;
   }
 
   .dec-root .dec-task-node-icon {
+    @apply dec:shrink-0;
     color: var(--task-node-color);
   }
 
   .dec-root .dec-task-node-label {
     @apply dec:flex 
     dec:flex-col 
-    dec:gap-0.5;
+    dec:gap-0.5
+    dec:min-w-0;
   }
 
   .dec-root .dec-task-node-name {
-    @apply dec:text-sm 
+    @apply dec:truncate /*TODO: for now truncate text revisit when layout is in and working on styling tweaks */
+    dec:text-sm 
     dec:text-black 
     dec:leading-tight;
   }
@@ -232,4 +235,28 @@
   .dec-root.dark .dec-task-node-type {
     @apply dec:text-gray-400;
   }
+
+  .dec-root .dec-task-node-badge {
+    @apply dec:ml-auto
+      dec:shrink-0 
+      dec:rounded
+      dec:px-2 
+      dec:py-0.5 
+      dec:text-[8px]
+      dec:font-semibold
+      dec:uppercase
+      dec:whitespace-nowrap;
+    color: var(--task-node-color);
+    border: 1px solid var(--task-node-color);
+  }
+
+  .dec-root .dec-task-node-badge-icon {
+    @apply dec:ml-auto
+      dec:shrink-0 
+      dec:flex 
+      dec:items-center 
+      dec:justify-center;
+    color: var(--task-node-color);
+  }
+  /* end task leaf nodes */
 }
