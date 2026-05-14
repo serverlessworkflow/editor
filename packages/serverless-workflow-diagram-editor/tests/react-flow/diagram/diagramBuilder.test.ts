@@ -462,7 +462,7 @@ describe("diagramBuilder", () => {
       expect(result.size).toBe(0);
     });
 
-    it("should inclyde nested catch containers insode a parent container", () => {
+    it("should include nested catch containers inside a parent container", () => {
       const sdkGraph = createFlatGraph(
         [
           {

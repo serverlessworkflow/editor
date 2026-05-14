@@ -79,7 +79,7 @@ function buildReactFlowNode(
   const type = resolveNodeType(graphNode, catchContainerIds);
   // There is no corresponding react flow component implemented
   if (!Object.keys(ReactFlowNodeTypes).includes(type)) {
-    throw new Error(`Unsupported GraphNodeType: ${type}!`);
+    throw new Error(`Unsupported React flow node type: ${type}!`);
   }
 
   return {
