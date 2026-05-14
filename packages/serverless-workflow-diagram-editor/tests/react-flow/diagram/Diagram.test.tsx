@@ -18,6 +18,9 @@ import { render, screen } from "@testing-library/react";
 import { vi, it, expect, afterEach, describe } from "vitest";
 import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorContextProvider";
+import { SidebarProvider } from "../../../src/components/ui/sidebar";
+import { I18nProvider } from "@serverlessworkflow/i18n";
+import { en } from "../../../src/i18n/locales/en";
 
 describe("Diagram Component", () => {
   afterEach(() => {
@@ -27,7 +30,11 @@ describe("Diagram Component", () => {
   it("render Diagram component and canvas", () => {
     render(
       <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
-        <Diagram />
+        <I18nProvider locale="en" dictionaries={{ en }}>
+          <SidebarProvider>
+            <Diagram />
+          </SidebarProvider>
+        </I18nProvider>
       </DiagramEditorContextProvider>,
     );
 

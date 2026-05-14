@@ -23,6 +23,12 @@ const workflowExample = `document:
   namespace: examples
   name: accumulate-room-readings
   version: '0.1.0'
+  title: "Test Workflow Title"
+  summary: "A test workflow with metadata"
+  tags:
+    iot: Internet of Things
+    sensors: Sensor data
+    readings: Room readings
 do:
   - consumeReading:
       listen:

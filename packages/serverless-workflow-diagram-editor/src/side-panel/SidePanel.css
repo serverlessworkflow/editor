@@ -1,0 +1,189 @@
+/*
+ * Copyright 2021-Present The Serverless Workflow Specification Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@reference "../styles.css";
+
+@layer side-panel {
+  /* Header title group */
+  .dec-root .dec-sidebar-header-title {
+    @apply dec:flex dec:items-center dec:gap-2;
+  }
+
+  .dec-root .dec-sidebar-header-icon {
+    @apply dec:h-5 dec:w-5 dec:text-gray-700;
+  }
+
+  .dec-root.dark .dec-sidebar-header-icon {
+    @apply dec:text-gray-300;
+  }
+
+  .dec-root .dec-sidebar-header-labels {
+    @apply dec:flex dec:flex-col;
+  }
+
+  .dec-root .dec-sidebar-header-name {
+    @apply dec:text-base dec:font-bold dec:text-gray-900 dec:leading-tight;
+  }
+
+  .dec-root.dark .dec-sidebar-header-name {
+    @apply dec:text-gray-100;
+  }
+
+  .dec-root .dec-sidebar-header-subtitle {
+    @apply dec:text-[10px] dec:uppercase dec:text-gray-500 dec:tracking-wider;
+  }
+
+  .dec-root.dark .dec-sidebar-header-subtitle {
+    @apply dec:text-gray-400;
+  }
+
+  /* Select-node hint */
+  .dec-root .dec-sidebar-hint {
+    @apply dec:flex dec:items-start dec:gap-2 dec:rounded-md
+      dec:bg-gray-100 dec:px-3 dec:py-2 dec:mb-4;
+  }
+
+  .dec-root.dark .dec-sidebar-hint {
+    @apply dec:bg-gray-800;
+  }
+
+  .dec-root .dec-sidebar-hint-icon {
+    @apply dec:h-4 dec:w-4 dec:text-gray-400 dec:mt-0.5 dec:shrink-0;
+  }
+
+  .dec-root.dark .dec-sidebar-hint-icon {
+    @apply dec:text-gray-500;
+  }
+
+  .dec-root .dec-sidebar-hint-text {
+    @apply dec:text-xs dec:text-gray-400;
+  }
+
+  .dec-root.dark .dec-sidebar-hint-text {
+    @apply dec:text-gray-500;
+  }
+
+  /* Section headers */
+  .dec-root .dec-sidebar-section-header {
+    @apply dec:mb-2 dec:mt-1;
+  }
+
+  .dec-root .dec-sidebar-section-title {
+    @apply dec:text-[11px] dec:font-semibold dec:uppercase dec:tracking-wider
+      dec:text-gray-500;
+  }
+
+  .dec-root.dark .dec-sidebar-section-title {
+    @apply dec:text-gray-400;
+  }
+
+  .dec-root .dec-sidebar-section-divider {
+    @apply dec:mt-1 dec:border-t dec:border-gray-200;
+  }
+
+  .dec-root.dark .dec-sidebar-section-divider {
+    @apply dec:border-gray-700;
+  }
+
+  /* Inline field (key-value row) */
+  .dec-root .dec-sidebar-inline-field {
+    @apply dec:flex dec:justify-between dec:items-baseline
+      dec:py-1.5 dec:px-1 dec:rounded-sm
+      dec:border-b dec:border-gray-100
+      dec:transition-colors;
+  }
+
+  .dec-root .dec-sidebar-inline-field:hover {
+    @apply dec:bg-gray-100/60;
+  }
+
+  .dec-root.dark .dec-sidebar-inline-field {
+    @apply dec:border-gray-800;
+  }
+
+  .dec-root.dark .dec-sidebar-inline-field:hover {
+    @apply dec:bg-gray-800/40;
+  }
+
+  .dec-root .dec-sidebar-field-label {
+    @apply dec:text-sm dec:text-gray-500;
+  }
+
+  .dec-root.dark .dec-sidebar-field-label {
+    @apply dec:text-gray-400;
+  }
+
+  .dec-root .dec-sidebar-field-value {
+    @apply dec:text-sm dec:font-semibold dec:text-gray-900;
+  }
+
+  .dec-root.dark .dec-sidebar-field-value {
+    @apply dec:text-gray-100;
+  }
+
+  /* Stacked field (label above value) */
+  .dec-root .dec-sidebar-stacked-field {
+    @apply dec:py-1.5;
+  }
+
+  .dec-root .dec-sidebar-stacked-label {
+    @apply dec:text-[11px] dec:uppercase dec:tracking-wider dec:text-gray-500 dec:mb-0.5;
+  }
+
+  .dec-root.dark .dec-sidebar-stacked-label {
+    @apply dec:text-gray-400;
+  }
+
+  .dec-root .dec-sidebar-stacked-value {
+    @apply dec:text-sm dec:font-semibold dec:text-gray-900 dec:break-words;
+  }
+
+  .dec-root.dark .dec-sidebar-stacked-value {
+    @apply dec:text-gray-100;
+  }
+
+  /* Tags */
+  .dec-root .dec-sidebar-tags-field {
+    @apply dec:py-1.5;
+  }
+
+  .dec-root .dec-sidebar-tags-label {
+    @apply dec:text-[11px] dec:uppercase dec:tracking-wider dec:text-gray-500 dec:mb-1;
+  }
+
+  .dec-root.dark .dec-sidebar-tags-label {
+    @apply dec:text-gray-400;
+  }
+
+  .dec-root .dec-sidebar-tags-list {
+    @apply dec:flex dec:flex-wrap dec:gap-1;
+  }
+
+  .dec-root .dec-sidebar-tag {
+    @apply dec:inline-flex dec:items-center dec:rounded-full
+      dec:bg-gray-100 dec:px-2 dec:py-0.5
+      dec:text-xs dec:text-gray-700;
+  }
+
+  .dec-root.dark .dec-sidebar-tag {
+    @apply dec:bg-gray-700 dec:text-gray-300;
+  }
+
+  /* Section spacer */
+  .dec-root .dec-sidebar-section-spacer {
+    @apply dec:mt-4;
+  }
+}

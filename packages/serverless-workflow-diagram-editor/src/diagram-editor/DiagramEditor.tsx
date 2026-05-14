@@ -23,6 +23,8 @@ import { useDiagramEditorContext } from "../store/DiagramEditorContext";
 import { ParsingErrorPage } from "./error-pages/ParsingErrorPage";
 import { ColorMode, ResolvedColorMode } from "../types/colorMode";
 import { useResolvedColorMode } from "../hooks/useResolvedColorMode";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidePanel } from "@/side-panel/SidePanel";
 
 /**
  * DiagramEditor component API
@@ -91,11 +93,16 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
         locale={locale}
       >
         <I18nProvider locale={locale} dictionaries={dictionaries}>
-          <DiagramEditorContent
-            diagramRef={diagramRef}
-            diagramDivRef={diagramDivRef}
-            colorMode={resolvedColorMode}
-          />
+          <SidebarProvider defaultOpen={false}>
+            <div className="dec-diagram-content">
+              <DiagramEditorContent
+                diagramRef={diagramRef}
+                diagramDivRef={diagramDivRef}
+                colorMode={resolvedColorMode}
+              />
+            </div>
+            <SidePanel />
+          </SidebarProvider>
         </I18nProvider>
       </DiagramEditorContextProvider>
     </div>

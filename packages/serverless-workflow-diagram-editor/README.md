@@ -40,6 +40,52 @@ pnpm run build:storybook
 pnpm run start
 ```
 
+## shadcn/ui
+
+This package uses [shadcn/ui](https://ui.shadcn.com/) for UI primitives. Configuration lives in `components.json` at the package root.
+
+### Key settings
+
+- **Style**: `new-york` — compact spacing and sharper corners
+- **Tailwind prefix**: `dec:` — all generated classes are prefixed to avoid conflicts with host applications
+- **CSS target**: `src/components/ui/shadcn.css` — where shadcn injects its CSS variables
+- **Path aliases**: `@/components`, `@/lib`, `@/hooks` — resolved via `tsconfig.json` paths and Vite's `tsconfigPaths`
+- **Icon library**: `lucide` (generates `lucide-react` imports)
+
+### Adding a new shadcn component
+
+The shadcn CLI doesn't understand pnpm catalogs, so adding a component requires a manual step.
+
+1. **Generate the component**
+
+   ```bash
+   cd packages/serverless-workflow-diagram-editor
+   pnpm dlx shadcn@latest add <component>
+   ```
+
+   This creates the component in `src/components/ui/` and adds any new dependencies (e.g. `@radix-ui/*`) to `package.json` with a pinned version.
+
+2. **Move the dependency to the pnpm catalog**
+
+   The CLI writes something like `"@radix-ui/react-tooltip": "^1.2.3"` directly into `package.json`. To follow the workspace convention:
+   - Add the package and version to the `catalog:` section in the **root** `pnpm-workspace.yaml`
+   - Replace the pinned version in the editor's `package.json` with `"catalog:"`
+
+3. **Verify consistency**
+
+   ```bash
+   # From the repo root
+   pnpm dependencies:check
+   ```
+
+   This runs syncpack to confirm all workspace packages use the catalog. If you missed a dependency, run `pnpm dependencies:fix`.
+
+4. **Install**
+
+   ```bash
+   pnpm install
+   ```
+
 ## Package Structure
 
 ```

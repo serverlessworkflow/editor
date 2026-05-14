@@ -44,7 +44,10 @@
     "@serverlessworkflow/i18n": "workspace:*",
     "@serverlessworkflow/sdk": "catalog:",
     "@xyflow/react": "catalog:",
-    "js-yaml": "catalog:"
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "js-yaml": "catalog:",
+    "radix-ui": "catalog:"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "catalog:",

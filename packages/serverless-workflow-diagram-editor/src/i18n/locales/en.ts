@@ -18,6 +18,19 @@ export const en = {
   "workflowError.title": "Workflow Error",
   "workflowError.default": "There was an error loading the workflow.",
   "workflowError.parsing.title": "Parsing Error",
+  "sidebar.toggle": "Toggle sidebar",
+  "sidebar.workflow": "Workflow",
+  "sidebar.document": "Document",
+  "sidebar.selectNode": "Select a node to view its details.",
+  "sidebar.sectionDocument": "Document",
+  "sidebar.sectionMetadata": "Metadata",
+  "sidebar.name": "Name",
+  "sidebar.version": "Version",
+  "sidebar.namespace": "Namespace",
+  "sidebar.dsl": "DSL",
+  "sidebar.title": "Title",
+  "sidebar.summary": "Summary",
+  "sidebar.tags": "Tags",
 } as const;
 
 export type TranslationKeys = keyof typeof en;
