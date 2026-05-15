@@ -15,25 +15,9 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { FlatGraph, FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
+import { FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
 import { getNodesByType, fixNodesConnections } from "../../src/core/graph";
-
-function createFlatGraph(
-  nodes: FlatGraphNode[],
-  edges: Array<{ id: string; sourceId: string; targetId: string; label: string }>,
-): FlatGraph {
-  const entryNode = nodes.find((n) => n.type === GraphNodeType.Entry);
-  const exitNode = nodes.find((n) => n.type === GraphNodeType.Exit);
-
-  return {
-    id: "root",
-    type: GraphNodeType.Do,
-    nodes,
-    edges,
-    entryNode,
-    exitNode,
-  } as FlatGraph;
-}
+import { createFlatGraph } from "../test-utils/graph-helpers";
 
 describe("graph utils", () => {
   describe("getNodesByType", () => {
