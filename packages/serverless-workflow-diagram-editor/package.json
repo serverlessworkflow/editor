@@ -46,6 +46,7 @@
     "@xyflow/react": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "elkjs": "catalog:",
     "js-yaml": "catalog:",
     "radix-ui": "catalog:"
   },
