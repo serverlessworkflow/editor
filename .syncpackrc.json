@@ -1,11 +1,22 @@
 {
-  "$schema": "https://unpkg.com/syncpack@14.2.0/dist/schema.json",
+  "$schema": "./node_modules/syncpack/schema.json",
+  "customTypes": {
+    "packageVersion": {
+      "strategy": "version",
+      "path": "version"
+    }
+  },
   "versionGroups": [
     {
       "label": "Use workspace protocol for local packages",
       "dependencies": ["$LOCAL"],
       "dependencyTypes": ["prod", "dev"],
       "pinVersion": "workspace:*"
+    },
+    {
+      "label": "Package versions must be consistent across packages",
+      "dependencyTypes": ["packageVersion"],
+      "policy": "sameRange"
     },
     {
       "label": "Peer deps must be consistent across packages",

@@ -115,9 +115,16 @@ If you're unsure whether your use of agents/LLMs is acceptable — ask! We're ha
 1. **Fork** the repository and create your branch from `main`.
 2. **Commit** your changes with clear, descriptive messages.
 3. **Verify** your changes by running the appropriate build and/or test commands for the packages you modified.
-4. **Submit** a Pull Request (PR).
-5. **DCO Sign-off**: As a CNCF project, all commits must be signed off (`git commit -s`) to certify the Developer Certificate of Origin.
-6. **Review**: At least one maintainer must review and approve your PR before it is merged.
+4. If your PR changes a package, run `pnpm changeset` and commit the generated `.changeset/*.md` file.  
+   As an alternative you may prefer to compare against upstream explicitly:
+
+   ```bash
+   pnpm changeset --since upstream/main
+   ```
+
+5. **Submit** a Pull Request (PR).
+6. **DCO Sign-off**: As a CNCF project, all commits must be signed off (`git commit -s`) to certify the Developer Certificate of Origin.
+7. **Review**: At least one maintainer must review and approve your PR before it is merged.
 
 ---
 

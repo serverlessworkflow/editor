@@ -1,0 +1,8 @@
+{
+  "changelog": ["@changesets/changelog-github", { "repo": "serverlessworkflow/editor" }],
+  "commit": false,
+  "fixed": [["@serverlessworkflow/*"]],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch"
+}
