@@ -15,13 +15,18 @@
  */
 
 import * as RF from "@xyflow/react";
-import { GraphEdgeType, WayPoints } from "../../core";
+import type { WayPoints } from "../diagram/autoLayout";
 
-// Edge types must match GraphEdgeType enum
-export const EdgeTypes: RF.EdgeTypes = {
-  [GraphEdgeType.Default]: DefaultEdge,
-  [GraphEdgeType.Error]: ErrorEdge,
-  [GraphEdgeType.Condition]: ConditionEdge,
+export enum EdgeTypes {
+  Default = "default",
+  Error = "error",
+  Condition = "condition",
+}
+
+export const ReactFlowEdgeTypes: RF.EdgeTypes = {
+  [EdgeTypes.Default]: DefaultEdge,
+  [EdgeTypes.Error]: ErrorEdge,
+  [EdgeTypes.Condition]: ConditionEdge,
 };
 
 export type BaseEdgeData = {
@@ -34,7 +39,7 @@ export type EdgeLabelProps = {
   sourceY: number;
   targetX: number;
   targetY: number;
-  type?: GraphEdgeType;
+  type?: EdgeTypes;
   data?: BaseEdgeData | undefined;
 };
 
@@ -113,7 +118,7 @@ function CustomBaseEdge({
 }
 
 /* Default Edge */
-export type DefaultEdgeType = RF.Edge<BaseEdgeData, typeof GraphEdgeType.Default>;
+export type DefaultEdgeType = RF.Edge<BaseEdgeData, typeof EdgeTypes.Default>;
 export function DefaultEdge(props: RF.EdgeProps<DefaultEdgeType>) {
   return (
     <>
@@ -124,7 +129,7 @@ export function DefaultEdge(props: RF.EdgeProps<DefaultEdgeType>) {
 }
 
 /* Error Edge */
-export type ErrorEdgeType = RF.Edge<BaseEdgeData, typeof GraphEdgeType.Error>;
+export type ErrorEdgeType = RF.Edge<BaseEdgeData, typeof EdgeTypes.Error>;
 export function ErrorEdge(props: RF.EdgeProps<ErrorEdgeType>) {
   return (
     <>
@@ -135,7 +140,7 @@ export function ErrorEdge(props: RF.EdgeProps<ErrorEdgeType>) {
 }
 
 /* Condition Edge */
-export type ConditionEdgeType = RF.Edge<BaseEdgeData, typeof GraphEdgeType.Condition>;
+export type ConditionEdgeType = RF.Edge<BaseEdgeData, typeof EdgeTypes.Condition>;
 export function ConditionEdge(props: RF.EdgeProps<ConditionEdgeType>) {
   return (
     <>

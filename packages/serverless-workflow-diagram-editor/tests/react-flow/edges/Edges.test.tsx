@@ -16,12 +16,13 @@
 
 import { vi, it, expect, afterEach, describe } from "vitest";
 import { render } from "@testing-library/react";
-import { GraphEdgeType } from "../../../src/core/graph";
+
 import {
   ConditionEdge,
   DefaultEdge,
   EdgeLabel,
   EdgeTypes,
+  ReactFlowEdgeTypes,
   ErrorEdge,
   createPathFromWayPoints,
 } from "../../../src/react-flow/edges/Edges";
@@ -32,11 +33,11 @@ describe("React Flow custom edge types", () => {
     vi.restoreAllMocks();
   });
 
-  it("exports all edge types from GraphEdgeType enum", () => {
-    expect(EdgeTypes).toHaveProperty(GraphEdgeType.Default);
-    expect(EdgeTypes).toHaveProperty(GraphEdgeType.Error);
-    expect(EdgeTypes).toHaveProperty(GraphEdgeType.Condition);
-    expect(Object.keys(EdgeTypes)).toHaveLength(3);
+  it("exports all edge types from EdgeTypes enum", () => {
+    expect(ReactFlowEdgeTypes).toHaveProperty(EdgeTypes.Default);
+    expect(ReactFlowEdgeTypes).toHaveProperty(EdgeTypes.Error);
+    expect(ReactFlowEdgeTypes).toHaveProperty(EdgeTypes.Condition);
+    expect(Object.keys(ReactFlowEdgeTypes)).toHaveLength(3);
   });
 
   it.each([
@@ -222,9 +223,9 @@ describe("EdgeLabel component", () => {
   });
 
   it.each([
-    { edgeType: GraphEdgeType.Default, description: "default" },
-    { edgeType: GraphEdgeType.Error, description: "error" },
-    { edgeType: GraphEdgeType.Condition, description: "condition" },
+    { edgeType: EdgeTypes.Default, description: "default" },
+    { edgeType: EdgeTypes.Error, description: "error" },
+    { edgeType: EdgeTypes.Condition, description: "condition" },
   ])("edge label $description", ({ edgeType }) => {
     const result = EdgeLabel({
       sourceX: 0,

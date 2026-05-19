@@ -62,7 +62,7 @@ jobs:
           pnpm -r exec node -e "process.exit(require('./package.json').version === '0.0.0' ? 0 : 1)"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]' && '--no-frozen-lockfile' || '' }}
 
       - name: Install Playwright browsers
         run: pnpm playwright:install:ci

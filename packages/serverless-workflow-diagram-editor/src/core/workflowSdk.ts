@@ -16,7 +16,7 @@
 
 import yaml from "js-yaml";
 import * as sdk from "@serverlessworkflow/sdk";
-import { ExtendedGraph, solveEdgeTypes } from "./graph";
+import { fixNodesConnections } from "./graph";
 
 export type WorkflowParseResult = {
   model: sdk.Specification.Workflow | null;
@@ -55,6 +55,6 @@ export function parseWorkflow(text: string): WorkflowParseResult {
   return { model, errors };
 }
 
-export function buildGraph(model: sdk.Specification.Workflow): ExtendedGraph {
-  return solveEdgeTypes(sdk.buildGraph(model));
+export function buildFlatGraph(model: sdk.Specification.Workflow): sdk.FlatGraph {
+  return fixNodesConnections(sdk.buildFlatGraph(model));
 }

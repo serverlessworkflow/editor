@@ -1,57 +1,279 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`buildGraph > returns a loaded extended graph object from model 1`] = `
+exports[`buildFlatGraph > returns a loaded extended graph object from model 1`] = `
 {
   "edges": [
     {
-      "destinationId": "root-exit-node",
       "id": "/do/4/step5-root-exit-node",
       "label": "",
       "sourceId": "/do/4/step5",
-      "type": "default",
+      "targetId": "root-exit-node",
     },
     {
-      "destinationId": "/do/4/step5",
       "id": "/do/3/step4-/do/4/step5",
       "label": "",
       "sourceId": "/do/3/step4",
-      "type": "default",
+      "targetId": "/do/4/step5",
     },
     {
-      "destinationId": "/do/3/step4",
       "id": "/do/2/step3-/do/3/step4",
       "label": "",
       "sourceId": "/do/2/step3",
-      "type": "default",
+      "targetId": "/do/3/step4",
     },
     {
-      "destinationId": "/do/2/step3",
       "id": "/do/1/step2-/do/2/step3",
       "label": "",
       "sourceId": "/do/1/step2",
-      "type": "default",
+      "targetId": "/do/2/step3",
     },
     {
-      "destinationId": "/do/1/step2",
       "id": "/do/0/step1-/do/1/step2",
       "label": "",
       "sourceId": "/do/0/step1",
-      "type": "default",
+      "targetId": "/do/1/step2",
     },
     {
-      "destinationId": "/do/0/step1",
       "id": "root-entry-node-/do/0/step1",
       "label": "",
       "sourceId": "root-entry-node",
-      "type": "default",
+      "targetId": "/do/0/step1",
     },
   ],
   "entryNode": {
     "id": "root-entry-node",
+    "parent": {
+      "edges": [
+        {
+          "id": "/do/4/step5-root-exit-node",
+          "label": "",
+          "sourceId": "/do/4/step5",
+          "targetId": "root-exit-node",
+        },
+        {
+          "id": "/do/3/step4-/do/4/step5",
+          "label": "",
+          "sourceId": "/do/3/step4",
+          "targetId": "/do/4/step5",
+        },
+        {
+          "id": "/do/2/step3-/do/3/step4",
+          "label": "",
+          "sourceId": "/do/2/step3",
+          "targetId": "/do/3/step4",
+        },
+        {
+          "id": "/do/1/step2-/do/2/step3",
+          "label": "",
+          "sourceId": "/do/1/step2",
+          "targetId": "/do/2/step3",
+        },
+        {
+          "id": "/do/0/step1-/do/1/step2",
+          "label": "",
+          "sourceId": "/do/0/step1",
+          "targetId": "/do/1/step2",
+        },
+        {
+          "id": "root-entry-node-/do/0/step1",
+          "label": "",
+          "sourceId": "root-entry-node",
+          "targetId": "/do/0/step1",
+        },
+      ],
+      "entryNode": [Circular],
+      "exitNode": {
+        "id": "root-exit-node",
+        "parent": [Circular],
+        "type": "end",
+      },
+      "id": "root",
+      "label": undefined,
+      "nodes": [
+        [Circular],
+        {
+          "id": "root-exit-node",
+          "parent": [Circular],
+          "type": "end",
+        },
+        {
+          "id": "/do/0/step1",
+          "label": "step1",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "first task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/1/step2",
+          "label": "step2",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "second task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/2/step3",
+          "label": "step3",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "third task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/3/step4",
+          "label": "step4",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "fourth task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/4/step5",
+          "label": "step5",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "fifth task",
+            },
+          },
+          "type": "set",
+        },
+      ],
+      "parent": undefined,
+      "task": undefined,
+      "type": "root",
+    },
     "type": "start",
   },
   "exitNode": {
     "id": "root-exit-node",
+    "parent": {
+      "edges": [
+        {
+          "id": "/do/4/step5-root-exit-node",
+          "label": "",
+          "sourceId": "/do/4/step5",
+          "targetId": "root-exit-node",
+        },
+        {
+          "id": "/do/3/step4-/do/4/step5",
+          "label": "",
+          "sourceId": "/do/3/step4",
+          "targetId": "/do/4/step5",
+        },
+        {
+          "id": "/do/2/step3-/do/3/step4",
+          "label": "",
+          "sourceId": "/do/2/step3",
+          "targetId": "/do/3/step4",
+        },
+        {
+          "id": "/do/1/step2-/do/2/step3",
+          "label": "",
+          "sourceId": "/do/1/step2",
+          "targetId": "/do/2/step3",
+        },
+        {
+          "id": "/do/0/step1-/do/1/step2",
+          "label": "",
+          "sourceId": "/do/0/step1",
+          "targetId": "/do/1/step2",
+        },
+        {
+          "id": "root-entry-node-/do/0/step1",
+          "label": "",
+          "sourceId": "root-entry-node",
+          "targetId": "/do/0/step1",
+        },
+      ],
+      "entryNode": {
+        "id": "root-entry-node",
+        "parent": [Circular],
+        "type": "start",
+      },
+      "exitNode": [Circular],
+      "id": "root",
+      "label": undefined,
+      "nodes": [
+        {
+          "id": "root-entry-node",
+          "parent": [Circular],
+          "type": "start",
+        },
+        [Circular],
+        {
+          "id": "/do/0/step1",
+          "label": "step1",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "first task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/1/step2",
+          "label": "step2",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "second task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/2/step3",
+          "label": "step3",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "third task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/3/step4",
+          "label": "step4",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "fourth task",
+            },
+          },
+          "type": "set",
+        },
+        {
+          "id": "/do/4/step5",
+          "label": "step5",
+          "parent": [Circular],
+          "task": {
+            "set": {
+              "variable": "fifth task",
+            },
+          },
+          "type": "set",
+        },
+      ],
+      "parent": undefined,
+      "task": undefined,
+      "type": "root",
+    },
     "type": "end",
   },
   "id": "root",
@@ -59,39 +281,76 @@ exports[`buildGraph > returns a loaded extended graph object from model 1`] = `
   "nodes": [
     {
       "id": "root-entry-node",
+      "label": undefined,
+      "parentId": "root",
+      "task": undefined,
       "type": "start",
     },
     {
       "id": "root-exit-node",
+      "label": undefined,
+      "parentId": "root",
+      "task": undefined,
       "type": "end",
     },
     {
       "id": "/do/0/step1",
       "label": "step1",
+      "parentId": "root",
+      "task": {
+        "set": {
+          "variable": "first task",
+        },
+      },
       "type": "set",
     },
     {
       "id": "/do/1/step2",
       "label": "step2",
+      "parentId": "root",
+      "task": {
+        "set": {
+          "variable": "second task",
+        },
+      },
       "type": "set",
     },
     {
       "id": "/do/2/step3",
       "label": "step3",
+      "parentId": "root",
+      "task": {
+        "set": {
+          "variable": "third task",
+        },
+      },
       "type": "set",
     },
     {
       "id": "/do/3/step4",
       "label": "step4",
+      "parentId": "root",
+      "task": {
+        "set": {
+          "variable": "fourth task",
+        },
+      },
       "type": "set",
     },
     {
       "id": "/do/4/step5",
       "label": "step5",
+      "parentId": "root",
+      "task": {
+        "set": {
+          "variable": "fifth task",
+        },
+      },
       "type": "set",
     },
   ],
   "parent": undefined,
+  "task": undefined,
   "type": "root",
 }
 `;
@@ -99,18 +358,18 @@ exports[`buildGraph > returns a loaded extended graph object from model 1`] = `
 exports[`parseWorkflow > parses valid 'JSON' and returns model with no errors 1`] = `
 {
   "errors": [],
-  "model": t {
-    "do": t [
-      t {
-        "step1": t {
-          "set": t {
+  "model": Workflow {
+    "do": TaskList [
+      TaskItem {
+        "step1": Task {
+          "set": {
             "variable": "my first workflow",
           },
         },
       },
     ],
-    "document": t {
-      "dsl": "1.0.0",
+    "document": Document {
+      "dsl": "1.0.3",
       "name": "valid-workflow-json",
       "namespace": "default",
       "version": "1.0.0",
@@ -122,18 +381,18 @@ exports[`parseWorkflow > parses valid 'JSON' and returns model with no errors 1`
 exports[`parseWorkflow > parses valid 'YAML' and returns model with no errors 1`] = `
 {
   "errors": [],
-  "model": t {
-    "do": t [
-      t {
-        "step1": t {
-          "set": t {
+  "model": Workflow {
+    "do": TaskList [
+      TaskItem {
+        "step1": Task {
+          "set": {
             "variable": "my first workflow",
           },
         },
       },
     ],
-    "document": t {
-      "dsl": "1.0.0",
+    "document": Document {
+      "dsl": "1.0.3",
       "name": "valid-workflow-yaml",
       "namespace": "default",
       "version": "1.0.0",
@@ -145,13 +404,13 @@ exports[`parseWorkflow > parses valid 'YAML' and returns model with no errors 1`
 exports[`parseWorkflow > returns model and errors for invalid but parseable 'JSON' 1`] = `
 {
   "errors": [
-    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
   ],
-  "model": t {
-    "do": t [
-      t {
-        "step1": t {
-          "set": t {
+  "model": Workflow {
+    "do": TaskList [
+      TaskItem {
+        "step1": Task {
+          "set": {
             "variable": "my first invalid json workflow",
           },
         },
@@ -164,13 +423,13 @@ exports[`parseWorkflow > returns model and errors for invalid but parseable 'JSO
 exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAML' 1`] = `
 {
   "errors": [
-    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
   ],
-  "model": t {
-    "do": t [
-      t {
-        "step1": t {
-          "set": t {
+  "model": Workflow {
+    "do": TaskList [
+      TaskItem {
+        "step1": Task {
+          "set": {
             "variable": "my first invalid yaml workflow",
           },
         },
@@ -182,6 +441,6 @@ exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAM
 
 exports[`validateWorkflow > returns errors for an invalid workflow 1`] = `
 [
-  [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.0'.],
+  [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
 ]
 `;

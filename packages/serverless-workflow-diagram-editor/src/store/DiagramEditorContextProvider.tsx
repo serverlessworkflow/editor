@@ -18,6 +18,7 @@ import * as React from "react";
 import { parseWorkflow } from "../core";
 import { DiagramEditorProps } from "../diagram-editor/DiagramEditor";
 import { DiagramEditorContext, DiagramEditorContextType } from "./DiagramEditorContext";
+import type * as RF from "@xyflow/react";
 
 export type ContextProviderProps = Omit<DiagramEditorProps, "ref">;
 
@@ -27,22 +28,16 @@ export const DiagramEditorContextProvider = (
   // Initialize states with props values
   const [isReadOnly, setIsReadOnly] = React.useState<boolean>(props.isReadOnly);
   const [locale, setLocale] = React.useState<string>(props.locale);
+  const [nodes, setNodes] = React.useState([] as RF.Node[]);
+  const [edges, setEdges] = React.useState([] as RF.Edge[]);
 
   const { model, errors } = React.useMemo(() => parseWorkflow(props.content), [props.content]);
 
-  const updateIsReadOnly = React.useCallback((isReadOnly: boolean) => {
-    setIsReadOnly(isReadOnly);
-  }, []);
-
-  const updateLocale = React.useCallback((locale: string) => {
-    setLocale(locale);
-  }, []);
-
   // Update states on props changes
   React.useEffect(() => {
-    updateIsReadOnly(props.isReadOnly);
-    updateLocale(props.locale);
-  }, [props.isReadOnly, props.locale, updateIsReadOnly, updateLocale]);
+    setIsReadOnly(props.isReadOnly);
+    setLocale(props.locale);
+  }, [props.isReadOnly, props.locale, setIsReadOnly, setLocale]);
 
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(
@@ -51,10 +46,14 @@ export const DiagramEditorContextProvider = (
       locale,
       model,
       errors,
-      updateIsReadOnly,
-      updateLocale,
+      nodes,
+      edges,
+      setIsReadOnly,
+      setLocale,
+      setNodes,
+      setEdges,
     }),
-    [isReadOnly, locale, model, errors, updateIsReadOnly, updateLocale],
+    [isReadOnly, locale, model, errors, nodes, edges, setIsReadOnly, setLocale, setNodes, setEdges],
   );
 
   return (

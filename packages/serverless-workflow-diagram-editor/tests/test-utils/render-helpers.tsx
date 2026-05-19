@@ -20,6 +20,7 @@ import {
   DiagramEditorContext,
   type DiagramEditorContextType,
 } from "../../src/store/DiagramEditorContext";
+import { SidebarProvider } from "../../src/components/ui/sidebar";
 import { en } from "../../src/i18n/locales/en";
 
 const noop = () => {};
@@ -35,19 +36,18 @@ export const createMockContextValue = (
   locale: "en",
   model: null,
   errors: [],
-  updateIsReadOnly: noop,
-  updateLocale: noop,
+  nodes: [],
+  edges: [],
+  setIsReadOnly: noop,
+  setLocale: noop,
+  setEdges: noop,
+  setNodes: noop,
   ...overrides,
 });
 
 /**
- * Render function that wraps components with providers.
- * Includes DiagramEditorContext and I18nProvider with default English translations.
- * Example usage:
- * renderWithProviders(<MyComponent />, {
- *   errors: [new Error("Test error")],
- *   isReadOnly: false
- * });
+ * Render function that wraps components with all providers.
+ * Includes DiagramEditorContext, I18nProvider, and SidebarProvider.
  */
 export const renderWithProviders = (
   ui: React.ReactElement,
@@ -59,7 +59,7 @@ export const renderWithProviders = (
   return render(
     <DiagramEditorContext.Provider value={mockContext}>
       <I18nProvider locale={mockContext.locale} dictionaries={{ en }}>
-        {ui}
+        <SidebarProvider defaultOpen={true}>{ui}</SidebarProvider>
       </I18nProvider>
     </DiagramEditorContext.Provider>,
     renderOptions,

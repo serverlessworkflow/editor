@@ -15,16 +15,28 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { vi, test, expect, afterEach, describe } from "vitest";
+import { vi, it, expect, afterEach, describe } from "vitest";
 import { Diagram } from "../../../src/react-flow/diagram/Diagram";
+import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorContextProvider";
+import { SidebarProvider } from "../../../src/components/ui/sidebar";
+import { I18nProvider } from "@serverlessworkflow/i18n";
+import { en } from "../../../src/i18n/locales/en";
 
 describe("Diagram Component", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test("render Diagram component and canvas", () => {
-    render(<Diagram />);
+  it("render Diagram component and canvas", () => {
+    render(
+      <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+        <I18nProvider locale="en" dictionaries={{ en }}>
+          <SidebarProvider>
+            <Diagram />
+          </SidebarProvider>
+        </I18nProvider>
+      </DiagramEditorContextProvider>,
+    );
 
     const diagram = screen.getByTestId("diagram-container");
     const canvas = screen.getByTestId("react-flow-canvas");

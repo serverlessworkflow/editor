@@ -32,6 +32,7 @@
     "typescript": "catalog:"
   },
   "lint-staged": {
+    "pnpm-lock.yaml": [],
     "*.{ts,tsx,js,jsx,json,md,yml,yaml}": [
       "pnpm format"
     ]

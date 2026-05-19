@@ -15,12 +15,14 @@
  */
 
 /* layer order (Priority: lowest -> highest) */
-@layer base, 
-  react-flow-overrides, 
+@layer base,
+  side-panel,
+  react-flow-overrides,
   custom-nodes,
   custom-edge-labels;
 
-@import "tailwindcss" prefix(dec);
+@import 'tailwindcss' prefix(dec);
+@import './components/ui/shadcn.css';
 
 @custom-variant dark (&:where(.dec-root.dark, .dec-root.dark *));
 
@@ -42,5 +44,9 @@
 @layer base {
   .dec-root {
     @apply dec:h-full;
+  }
+
+  .dec-root .dec-diagram-content {
+    @apply dec:flex-1 dec:min-w-0 dec:h-full;
   }
 }

@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-export { renderWithProviders } from "./render-helpers";
-export { t } from "./translation-helpers";
-export { createFlatGraph } from "./graph-helpers";
+import { cn } from "@/lib/utils";
+
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="skeleton"
+      className={cn("dec:animate-pulse dec:rounded-md dec:bg-accent", className)}
+      {...props}
+    />
+  );
+}
+
+export { Skeleton };
