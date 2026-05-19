@@ -17,7 +17,7 @@
 import * as React from "react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
-import { I18nProvider, detectLocale } from "@serverlessworkflow/i18n";
+import { I18nProvider, detectLocale, useI18n } from "@serverlessworkflow/i18n";
 import { dictionaries } from "../i18n/locales";
 import { useDiagramEditorContext } from "../store/DiagramEditorContext";
 import { ParsingErrorPage } from "./error-pages/ParsingErrorPage";
@@ -59,12 +59,17 @@ const DiagramEditorContent = ({
   );
 };
 
-export const DiagramEditor = (props: DiagramEditorProps) => {
-  const errorBoundaryProps = {
-    title: "workflowError.title",
-    message: "workflowError.default",
-  };
+const DiagramEditorInner = ({
+  children,
+}: {
+  children: (t: ReturnType<typeof useI18n>["t"]) => React.ReactNode;
+}) => {
+  const { t } = useI18n();
 
+  return children(t);
+};
+
+export const DiagramEditor = (props: DiagramEditorProps) => {
   // Refs
   const diagramDivRef = React.useRef<HTMLDivElement | null>(null);
   const diagramRef = React.useRef<DiagramRef | null>(null);
@@ -91,26 +96,36 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
       className={`dec-root${resolvedColorMode === "dark" ? " dark" : ""}`}
       data-testid={"dec-root"}
     >
-      <DiagramEditorErrorBoundary {...errorBoundaryProps} resetKey={props.content}>
-        <DiagramEditorContextProvider
-          content={props.content}
-          isReadOnly={props.isReadOnly}
-          locale={locale}
-        >
-          <I18nProvider locale={locale} dictionaries={dictionaries}>
-            <SidebarProvider defaultOpen={false}>
-              <div className="dec-diagram-content">
-                <DiagramEditorContent
-                  diagramRef={diagramRef}
-                  diagramDivRef={diagramDivRef}
-                  colorMode={resolvedColorMode}
-                />
-              </div>
-              <SidePanel />
-            </SidebarProvider>
-          </I18nProvider>
-        </DiagramEditorContextProvider>
-      </DiagramEditorErrorBoundary>
+      <I18nProvider locale={locale} dictionaries={dictionaries}>
+        <DiagramEditorInner>
+          {(t) => {
+            const errorBoundaryProps = {
+              title: "workflowError.title",
+              message: t("workflowError.default"),
+            };
+            return (
+              <DiagramEditorErrorBoundary {...errorBoundaryProps} resetKey={props.content}>
+                <DiagramEditorContextProvider
+                  content={props.content}
+                  isReadOnly={props.isReadOnly}
+                  locale={locale}
+                >
+                  <SidebarProvider defaultOpen={false}>
+                    <div className="dec-diagram-content">
+                      <DiagramEditorContent
+                        diagramRef={diagramRef}
+                        diagramDivRef={diagramDivRef}
+                        colorMode={resolvedColorMode}
+                      />
+                    </div>
+                    <SidePanel />
+                  </SidebarProvider>
+                </DiagramEditorContextProvider>
+              </DiagramEditorErrorBoundary>
+            );
+          }}
+        </DiagramEditorInner>
+      </I18nProvider>
     </div>
   );
 };
