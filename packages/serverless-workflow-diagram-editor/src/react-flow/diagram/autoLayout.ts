@@ -102,30 +102,46 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
   };
 }
 
+// Helper function to recursively build a flat map of all ELK nodes
+function buildElkNodeMap(
+  elkNode: ElkNode,
+  map: Map<string, ElkNode> = new Map(),
+): Map<string, ElkNode> {
+  map.set(elkNode.id, elkNode);
+  if (elkNode.children) {
+    for (const child of elkNode.children) {
+      buildElkNodeMap(child, map);
+    }
+  }
+  return map;
+}
+
 // set
 export function matchReactFlowGraphWithElkLayoutedGraph(
   graph: ReactFlowGraph,
   layoutedGraph: ElkNode,
 ): ReactFlowGraph {
-  const graphClone = structuredClone(graph);
+  // Build flat maps for O(1) lookups
+  const elkNodeMap = buildElkNodeMap(layoutedGraph);
+  const elkEdgeMap = new Map(layoutedGraph.edges?.map((e) => [e.id, e]) || []);
 
   // Map node positions
-  const layoutedNodes = graphClone.nodes.map((node) => {
-    const elkNode = layoutedGraph.children?.find((n) => n.id === node.id);
+  const layoutedNodes = graph.nodes.map((node) => {
+    const elkNode = elkNodeMap.get(node.id);
     if (elkNode && elkNode.x !== undefined && elkNode.y !== undefined) {
       return {
         ...node,
         position: { x: elkNode.x, y: elkNode.y },
-        ...(elkNode.height && { height: elkNode.height }),
-        ...(elkNode.width && { width: elkNode.width }),
+        ...(elkNode.height !== undefined && { height: elkNode.height }),
+        ...(elkNode.width !== undefined && { width: elkNode.width }),
       };
     }
     return node;
   });
 
   // Map edge waypoints (bend points)
-  const layoutedEdges = graphClone.edges.map((edge) => {
-    const elkEdge = layoutedGraph.edges?.find((e) => e.id === edge.id);
+  const layoutedEdges = graph.edges.map((edge) => {
+    const elkEdge = elkEdgeMap.get(edge.id);
     if (elkEdge && elkEdge.sections) {
       // ELK returns sections which contain bend points. We pass these bendpoints to a custom edge.
       const bendPoints = elkEdge.sections.flatMap((section) => section.bendPoints || []);

@@ -72,12 +72,22 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
 
   // Rebuild nodes and edges as model changes
   React.useEffect(() => {
+    let isActive = true;
+
     const graph = buildDiagramElements(model);
     applyAutoLayout(graph).then(({ nodes, edges }) => {
-      setNodes(nodes);
-      setEdges(edges);
-      reactFlowInstance.fitView();
+      // Only update if this effect is still active (not cancelled by cleanup)
+      if (isActive) {
+        setNodes(nodes);
+        setEdges(edges);
+        reactFlowInstance.fitView();
+      }
     });
+
+    // Cleanup function to cancel stale updates
+    return () => {
+      isActive = false;
+    };
   }, [model, reactFlowInstance, setNodes, setEdges]);
 
   return (
