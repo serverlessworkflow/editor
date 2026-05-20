@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-import ELK from "elkjs";
+import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js";
 
 const elk = new ELK();
-const graph = {
-  id: "root",
-  children: [
-    { id: "n1", width: 100, height: 50 },
-    { id: "n2", width: 100, height: 50 },
-  ],
-  edges: [{ id: "e1", sources: ["n1"], targets: ["n2"] }],
-};
 
-elk.layout(graph).then((layoutedGraph) => {
-  console.log(layoutedGraph);
-});
+export async function processElkLayout(graph: ElkNode): Promise<ElkNode | null> {
+  try {
+    // Attempt to layout the graph
+    return await elk.layout(graph);
+  } catch (error: unknown) {
+    // Type-safe error handling
+    if (error instanceof Error) {
+      console.error("ELK Layout failed:", error.message);
+    } else {
+      console.error("An unexpected error occurred:", String(error));
+    }
+    // Return a fallback, null, or rethrow the error as needed
+    return null;
+  }
+}

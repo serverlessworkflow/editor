@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { ReactFlowProvider } from "@xyflow/react";
 import { Diagram, DiagramRef } from "../react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../store/DiagramEditorContextProvider";
 import { I18nProvider, detectLocale, useI18n } from "@serverlessworkflow/i18n";
@@ -105,22 +106,24 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
             };
             return (
               <DiagramEditorErrorBoundary {...errorBoundaryProps} resetKey={props.content}>
-                <DiagramEditorContextProvider
-                  content={props.content}
-                  isReadOnly={props.isReadOnly}
-                  locale={locale}
-                >
-                  <SidebarProvider defaultOpen={false}>
-                    <div className="dec-diagram-content">
-                      <DiagramEditorContent
-                        diagramRef={diagramRef}
-                        diagramDivRef={diagramDivRef}
-                        colorMode={resolvedColorMode}
-                      />
-                    </div>
-                    <SidePanel />
-                  </SidebarProvider>
-                </DiagramEditorContextProvider>
+                  <ReactFlowProvider>
+                    <DiagramEditorContextProvider
+                      content={props.content}
+                      isReadOnly={props.isReadOnly}
+                      locale={locale}
+                    >
+                      <SidebarProvider defaultOpen={false}>
+                        <div className="dec-diagram-content">
+                          <DiagramEditorContent
+                            diagramRef={diagramRef}
+                            diagramDivRef={diagramDivRef}
+                            colorMode={resolvedColorMode}
+                          />
+                        </div>
+                        <SidePanel />
+                      </SidebarProvider>
+                    </DiagramEditorContextProvider>
+                  </ReactFlowProvider>
               </DiagramEditorErrorBoundary>
             );
           }}

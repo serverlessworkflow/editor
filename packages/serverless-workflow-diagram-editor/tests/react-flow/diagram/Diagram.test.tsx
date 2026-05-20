@@ -21,6 +21,7 @@ import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorCo
 import { SidebarProvider } from "../../../src/components/ui/sidebar";
 import { I18nProvider } from "@serverlessworkflow/i18n";
 import { en } from "../../../src/i18n/locales/en";
+import { ReactFlowProvider } from "@xyflow/react";
 
 describe("Diagram Component", () => {
   afterEach(() => {
@@ -29,13 +30,15 @@ describe("Diagram Component", () => {
 
   it("render Diagram component and canvas", () => {
     render(
-      <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
-        <I18nProvider locale="en" dictionaries={{ en }}>
-          <SidebarProvider>
-            <Diagram />
-          </SidebarProvider>
-        </I18nProvider>
-      </DiagramEditorContextProvider>,
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
     );
 
     const diagram = screen.getByTestId("diagram-container");

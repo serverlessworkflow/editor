@@ -19,7 +19,7 @@ import { buildFlatGraph } from "../../core";
 import { BaseNodeData, CATCH_CONTAINER_NODE_TYPE, ReactFlowNodeTypes } from "../nodes/Nodes";
 import { BaseEdgeData, EdgeTypes } from "../edges/Edges";
 import * as sdk from "@serverlessworkflow/sdk";
-import { applyAutoLayout, DEFAULT_NODE_SIZE } from "./autoLayout";
+import { DEFAULT_NODE_SIZE } from "./autoLayout";
 
 export type ReactFlowGraph = {
   nodes: RF.Node[];
@@ -141,5 +141,5 @@ export function buildDiagramElements(model: sdk.Specification.Workflow | null): 
     });
   }
 
-  return applyAutoLayout({ nodes, edges });
+  return { nodes, edges };
 }

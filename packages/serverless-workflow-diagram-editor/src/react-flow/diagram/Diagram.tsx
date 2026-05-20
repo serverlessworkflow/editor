@@ -24,6 +24,7 @@ import { ReactFlowEdgeTypes } from "../edges/Edges";
 import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { applyAutoLayout } from "./autoLayout";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -45,6 +46,7 @@ export type DiagramProps = {
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
+  const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
   const { model, nodes, edges, setNodes, setEdges } = useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
@@ -70,10 +72,13 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
 
   // Rebuild nodes and edges as model changes
   React.useEffect(() => {
-    const { nodes, edges } = buildDiagramElements(model);
-    setNodes(nodes);
-    setEdges(edges);
-  }, [model, setNodes, setEdges]);
+    const graph = buildDiagramElements(model);
+    applyAutoLayout(graph).then(({ nodes, edges }) => {
+      setNodes(nodes);
+      setEdges(edges);
+      reactFlowInstance.fitView();
+    });
+  }, [model, reactFlowInstance, setNodes, setEdges]);
 
   return (
     <div ref={divRef} className="dec:h-full dec:relative" data-testid={"diagram-container"}>
