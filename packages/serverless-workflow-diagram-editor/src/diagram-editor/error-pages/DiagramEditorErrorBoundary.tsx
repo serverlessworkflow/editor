@@ -20,6 +20,7 @@ import { ErrorPage } from "./ErrorPage";
 type State = {
   hasError: boolean;
   error?: unknown;
+  resetKey: string | undefined;
 };
 
 type DiagramEditorErrorBoundaryProps = {
@@ -35,17 +36,33 @@ export class DiagramEditorErrorBoundary extends React.Component<
 > {
   constructor(props: DiagramEditorErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
+
+    this.state = {
+      hasError: false,
+      error: undefined,
+      resetKey: props.resetKey,
+    };
   }
 
-  static getDerivedStateFromError(error: unknown): State {
-    return { hasError: true, error };
+  static getDerivedStateFromError(error: unknown): Partial<State> {
+    return {
+      hasError: true,
+      error,
+    };
   }
 
-  componentDidUpdate(prevProps: DiagramEditorErrorBoundaryProps) {
-    if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
-      this.setState({ hasError: false, error: undefined });
+  static getDerivedStateFromProps(
+    props: DiagramEditorErrorBoundaryProps,
+    state: State,
+  ): Partial<State> | null {
+    if (state.hasError && props.resetKey !== state.resetKey) {
+      return {
+        hasError: false,
+        error: undefined,
+        resetKey: props.resetKey,
+      };
     }
+    return null;
   }
 
   render() {
