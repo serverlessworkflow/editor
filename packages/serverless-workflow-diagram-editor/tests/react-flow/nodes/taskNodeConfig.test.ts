@@ -27,6 +27,7 @@ const leafNodeTypes: LeafNodeType[] = [
   GraphNodeType.Set,
   GraphNodeType.Switch,
   GraphNodeType.Wait,
+  GraphNodeType.Catch,
 ];
 
 describe("taskNodeConfig", () => {

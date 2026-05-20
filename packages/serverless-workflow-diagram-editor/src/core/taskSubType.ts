@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
-export { renderWithProviders } from "./render-helpers";
-export { t } from "./translation-helpers";
-export { createFlatGraph } from "./graph-helpers";
+import type { Specification } from "@serverlessworkflow/sdk";
+
+function getFirstKey(obj: unknown): string | undefined {
+  return obj && typeof obj === "object" && !Array.isArray(obj) ? Object.keys(obj)[0] : undefined;
+}
+
+export function getRunSubType(task: Specification.RunTask): string | undefined {
+  return getFirstKey(task.run);
+}
+
+export function getListenSubType(task: Specification.ListenTask): string | undefined {
+  return getFirstKey(task.listen?.to);
+}
+
+export function getCallSubType(task: Specification.CallTask): string | undefined {
+  return typeof task.call === "string" ? task.call : undefined;
+}

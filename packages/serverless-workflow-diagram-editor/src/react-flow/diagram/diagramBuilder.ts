@@ -16,7 +16,7 @@
 
 import * as RF from "@xyflow/react";
 import { buildFlatGraph } from "../../core";
-import { BaseNodeData, ReactFlowNodeTypes } from "../nodes/Nodes";
+import { BaseNodeData, CATCH_CONTAINER_NODE_TYPE, ReactFlowNodeTypes } from "../nodes/Nodes";
 import { BaseEdgeData, EdgeTypes } from "../edges/Edges";
 import * as sdk from "@serverlessworkflow/sdk";
 import { applyAutoLayout, DEFAULT_NODE_SIZE } from "./autoLayout";
@@ -46,15 +46,45 @@ export function edgeSourceAndTargetExist(
   return nodeIdSet.has(graphEdge.sourceId) && nodeIdSet.has(graphEdge.targetId);
 }
 
-function buildReactFlowNode(graphNode: sdk.FlatGraph | sdk.FlatGraphNode): RF.Node<BaseNodeData> {
+/* Return ids of catch nodes that are containers (have child nodes with parentIds pointing to them) */
+export function getCatchContainerNodeIds(graph: sdk.FlatGraph): Set<string> {
+  const parentIds = new Set<string>();
+  for (const node of graph.nodes) {
+    if (node.parentId) {
+      parentIds.add(node.parentId);
+    }
+  }
+
+  const containerIds = new Set<string>();
+  for (const node of graph.nodes) {
+    if (node.type === sdk.GraphNodeType.Catch && parentIds.has(node.id)) {
+      containerIds.add(node.id);
+    }
+  }
+
+  return containerIds;
+}
+
+function resolveNodeType(graphNode: sdk.FlatGraphNode, catchContainerIds: Set<string>): string {
+  if (graphNode.type === sdk.GraphNodeType.Catch && catchContainerIds.has(graphNode.id)) {
+    return CATCH_CONTAINER_NODE_TYPE;
+  }
+  return graphNode.type;
+}
+
+function buildReactFlowNode(
+  graphNode: sdk.FlatGraphNode,
+  catchContainerIds: Set<string>,
+): RF.Node<BaseNodeData> {
+  const type = resolveNodeType(graphNode, catchContainerIds);
   // There is no corresponding react flow component implemented
-  if (!Object.keys(ReactFlowNodeTypes).includes(graphNode.type)) {
-    throw new Error(`Unsupported GraphNodeType: ${graphNode.type}!`);
+  if (!Object.keys(ReactFlowNodeTypes).includes(type)) {
+    throw new Error(`Unsupported React flow node type: ${type}!`);
   }
 
   return {
     id: graphNode.id,
-    type: graphNode.type,
+    type,
     data: {
       label: graphNode.label ?? "",
       ...(graphNode.task !== undefined && { task: structuredClone(graphNode.task) }),
@@ -89,11 +119,12 @@ export function buildDiagramElements(model: sdk.Specification.Workflow | null): 
 
   if (model) {
     const graph = buildFlatGraph(model);
+    const catchContainerIds = getCatchContainerNodeIds(graph);
 
     graph.nodes.forEach((graphNode) => {
       // TODO: only nodes on root level are supported for now
       if (graphNode.parentId === "root") {
-        nodes.push(buildReactFlowNode(graphNode));
+        nodes.push(buildReactFlowNode(graphNode, catchContainerIds));
       }
     });
 

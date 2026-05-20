@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-export { renderWithProviders } from "./render-helpers";
-export { t } from "./translation-helpers";
-export { createFlatGraph } from "./graph-helpers";
+import { FlatGraph, FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
+
+export function createFlatGraph(
+  nodes: FlatGraphNode[],
+  edges: Array<{ id: string; sourceId: string; targetId: string; label: string }>,
+): FlatGraph {
+  const entryNode = nodes.find((n) => n.type === GraphNodeType.Entry);
+  const exitNode = nodes.find((n) => n.type === GraphNodeType.Exit);
+
+  return {
+    id: "root",
+    type: GraphNodeType.Do,
+    nodes,
+    edges,
+    entryNode,
+    exitNode,
+  } as FlatGraph;
+}

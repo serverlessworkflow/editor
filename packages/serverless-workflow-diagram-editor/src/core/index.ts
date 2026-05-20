@@ -16,3 +16,4 @@
 
 export * from "./workflowSdk";
 export * from "./graph";
+export * from "./taskSubType";

@@ -23,6 +23,7 @@ import { ResolvedColorMode } from "../../types/colorMode";
 import { ReactFlowEdgeTypes } from "../edges/Edges";
 import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -102,6 +103,10 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         data-testid={"react-flow-canvas"}
       >
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
+
+        <RF.Panel position="top-right">
+          <SidebarTrigger />
+        </RF.Panel>
 
         <RF.Controls
           fitViewOptions={FIT_VIEW_OPTIONS}

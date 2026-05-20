@@ -22,14 +22,20 @@ import { ReactFlowNodeTypes } from "../../../src/react-flow/nodes/Nodes";
 import { taskNodeConfigMap, type LeafNodeType } from "../../../src/react-flow/nodes/taskNodeConfig";
 import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
 
-function testNode(id: string, type: string, y: number, label: string): RF.Node {
+function testNode(
+  id: string,
+  type: string,
+  y: number,
+  label: string,
+  task?: Record<string, unknown>,
+): RF.Node {
   return {
     id,
     type,
     position: { x: 100, y },
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
-    data: { label },
+    data: { label, ...(task !== undefined ? { task } : {}) },
   };
 }
 
@@ -45,8 +51,10 @@ const allNodes: RF.Node[] = [
   testNode("n8", GraphNodeType.Raise, 700, "Node 8"),
   testNode("n9", GraphNodeType.Run, 800, "Node 9"),
   testNode("n10", GraphNodeType.Set, 900, "Node 10"),
-  testNode("n11", GraphNodeType.Try, 1000, "Node 11"),
-  testNode("n12", GraphNodeType.Wait, 1100, "Node 12"),
+  testNode("n11", GraphNodeType.TryCatch, 1000, "Node 11"),
+  testNode("n12", GraphNodeType.Try, 1100, "Node 12"),
+  testNode("n13", GraphNodeType.Catch, 1200, "Node 13"),
+  testNode("n14", GraphNodeType.Wait, 1300, "Node 14"),
   testNode("end", GraphNodeType.End, 0, "End"),
 ];
 
@@ -55,17 +63,17 @@ const allEdges: RF.Edge[] = [
   { id: "n1-n2", source: "n1", target: "n2" },
   { id: "n2-n3", source: "n2", target: "n3" },
   { id: "n3-n4", source: "n3", target: "n4" },
-  { id: "n3-n5", source: "n3", target: "n5" },
-  { id: "n3-n6", source: "n3", target: "n6" },
-  { id: "n4-n7", source: "n4", target: "n7" },
-  { id: "n5-n7", source: "n5", target: "n7" },
+  { id: "n4-n5", source: "n4", target: "n5" },
+  { id: "n5-n6", source: "n5", target: "n6" },
   { id: "n6-n7", source: "n6", target: "n7" },
   { id: "n7-n8", source: "n7", target: "n8" },
   { id: "n8-n9", source: "n8", target: "n9" },
   { id: "n9-n10", source: "n9", target: "n10" },
   { id: "n10-n11", source: "n10", target: "n11" },
   { id: "n11-n12", source: "n11", target: "n12" },
-  { id: "n12-end", source: "n12", target: "end" },
+  { id: "n12-n13", source: "n12", target: "n13" },
+  { id: "n13-n14", source: "n13", target: "n14" },
+  { id: "n14-end", source: "n14", target: "end" },
 ];
 
 describe("React Flow custom node types", () => {
@@ -91,8 +99,10 @@ describe("React Flow custom node types", () => {
     expect(screen.getByTestId("raise-node-n8")).toBeInTheDocument();
     expect(screen.getByTestId("run-node-n9")).toBeInTheDocument();
     expect(screen.getByTestId("set-node-n10")).toBeInTheDocument();
-    expect(screen.getByTestId("try-node-n11")).toBeInTheDocument();
-    expect(screen.getByTestId("wait-node-n12")).toBeInTheDocument();
+    expect(screen.getByTestId("try-catch-node-n11")).toBeInTheDocument();
+    expect(screen.getByTestId("try-node-n12")).toBeInTheDocument();
+    expect(screen.getByTestId("catch-node-n13")).toBeInTheDocument();
+    expect(screen.getByTestId("wait-node-n14")).toBeInTheDocument();
     expect(screen.getByTestId("end-node-end")).toBeInTheDocument();
   });
 
@@ -105,7 +115,8 @@ describe("React Flow custom node types", () => {
       { id: "n8", type: GraphNodeType.Raise, testId: "raise" },
       { id: "n9", type: GraphNodeType.Run, testId: "run" },
       { id: "n10", type: GraphNodeType.Set, testId: "set" },
-      { id: "n12", type: GraphNodeType.Wait, testId: "wait" },
+      { id: "n13", type: GraphNodeType.Catch, testId: "catch" },
+      { id: "n14", type: GraphNodeType.Wait, testId: "wait" },
     ];
 
     it.each(leafNodes)("should render %s node with correct config", ({ id, type, testId }) => {
@@ -123,6 +134,64 @@ describe("React Flow custom node types", () => {
       expect(node.querySelector(".dec-task-node-type")?.textContent).toBe(config.typeLabel);
       expect(node.querySelector(".dec-task-node-name")?.textContent).toBe(nodeData?.data.label);
       expect(node.style.getPropertyValue("--task-node-color")).toBe(config.color);
+    });
+  });
+
+  describe("badge rendering", () => {
+    it("should render a text badge for known subtypes", () => {
+      const nodesWithBadges = [
+        testNode("n1", GraphNodeType.Call, 10, "CallNode", { call: "http" }),
+        testNode("n2", GraphNodeType.Listen, 100, "ListenNode", { listen: { to: { any: [] } } }),
+      ];
+      render(
+        <div>
+          <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={nodesWithBadges} edges={allEdges} />
+        </div>,
+      );
+
+      const callBadge = screen.getByTestId("call-node-n1-badge");
+      expect(callBadge).toBeInTheDocument();
+      expect(callBadge.textContent).toBe("http");
+
+      const listenBadge = screen.getByTestId("listen-node-n2-badge");
+      expect(listenBadge).toBeInTheDocument();
+      expect(listenBadge.textContent).toBe("any");
+    });
+
+    it("should render an icon badge for an unknown subtype", () => {
+      const nodesWithUnknownBadges = [
+        testNode("n1", GraphNodeType.Call, 100, "CallNode", { call: "customCall" }),
+      ];
+      render(
+        <div>
+          <RF.ReactFlow
+            nodeTypes={ReactFlowNodeTypes}
+            nodes={nodesWithUnknownBadges}
+            edges={allEdges}
+          />
+        </div>,
+      );
+
+      const callBadge = screen.getByTestId("call-node-n1-badge-icon");
+      expect(callBadge).toBeInTheDocument();
+    });
+
+    it("should not render a badge when task has no subtype", () => {
+      const nodesWithoutBadges = [
+        testNode("n1", GraphNodeType.Wait, 100, "WaitNode", { wait: "PT1S" }),
+      ];
+      render(
+        <div>
+          <RF.ReactFlow
+            nodeTypes={ReactFlowNodeTypes}
+            nodes={nodesWithoutBadges}
+            edges={allEdges}
+          />
+        </div>,
+      );
+
+      const badge = screen.queryByTestId("wait-node-n1-badge");
+      expect(badge).not.toBeInTheDocument();
     });
   });
 });
