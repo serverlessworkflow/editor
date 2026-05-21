@@ -26,11 +26,11 @@
    - **`main`** - for normal releases (1.0.0, 1.1.0, 2.0.0)
    - **`1.0.x`** - for patch releases on a previous release 1.x
 4. Click **"Run workflow"**
-5. A release PR with title "Version Packages" with a version bump will be created by the CI
+5. A release PR with title "chore: version packages" with a version bump will be created by the CI
 
 ## 2. Review and Merge
 
-1. Review the "Version Packages" PR
+1. Review the "chore: version packages" PR
 2. Check version bumps and CHANGELOGs are correct
 3. Merge the PR to start publishing the new release
 
