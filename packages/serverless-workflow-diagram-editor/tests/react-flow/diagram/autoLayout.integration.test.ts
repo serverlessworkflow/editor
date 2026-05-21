@@ -25,10 +25,10 @@ import {
   ROOT_LAYOUT_OPTIONS,
 } from "../../../src/react-flow/diagram/autoLayout";
 import type { ReactFlowGraph } from "../../../src/react-flow/diagram/diagramBuilder";
-import * as core from "@/core";
+import * as core from "../../../src/core";
 
 // Mock the processElkLayout function
-vi.mock("@/core", () => ({
+vi.mock("../../../src/core", () => ({
   processElkLayout: vi.fn(),
 }));
 
@@ -170,7 +170,7 @@ describe("autoLayout", () => {
       });
     });
 
-    it("ignores nodes with non-existent parentId", () => {
+    it("treat as a root-level if parentId is non-existent", () => {
       const reactFlowGraph: ReactFlowGraph = {
         nodes: [
           {
@@ -311,6 +311,75 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
+      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+    });
+
+    it("clears stale wayPoints when ELK edge has no sections", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [],
+        edges: [
+          {
+            id: "edge1",
+            source: "node1",
+            target: "node2",
+            data: { label: "Test Edge", wayPoints: [{ x: 10, y: 20 }] },
+          },
+        ] as Edge[],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [],
+        edges: [
+          {
+            id: "edge1",
+            sources: ["node1"],
+            targets: ["node2"],
+          },
+        ],
+      };
+
+      const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
+
+      expect(result.edges[0].data).toEqual({ label: "Test Edge" });
+      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+    });
+
+    it("clears stale wayPoints when ELK edge sections have no bend points", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [],
+        edges: [
+          {
+            id: "edge1",
+            source: "node1",
+            target: "node2",
+            data: { label: "Test Edge", wayPoints: [{ x: 10, y: 20 }] },
+          },
+        ] as Edge[],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [],
+        edges: [
+          {
+            id: "edge1",
+            sources: ["node1"],
+            targets: ["node2"],
+            sections: [
+              {
+                id: "section1",
+                startPoint: { x: 0, y: 0 },
+                endPoint: { x: 200, y: 0 },
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
+
+      expect(result.edges[0].data).toEqual({ label: "Test Edge" });
       expect(result.edges[0].data?.wayPoints).toBeUndefined();
     });
 
@@ -507,19 +576,22 @@ describe("autoLayout", () => {
 
       await applyAutoLayout(reactFlowGraph);
 
-      expect(core.processElkLayout).toHaveBeenCalledWith({
-        id: "root",
-        layoutOptions: ROOT_LAYOUT_OPTIONS,
-        children: [
-          {
-            id: "node1",
-            width: 150,
-            height: 50,
-            children: [],
-          },
-        ],
-        edges: [],
-      });
+      expect(core.processElkLayout).toHaveBeenCalledWith(
+        {
+          id: "root",
+          layoutOptions: ROOT_LAYOUT_OPTIONS,
+          children: [
+            {
+              id: "node1",
+              width: 150,
+              height: 50,
+              children: [],
+            },
+          ],
+          edges: [],
+        },
+        undefined,
+      );
     });
 
     it("handles complex graph with nested nodes and edges", async () => {

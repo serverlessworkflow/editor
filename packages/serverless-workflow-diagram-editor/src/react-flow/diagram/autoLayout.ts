@@ -142,11 +142,10 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
   // Map edge waypoints (bend points)
   const layoutedEdges = graph.edges.map((edge) => {
     const elkEdge = elkEdgeMap.get(edge.id);
-    if (elkEdge && elkEdge.sections) {
-      // ELK returns sections which contain bend points. We pass these bendpoints to a custom edge.
-      const bendPoints = elkEdge.sections.flatMap((section) => section.bendPoints || []);
-      // Reconstruct data without old wayPoints to avoid stale routing
+    if (elkEdge) {
+      // Reconstruct data without old wayPoints to avoid stale routing whenever ELK produced this edge.
       const { wayPoints: _oldWayPoints, ...restData } = edge.data || {};
+      const bendPoints = elkEdge.sections?.flatMap((section) => section.bendPoints || []) || [];
       return {
         ...edge,
         data: {
@@ -161,9 +160,12 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
   return { nodes: layoutedNodes, edges: layoutedEdges };
 }
 
-export async function applyAutoLayout(graph: ReactFlowGraph): Promise<ReactFlowGraph> {
+export async function applyAutoLayout(
+  graph: ReactFlowGraph,
+  signal?: AbortSignal,
+): Promise<ReactFlowGraph> {
   const elkGraph = buildElkGraphFromReactFlowGraph(graph);
-  const layoutedGraph = await processElkLayout(elkGraph);
+  const layoutedGraph = await processElkLayout(elkGraph, signal);
 
   // it is not possible to calculate auto-layout
   if (!layoutedGraph) {
