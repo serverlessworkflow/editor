@@ -1,5 +1,3 @@
-#
-
 <!--
    Copyright 2021-Present The Serverless Workflow Specification Authors
 

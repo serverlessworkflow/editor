@@ -122,6 +122,12 @@ If you're unsure whether your use of agents/LLMs is acceptable — ask! We're ha
    pnpm changeset --since upstream/main
    ```
 
+   **Note:** If you don't have the `upstream` remote configured:
+
+   ```bash
+   git remote add upstream https://github.com/serverlessworkflow/editor.git
+   ```
+
 5. **Submit** a Pull Request (PR).
 6. **DCO Sign-off**: As a CNCF project, all commits must be signed off (`git commit -s`) to certify the Developer Certificate of Origin.
 7. **Review**: At least one maintainer must review and approve your PR before it is merged.
