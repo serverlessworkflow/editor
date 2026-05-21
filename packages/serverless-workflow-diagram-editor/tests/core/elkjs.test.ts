@@ -16,7 +16,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { ElkNode } from "elkjs/lib/elk.bundled.js";
-import { processElkLayout } from "../../src/core/elkjs";
 
 // Mock the ELK module with a shared layout mock
 vi.mock("elkjs/lib/elk.bundled.js", () => {
@@ -69,8 +68,13 @@ describe("elkjs", () => {
   describe("processElkLayout", () => {
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
     let elkMockLayout: ReturnType<typeof vi.fn>;
+    let processElkLayout: (graph: ElkNode) => Promise<ElkNode | null>;
 
     beforeEach(async () => {
+      // Dynamically import processElkLayout after the mock is declared
+      const elkjsModule = await import("../../src/core/elkjs");
+      processElkLayout = elkjsModule.processElkLayout;
+
       // Get the mock layout function from the mocked module
       const ELK = await import("elkjs/lib/elk.bundled.js");
       // Access the mock instance's layout method

@@ -145,10 +145,12 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
     if (elkEdge && elkEdge.sections) {
       // ELK returns sections which contain bend points. We pass these bendpoints to a custom edge.
       const bendPoints = elkEdge.sections.flatMap((section) => section.bendPoints || []);
+      // Reconstruct data without old wayPoints to avoid stale routing
+      const { wayPoints: _oldWayPoints, ...restData } = edge.data || {};
       return {
         ...edge,
         data: {
-          ...edge.data,
+          ...restData,
           ...(bendPoints.length > 0 && { wayPoints: bendPoints }),
         },
       };

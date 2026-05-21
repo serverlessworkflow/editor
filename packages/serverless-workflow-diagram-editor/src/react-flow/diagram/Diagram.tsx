@@ -73,22 +73,31 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   // Rebuild nodes and edges as model changes
   React.useEffect(() => {
     let isActive = true;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const graph = buildDiagramElements(model);
-    applyAutoLayout(graph).then(({ nodes, edges }) => {
-      // Only update if this effect is still active (not cancelled by cleanup)
-      if (isActive) {
-        setNodes(nodes);
-        setEdges(edges);
+    applyAutoLayout(graph)
+      .then(({ nodes, edges }) => {
+        // Only update if this effect is still active (not cancelled by cleanup)
+        if (isActive) {
+          setNodes(nodes);
+          setEdges(edges);
 
-        // Queue fitView to run after React updates the DOM
-        setTimeout(() => reactFlowInstance.fitView(), 0);
-      }
-    });
+          // Queue fitView to run after React updates the DOM
+          timeoutId = setTimeout(() => reactFlowInstance.fitView(), 0);
+        }
+      })
+      .catch((error) => {
+        // Handle auto-layout errors to prevent unhandled promise rejections
+        console.error("Failed to apply auto-layout:", error);
+      });
 
-    // Cleanup function to cancel stale updates
+    // Cleanup function to cancel stale updates and clear timeout
     return () => {
       isActive = false;
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [model, reactFlowInstance, setNodes, setEdges]);
 

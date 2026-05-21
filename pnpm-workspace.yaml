@@ -22,7 +22,7 @@ catalog:
   "@xyflow/react": ^12.10.2
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
-  elkjs: "^0.11.1"
+  elkjs: ^0.11.1
   husky: ^9.1.7
   "js-yaml": ^4.1.1
   jsdom: ^29.1.0
