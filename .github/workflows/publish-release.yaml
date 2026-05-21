@@ -45,7 +45,10 @@ jobs:
         uses: ./.github/actions/setup-ci
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm playwright:install:ci
 
       - name: Build packages
         run: pnpm build:prod

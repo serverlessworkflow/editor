@@ -8,13 +8,20 @@
   },
   "versionGroups": [
     {
-      "label": "Use workspace protocol for local packages",
-      "dependencies": ["$LOCAL"],
-      "dependencyTypes": ["prod", "dev"],
-      "pinVersion": "workspace:*"
+      "label": "Ignore root package version",
+      "packages": ["serverless-workflow-editor"],
+      "dependencyTypes": ["local"],
+      "isIgnored": true
+    },
+    {
+      "label": "Published package versions must be consistent",
+      "packages": ["@serverlessworkflow/*"],
+      "dependencyTypes": ["local"],
+      "policy": "sameRange"
     },
     {
       "label": "Package versions must be consistent across packages",
+      "packages": ["@serverlessworkflow/*"],
       "dependencyTypes": ["packageVersion"],
       "policy": "sameRange"
     },
