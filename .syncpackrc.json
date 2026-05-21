@@ -26,6 +26,12 @@
       "policy": "sameRange"
     },
     {
+      "label": "Use workspace protocol for local packages",
+      "dependencies": ["$LOCAL"],
+      "dependencyTypes": ["prod", "dev"],
+      "pinVersion": "workspace:*"
+    },
+    {
       "label": "Peer deps must be consistent across packages",
       "dependencyTypes": ["peer"],
       "policy": "sameRange"
