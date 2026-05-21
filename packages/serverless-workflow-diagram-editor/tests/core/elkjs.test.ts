@@ -32,6 +32,39 @@ vi.mock("elkjs/lib/elk.bundled.js", () => {
   };
 });
 
+// Helper function to setup ELK mock with success or error response
+function setupElkMock(
+  elkMockLayout: ReturnType<typeof vi.fn>,
+  returnValue: ElkNode | Error | string | null | undefined | object,
+) {
+  if (
+    returnValue instanceof Error ||
+    typeof returnValue === "string" ||
+    returnValue === null ||
+    returnValue === undefined ||
+    (typeof returnValue === "object" && !("id" in returnValue))
+  ) {
+    elkMockLayout.mockRejectedValue(returnValue);
+  } else {
+    elkMockLayout.mockResolvedValue(returnValue);
+  }
+
+  return elkMockLayout;
+}
+
+// Test data factory for simple graphs
+function createSimpleGraph(nodeCount: number = 2): ElkNode {
+  return {
+    id: "root",
+    children: Array.from({ length: nodeCount }, (_, i) => ({
+      id: `node${i + 1}`,
+      width: 100,
+      height: 50,
+    })),
+    edges: nodeCount > 1 ? [{ id: "edge1", sources: ["node1"], targets: ["node2"] }] : [],
+  };
+}
+
 describe("elkjs", () => {
   describe("processElkLayout", () => {
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
@@ -55,36 +88,6 @@ describe("elkjs", () => {
       vi.clearAllMocks();
     });
 
-    // Helper function to setup ELK mock with success or error response
-    function setupElkMock(returnValue: ElkNode | Error | string | null | undefined | object) {
-      if (
-        returnValue instanceof Error ||
-        typeof returnValue === "string" ||
-        returnValue === null ||
-        returnValue === undefined ||
-        (typeof returnValue === "object" && !("id" in returnValue))
-      ) {
-        elkMockLayout.mockRejectedValue(returnValue);
-      } else {
-        elkMockLayout.mockResolvedValue(returnValue);
-      }
-
-      return elkMockLayout;
-    }
-
-    // Test data factory for simple graphs
-    function createSimpleGraph(nodeCount: number = 2): ElkNode {
-      return {
-        id: "root",
-        children: Array.from({ length: nodeCount }, (_, i) => ({
-          id: `node${i + 1}`,
-          width: 100,
-          height: 50,
-        })),
-        edges: nodeCount > 1 ? [{ id: "edge1", sources: ["node1"], targets: ["node2"] }] : [],
-      };
-    }
-
     it("processes valid graph and returns positioned nodes", async () => {
       const inputGraph = createSimpleGraph(2);
 
@@ -101,7 +104,7 @@ describe("elkjs", () => {
         height: 50,
       };
 
-      await setupElkMock(expectedOutput);
+      await setupElkMock(elkMockLayout, expectedOutput);
 
       const result = await processElkLayout(inputGraph);
 
@@ -126,7 +129,7 @@ describe("elkjs", () => {
         height: 0,
       };
 
-      await setupElkMock(expectedOutput);
+      await setupElkMock(elkMockLayout, expectedOutput);
 
       const result = await processElkLayout(inputGraph);
 
@@ -147,7 +150,7 @@ describe("elkjs", () => {
         height: 50,
       };
 
-      await setupElkMock(expectedOutput);
+      await setupElkMock(elkMockLayout, expectedOutput);
 
       const result = await processElkLayout(inputGraph);
 
@@ -196,7 +199,7 @@ describe("elkjs", () => {
         height: 150,
       };
 
-      await setupElkMock(expectedOutput);
+      await setupElkMock(elkMockLayout, expectedOutput);
 
       const result = await processElkLayout(inputGraph);
 
@@ -236,7 +239,7 @@ describe("elkjs", () => {
       async ({ error, expectedLog }) => {
         const inputGraph = createSimpleGraph(1);
 
-        await setupElkMock(error);
+        await setupElkMock(elkMockLayout, error);
 
         const result = await processElkLayout(inputGraph);
 

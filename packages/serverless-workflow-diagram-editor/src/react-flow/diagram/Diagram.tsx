@@ -80,7 +80,9 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
       if (isActive) {
         setNodes(nodes);
         setEdges(edges);
-        reactFlowInstance.fitView();
+
+        // Queue fitView to run after React updates the DOM
+        setTimeout(() => reactFlowInstance.fitView(), 0);
       }
     });
 
