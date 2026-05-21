@@ -57,22 +57,20 @@ const meta = {
       control: { type: "select" },
       options: ["light", "dark", "system"],
       description:
-        "The color mode to use for the error page. 'system' will use the user's system preference.",
+        "Override the global toolbar color mode for this story. Leave unset to use the toolbar value.",
     },
   },
-  args: {
-    colorMode: "system",
+  render: (args, { globals }) => {
+    const { title, message, snippet, colorMode } = args;
+    // Use story's colorMode arg if provided, otherwise use global toolbar value
+    const effectiveColorMode = colorMode || globals.colorMode || "system";
+
+    return (
+      <DecRoot colorMode={effectiveColorMode}>
+        <ErrorPage title={title} message={message} snippet={snippet} />
+      </DecRoot>
+    );
   },
-  decorators: [
-    (Story, context) => {
-      const { colorMode, ...storyArgs } = context.args;
-      return (
-        <DecRoot colorMode={colorMode ?? "system"}>
-          <Story args={storyArgs} />
-        </DecRoot>
-      );
-    },
-  ],
 } satisfies Meta<ErrorPageStoryProps>;
 
 export default meta;

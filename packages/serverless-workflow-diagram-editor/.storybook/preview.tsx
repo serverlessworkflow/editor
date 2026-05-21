@@ -15,7 +15,11 @@
  */
 
 import "../src/styles.css";
-import type { Preview } from "@storybook/react-vite";
+import type { Preview, Decorator } from "@storybook/react-vite";
+
+const withColorMode: Decorator = (Story, context) => {
+  return <Story />;
+};
 
 const preview: Preview = {
   parameters: {
@@ -33,6 +37,25 @@ const preview: Preview = {
       test: "todo",
     },
   },
+
+  globalTypes: {
+    colorMode: {
+      description: "Global color mode for components",
+      defaultValue: "system",
+      toolbar: {
+        title: "Color Mode",
+        icon: "circlehollow",
+        items: [
+          { value: "light", icon: "sun", title: "Light" },
+          { value: "dark", icon: "moon", title: "Dark" },
+          { value: "system", icon: "browser", title: "System" },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+
+  decorators: [withColorMode],
 };
 
 export default preview;

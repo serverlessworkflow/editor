@@ -26,7 +26,9 @@ const meta = {
   parameters: {
     layout: "fullscreen",
   },
-  args: {},
+  render: (args, { globals }) => {
+    return <DiagramEditorDragNDrop {...args} colorMode={globals.colorMode || "system"} />;
+  },
 } satisfies Meta<typeof DiagramEditorDragNDrop>;
 
 export default meta;
