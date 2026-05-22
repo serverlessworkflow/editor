@@ -93,7 +93,6 @@ export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content"
         <div>
           or{" "}
           <label
-            id="file-upload-label"
             htmlFor="file-upload"
             className="dec:text-blue-600 dec:underline dec:cursor-pointer"
           >
@@ -107,7 +106,7 @@ export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content"
           accept=".yaml,.yml,.json"
           onChange={handleFileChange}
           data-testid="story-workflow-file-upload"
-          aria-labelledby="file-upload-label"
+          aria-label="upload a file"
         />
       </div>
       {content && <Component {...props} content={content} />}
