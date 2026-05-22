@@ -14,12 +14,6 @@
       "isIgnored": true
     },
     {
-      "label": "Published package versions must be consistent",
-      "packages": ["@serverlessworkflow/*"],
-      "dependencyTypes": ["local"],
-      "policy": "sameRange"
-    },
-    {
       "label": "Package versions must be consistent across packages",
       "packages": ["@serverlessworkflow/*"],
       "dependencyTypes": ["packageVersion"],
