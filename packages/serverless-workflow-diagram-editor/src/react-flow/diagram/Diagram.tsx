@@ -24,6 +24,7 @@ import { ReactFlowEdgeTypes } from "../edges/Edges";
 import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { applyAutoLayout } from "./autoLayout";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -45,6 +46,7 @@ export type DiagramProps = {
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
+  const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
   const { model, nodes, edges, setNodes, setEdges } = useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
@@ -68,12 +70,60 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
     [setEdges],
   );
 
-  // Rebuild nodes and edges as model changes
+  // Rebuild nodes and edges as model changes with debouncing
   React.useEffect(() => {
-    const { nodes, edges } = buildDiagramElements(model);
-    setNodes(nodes);
-    setEdges(edges);
-  }, [model, setNodes, setEdges]);
+    let isActive = true;
+    let debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let fitViewTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let abortController: AbortController | null = null;
+
+    // Debounce layout calculation to avoid excessive CPU usage on rapid changes
+    debounceTimeoutId = setTimeout(() => {
+      // Create abort controller for this layout operation
+      abortController = new AbortController();
+
+      const graph = buildDiagramElements(model);
+      applyAutoLayout(graph, abortController.signal)
+        .then(({ nodes, edges }) => {
+          // Only update if this effect is still active (not cancelled by cleanup)
+          if (isActive && !abortController?.signal.aborted) {
+            setNodes(nodes);
+            setEdges(edges);
+
+            // Queue fitView to run after React updates the DOM
+            fitViewTimeoutId = setTimeout(() => reactFlowInstance.fitView(), 0);
+          }
+        })
+        .catch((error) => {
+          // Ignore abort errors as they are expected when cancelling
+          if (error.name === "AbortError") {
+            return;
+          }
+          // Handle other auto-layout errors to prevent unhandled promise rejections
+          console.error("Failed to apply auto-layout:", error);
+        });
+    }, 100); // 150ms debounce delay
+
+    // Cleanup function to cancel stale updates and clear timeouts
+    return () => {
+      isActive = false;
+
+      // Cancel debounce timer
+      if (debounceTimeoutId !== null) {
+        clearTimeout(debounceTimeoutId);
+      }
+
+      // Cancel fitView timer
+      if (fitViewTimeoutId !== null) {
+        clearTimeout(fitViewTimeoutId);
+      }
+
+      // Abort in-flight layout calculation
+      if (abortController) {
+        abortController.abort();
+      }
+    };
+  }, [model, reactFlowInstance, setNodes, setEdges]);
 
   return (
     <div ref={divRef} className="dec:h-full dec:relative" data-testid={"diagram-container"}>

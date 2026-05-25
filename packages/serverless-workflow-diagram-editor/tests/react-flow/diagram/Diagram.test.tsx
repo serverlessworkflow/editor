@@ -14,28 +14,42 @@
  * limitations under the License.
  */
 
-import { render, screen } from "@testing-library/react";
-import { vi, it, expect, afterEach, describe } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { vi, it, expect, afterEach, describe, beforeEach } from "vitest";
 import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorContextProvider";
 import { SidebarProvider } from "../../../src/components/ui/sidebar";
 import { I18nProvider } from "@serverlessworkflow/i18n";
 import { en } from "../../../src/i18n/locales/en";
+import { ReactFlowProvider } from "@xyflow/react";
+import * as autoLayoutModule from "../../../src/react-flow/diagram/autoLayout";
 
 describe("Diagram Component", () => {
+  let applyAutoLayoutSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    // Mock applyAutoLayout to return a resolved promise with empty nodes and edges
+    applyAutoLayoutSpy = vi.spyOn(autoLayoutModule, "applyAutoLayout").mockResolvedValue({
+      nodes: [],
+      edges: [],
+    });
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("render Diagram component and canvas", () => {
+  it("render Diagram component and canvas", async () => {
     render(
-      <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
-        <I18nProvider locale="en" dictionaries={{ en }}>
-          <SidebarProvider>
-            <Diagram />
-          </SidebarProvider>
-        </I18nProvider>
-      </DiagramEditorContextProvider>,
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
     );
 
     const diagram = screen.getByTestId("diagram-container");
@@ -43,5 +57,10 @@ describe("Diagram Component", () => {
 
     expect(diagram).toBeInTheDocument();
     expect(canvas).toBeInTheDocument();
+
+    // Verify that applyAutoLayout was called
+    await waitFor(() => {
+      expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
   });
 });
