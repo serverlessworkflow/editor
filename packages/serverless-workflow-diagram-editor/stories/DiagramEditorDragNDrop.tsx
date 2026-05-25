@@ -106,6 +106,7 @@ export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content"
           accept=".yaml,.yml,.json"
           onChange={handleFileChange}
           data-testid="story-workflow-file-upload"
+          aria-label="upload a file"
         />
       </div>
       {content && <Component {...props} content={content} />}
