@@ -1,5 +1,5 @@
 ---
-"@serverlessworkflow/diagram-editor": patch
+"@serverlessworkflow/diagram-editor": minor
 ---
 
 This PR implements the following changes to Storybook:
