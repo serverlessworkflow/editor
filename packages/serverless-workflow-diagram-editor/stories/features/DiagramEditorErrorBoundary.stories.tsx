@@ -15,8 +15,9 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DiagramEditorErrorBoundary } from "../src/diagram-editor/error-pages/DiagramEditorErrorBoundary";
-import { ColorMode } from "../src/types/colorMode";
+import { DiagramEditorErrorBoundary } from "../../src/diagram-editor/error-pages/DiagramEditorErrorBoundary";
+import { ColorMode } from "../../src/types/colorMode";
+import { useResolvedColorMode } from "../../src/hooks/useResolvedColorMode";
 
 type DiagramEditorErrorBoundaryProps = {
   title?: string;
@@ -33,11 +34,33 @@ const ThrowError = ({ message = "Test error message" }: { message?: string }) =>
 };
 
 const meta = {
-  title: "Example/DiagramEditorErrorBoundary",
+  title: "Features/DiagramEditorErrorBoundary",
   component: DiagramEditorErrorBoundary,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
+  },
+  render: (args, { globals }) => {
+    const colorMode = args.colorMode ?? globals.colorMode ?? "system";
+    const resolvedColorMode = useResolvedColorMode(colorMode);
+
+    return (
+      <div
+        className={`dec-root${resolvedColorMode === "dark" ? " dark" : ""}`}
+        style={{
+          backgroundColor: resolvedColorMode === "dark" ? "#1a1a1a" : "#fff",
+          minHeight: "100vh",
+        }}
+      >
+        <DiagramEditorErrorBoundary
+          title={args.title}
+          message={args.message}
+          resetKey={args.resetKey}
+        >
+          {args.children}
+        </DiagramEditorErrorBoundary>
+      </div>
+    );
   },
   args: {},
 } satisfies Meta<DiagramEditorErrorBoundaryStoryProps>;

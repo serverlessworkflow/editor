@@ -14,17 +14,48 @@
  * limitations under the License.
  */
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitest/config";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+import { playwright } from "@vitest/browser-playwright";
+
+const dirname =
+  typeof __dirname !== "undefined" ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  plugins: [tailwindcss()],
   resolve: {
     tsconfigPaths: true,
   },
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts"],
-    css: false,
+    setupFiles: ["./tests/setupTests.ts", "./.storybook/vitest.setup.ts"],
+    css: true,
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    projects: [
+      {
+        extends: true,
+        plugins: [
+          storybookTest({
+            configDir: path.join(dirname, ".storybook"),
+          }),
+        ],
+        test: {
+          name: "storybook",
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [{ browser: "chromium" }],
+          },
+          globals: true,
+          environment: "jsdom",
+          setupFiles: ["./tests/setupTests.ts", "./.storybook/vitest.setup.ts"],
+        },
+      },
+    ],
   },
 });

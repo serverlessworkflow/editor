@@ -16,7 +16,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
-import * as stories from "../../../stories/ErrorPage.stories";
+import * as stories from "../../../stories/features/ErrorPage.stories";
 import { expect, describe, it } from "vitest";
 
 const { TitleOnly, WithMessage, WithSnippet, WithMessageAndSnippet } = composeStories(stories);

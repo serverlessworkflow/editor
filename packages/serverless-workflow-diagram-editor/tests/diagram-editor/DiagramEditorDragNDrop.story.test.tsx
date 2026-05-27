@@ -16,7 +16,7 @@
 
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
-import * as stories from "../../stories/DiagramEditorDragNDrop.stories";
+import * as stories from "../../stories/features/DiagramEditorDragNDrop.stories";
 import { vi, test, expect, afterEach, describe } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 import userEvent from "@testing-library/user-event";

@@ -16,7 +16,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
-import * as stories from "../../stories/DiagramEditor.stories";
+import * as stories from "../../stories/features/DiagramEditor.stories";
 import { vi, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
 

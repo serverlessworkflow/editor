@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import {
   DiagramEditor as Component,
   DiagramEditorProps,
-} from "../src/diagram-editor/DiagramEditor";
+} from "../../src/diagram-editor/DiagramEditor";
 
 export const DiagramEditorDragNDrop = (props: Omit<DiagramEditorProps, "content">) => {
   const [content, setContent] = useState("");

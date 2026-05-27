@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  DiagramEditor as Component,
+  DiagramEditorProps,
+} from "../../src/diagram-editor/DiagramEditor";
 
-import { DiagramEditorDragNDrop } from "./DiagramEditorDragNDrop";
-
-const meta = {
-  id: "diagram-editor-drag-n-drop",
-  title: "Example/Diagram-Editor-Drag-N-Drop",
-  component: DiagramEditorDragNDrop,
-  tags: ["autodocs"],
-  parameters: {
-    layout: "fullscreen",
-  },
-  args: {},
-} satisfies Meta<typeof DiagramEditorDragNDrop>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Component: Story = {
-  args: {
-    isReadOnly: true,
-    locale: "en",
-  },
+/** Primary UI component for user interaction */
+export const DiagramEditor = ({ ...props }: DiagramEditorProps) => {
+  return (
+    <div style={{ height: "100vh" }}>
+      <Component
+        content={props.content}
+        isReadOnly={props.isReadOnly}
+        locale={props.locale}
+        colorMode={props.colorMode}
+      />
+    </div>
+  );
 };

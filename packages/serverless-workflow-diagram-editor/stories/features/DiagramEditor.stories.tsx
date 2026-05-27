@@ -84,7 +84,7 @@ timeout:
 
 const meta = {
   id: "diagram-editor",
-  title: "Example/Diagram-Editor",
+  title: "Features/Diagram-Editor",
   component: DiagramEditor,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],
@@ -92,7 +92,9 @@ const meta = {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
   },
-  args: {},
+  render: (args, { globals }) => {
+    return <DiagramEditor {...args} colorMode={args.colorMode ?? globals.colorMode ?? "system"} />;
+  },
 } satisfies Meta<typeof DiagramEditor>;
 
 export default meta;
@@ -102,7 +104,6 @@ export const Component: Story = {
   args: {
     isReadOnly: true,
     locale: "en",
-    colorMode: "system",
     content: workflowExample,
   },
 };

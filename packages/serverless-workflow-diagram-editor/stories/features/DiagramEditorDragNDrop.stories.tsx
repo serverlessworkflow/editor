@@ -16,35 +16,27 @@
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { fn } from "storybook/test";
-
-import { Header } from "./Header";
+import { DiagramEditorDragNDrop } from "./DiagramEditorDragNDrop";
 
 const meta = {
-  title: "Example/Header",
-  component: Header,
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
+  id: "diagram-editor-drag-n-drop",
+  title: "Features/Diagram-Editor-Drag-N-Drop",
+  component: DiagramEditorDragNDrop,
   tags: ["autodocs"],
   parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
   },
-  args: {
-    onLogin: fn(),
-    onLogout: fn(),
-    onCreateAccount: fn(),
+  render: (args, { globals }) => {
+    return <DiagramEditorDragNDrop {...args} colorMode={globals.colorMode || "system"} />;
   },
-} satisfies Meta<typeof Header>;
+} satisfies Meta<typeof DiagramEditorDragNDrop>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const LoggedIn: Story = {
+export const Component: Story = {
   args: {
-    user: {
-      name: "Jane Doe",
-    },
+    isReadOnly: true,
+    locale: "en",
   },
 };
-
-export const LoggedOut: Story = {};
