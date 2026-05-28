@@ -214,7 +214,7 @@ describe("autoLayout", () => {
 
       // Parent node should have layout options and no fixed dimensions
       expect(elkGraph.children?.[0].layoutOptions).toBeDefined();
-      expect(elkGraph.children?.[0].layoutOptions?.["elk.padding"]).toBe(
+      expect(elkGraph.children?.[0].layoutOptions?.["org.eclipse.elk.padding"]).toBe(
         "[top=60,left=20,bottom=20,right=20]",
       );
       expect(elkGraph.children?.[0].width).toBeUndefined();
@@ -1128,7 +1128,9 @@ describe("autoLayout", () => {
 
     describe("PARENT_LAYOUT_OPTIONS", () => {
       it("extends ROOT_LAYOUT_OPTIONS with padding", () => {
-        expect(PARENT_LAYOUT_OPTIONS["elk.padding"]).toBe("[top=60,left=20,bottom=20,right=20]");
+        expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.padding"]).toBe(
+          "[top=60,left=20,bottom=20,right=20]",
+        );
         expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.algorithm"]).toBe("org.eclipse.elk.layered");
       });
     });

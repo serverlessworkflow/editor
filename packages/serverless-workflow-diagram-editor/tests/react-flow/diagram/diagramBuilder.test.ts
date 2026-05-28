@@ -588,13 +588,15 @@ describe("diagramBuilder", () => {
         const taskNode1 = diagram1.nodes.find((node) => node.data.task !== undefined);
         const taskNode2 = diagram2.nodes.find((node) => node.id === taskNode1?.id);
 
-        if (taskNode1 && taskNode2) {
-          // Modify one task
-          (taskNode1.data.task as Specification.Task).modified = true;
+        // Ensure both nodes exist before testing clone behavior
+        expect(taskNode1).toBeDefined();
+        expect(taskNode2).toBeDefined();
 
-          // The other should not be affected
-          expect((taskNode2.data.task as Specification.Task).modified).toBeUndefined();
-        }
+        // Modify one task
+        (taskNode1!.data.task as Specification.Task).modified = true;
+
+        // The other should not be affected
+        expect((taskNode2!.data.task as Specification.Task).modified).toBeUndefined();
       });
     });
 
@@ -622,20 +624,17 @@ describe("diagramBuilder", () => {
         // Should have at least one edge connecting nodes
         expect(diagram.edges.length).toBeGreaterThan(0);
 
-        // All nodes except end nodes should have outgoing edges
+        // All non-terminal nodes should have outgoing edges
         const nodesWithOutgoingEdges = new Set(diagram.edges.map((edge) => edge.source));
-        const endNodes = diagram.nodes.filter((node) => node.type === GraphNodeType.End);
+        const terminalNodeIds = new Set(
+          diagram.nodes
+            .filter((node) => node.type === GraphNodeType.End || node.type === GraphNodeType.Exit)
+            .map((node) => node.id),
+        );
 
         diagram.nodes.forEach((node) => {
-          const isEndNode = endNodes.some((endNode) => endNode.id === node.id);
-          if (!isEndNode && node.type !== GraphNodeType.Exit) {
-            // Most nodes should have outgoing edges (some exceptions for specific node types)
-            const hasOutgoing = nodesWithOutgoingEdges.has(node.id);
-            // This is a soft check as some node types may not have outgoing edges
-            if (!hasOutgoing) {
-              // Just verify the node exists in the graph
-              expect(node.id).toBeDefined();
-            }
+          if (!terminalNodeIds.has(node.id)) {
+            expect(nodesWithOutgoingEdges.has(node.id)).toBe(true);
           }
         });
       });

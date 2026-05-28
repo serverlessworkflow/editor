@@ -62,7 +62,7 @@ export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
 
 export const PARENT_LAYOUT_OPTIONS: LayoutOptions = {
   ...ROOT_LAYOUT_OPTIONS,
-  "elk.padding": "[top=60,left=20,bottom=20,right=20]",
+  "org.eclipse.elk.padding": "[top=60,left=20,bottom=20,right=20]",
 };
 
 export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph): ElkNode {
@@ -98,7 +98,7 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
     const elkNode = nodeMap.get(node.id)!;
     if (elkNode.children && elkNode.children.length > 0) {
       // Nodes with children get layout options but no fixed dimensions
-      elkNode.layoutOptions = PARENT_LAYOUT_OPTIONS;
+      elkNode.layoutOptions = { ...PARENT_LAYOUT_OPTIONS };
     } else {
       // Leaf nodes get fixed dimensions
       elkNode.width = node.measured?.width ?? DEFAULT_NODE_SIZE.width;
@@ -106,24 +106,26 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
     }
   });
 
+  const reactFlowNodeMap = new Map(reactFlowGraph.nodes.map((node) => [node.id, node]));
+
   // Helper function to find the common ancestor of two nodes
   const findCommonAncestor = (sourceId: string, targetId: string): string => {
     // Build path from source to root
-    const sourcePath: string[] = [];
+    const sourcePath = new Set<string>();
     let currentId: string | undefined = sourceId;
     while (currentId) {
-      sourcePath.push(currentId);
-      const node = reactFlowGraph.nodes.find((n) => n.id === currentId);
+      sourcePath.add(currentId);
+      const node = reactFlowNodeMap.get(currentId);
       currentId = node?.parentId;
     }
 
     // Traverse from target to root and find first common node
     currentId = targetId;
     while (currentId) {
-      if (sourcePath.includes(currentId)) {
+      if (sourcePath.has(currentId)) {
         return currentId;
       }
-      const node = reactFlowGraph.nodes.find((n) => n.id === currentId);
+      const node = reactFlowNodeMap.get(currentId);
       currentId = node?.parentId;
     }
 
@@ -211,10 +213,10 @@ function buildElkEdgeMap(
 // Helper function to check if an edge is inside a parent node
 function isEdgeInsideParent(
   edge: { source: string; target: string },
-  graph: ReactFlowGraph,
+  nodeMap: Map<string, { id: string; parentId: string | undefined }>,
 ): boolean {
-  const sourceNode = graph.nodes.find((n) => n.id === edge.source);
-  const targetNode = graph.nodes.find((n) => n.id === edge.target);
+  const sourceNode = nodeMap.get(edge.source);
+  const targetNode = nodeMap.get(edge.target);
 
   // Edge is inside a parent if both source and target have the same parentId
   return !!(
@@ -232,6 +234,11 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
   // Build flat maps for O(1) lookups
   const elkNodeMap = buildElkNodeMap(layoutedGraph);
   const elkEdgeMap = buildElkEdgeMap(layoutedGraph);
+
+  // Build node map for O(1) lookups in isEdgeInsideParent
+  const reactFlowNodeMap = new Map(
+    graph.nodes.map((node) => [node.id, { id: node.id, parentId: node.parentId }]),
+  );
 
   // Map node positions
   const layoutedNodes = graph.nodes.map((node) => {
@@ -259,10 +266,10 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
       const newData = { ...restData };
       if (bendPoints.length > 0) {
         // Check if edge is inside a parent node and apply offset
-        const isInsideParent = isEdgeInsideParent(edge, graph);
+        const isInsideParent = isEdgeInsideParent(edge, reactFlowNodeMap);
         if (isInsideParent) {
-          // There is an incompatibity with the react flow library, the wayPoints are calculated correctly by ELK
-          // but the way react flow rendeer edges inside parent nodes cause path distotions.
+          // There is an incompatibility with the react flow library, the wayPoints are calculated correctly by ELK
+          // but the way react flow render edges inside parent nodes cause path distortions.
           newData.wayPoints = undefined;
         } else {
           newData.wayPoints = bendPoints;
