@@ -95,3 +95,51 @@ export const CallGrpc: Story = {
     content: workflows.callGrpc,
   },
 };
+
+export const CallHttpQueryHeadersExpression: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.callHttpQueryHeadersExpressions,
+  },
+};
+
+export const CallMCP: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.callMCP,
+  },
+};
+
+export const CallOpenAPI: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.callOpenApi,
+  },
+};
+
+export const ConditionalTask: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.conditionalTask,
+  },
+};
+
+export const DoMultiple: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.doMultiple,
+  },
+};
+
+export const DoSingle: Story = {
+  args: {
+    isReadOnly: true,
+    locale: "en",
+    content: workflows.doSingle,
+  },
+};

@@ -22,3 +22,9 @@ export { default as callAsyncAPISubscribe } from "./workflows/call-asyncapi-subs
 export { default as callCustomFunctionCataloged } from "./workflows/call-custom-function-cataloged.yaml?raw";
 export { default as callCustomFunctionInline } from "./workflows/call-custom-function-inline.yaml?raw";
 export { default as callGrpc } from "./workflows/call-grpc.yaml?raw";
+export { default as callHttpQueryHeadersExpressions } from "./workflows/call-http-query-headers-expressions.yaml?raw";
+export { default as callMCP } from "./workflows/call-mcp.yaml?raw";
+export { default as callOpenApi } from "./workflows/call-openapi.yaml?raw";
+export { default as conditionalTask } from "./workflows/conditional-task.yaml?raw";
+export { default as doMultiple } from "./workflows/do-multiple.yaml?raw";
+export { default as doSingle } from "./workflows/do-single.yaml?raw";
