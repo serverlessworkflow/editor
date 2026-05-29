@@ -65,6 +65,45 @@ export const PARENT_LAYOUT_OPTIONS: LayoutOptions = {
   "org.eclipse.elk.padding": "[top=60,left=20,bottom=20,right=20]",
 };
 
+// Helper function to clean up empty edges arrays from nodes
+function cleanupEmptyEdges(node: ElkNode): void {
+  if (node.edges && node.edges.length === 0) {
+    delete node.edges;
+  }
+  if (node.children) {
+    node.children.forEach(cleanupEmptyEdges);
+  }
+}
+
+// Helper function to find the common ancestor of two nodes
+function findCommonAncestor(
+  sourceId: string,
+  targetId: string,
+  reactFlowNodeMap: Map<string, { id: string; parentId?: string }>,
+): string {
+  // Build path from source to root
+  const sourcePath = new Set<string>();
+  let currentId: string | undefined = sourceId;
+  while (currentId) {
+    sourcePath.add(currentId);
+    const node = reactFlowNodeMap.get(currentId);
+    currentId = node?.parentId;
+  }
+
+  // Traverse from target to root and find first common node
+  currentId = targetId;
+  while (currentId) {
+    if (sourcePath.has(currentId)) {
+      return currentId;
+    }
+    const node = reactFlowNodeMap.get(currentId);
+    currentId = node?.parentId;
+  }
+
+  // If no common ancestor found, return "root"
+  return "root";
+}
+
 export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph): ElkNode {
   // Create a map for easy lookup (without width/height initially)
   const nodeMap = new Map<string, ElkNode>(
@@ -108,31 +147,6 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
 
   const reactFlowNodeMap = new Map(reactFlowGraph.nodes.map((node) => [node.id, node]));
 
-  // Helper function to find the common ancestor of two nodes
-  const findCommonAncestor = (sourceId: string, targetId: string): string => {
-    // Build path from source to root
-    const sourcePath = new Set<string>();
-    let currentId: string | undefined = sourceId;
-    while (currentId) {
-      sourcePath.add(currentId);
-      const node = reactFlowNodeMap.get(currentId);
-      currentId = node?.parentId;
-    }
-
-    // Traverse from target to root and find first common node
-    currentId = targetId;
-    while (currentId) {
-      if (sourcePath.has(currentId)) {
-        return currentId;
-      }
-      const node = reactFlowNodeMap.get(currentId);
-      currentId = node?.parentId;
-    }
-
-    // If no common ancestor found, return "root"
-    return "root";
-  };
-
   // Nest edges in the appropriate hierarchy level
   const rootEdges: ElkExtendedEdge[] = [];
   reactFlowGraph.edges.forEach((edge) => {
@@ -143,7 +157,7 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
     };
 
     // Find the lowest common ancestor that contains both source and target
-    const commonAncestor = findCommonAncestor(edge.source, edge.target);
+    const commonAncestor = findCommonAncestor(edge.source, edge.target, reactFlowNodeMap);
 
     if (commonAncestor === "root") {
       rootEdges.push(elkEdge);
@@ -159,15 +173,6 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
   });
 
   // Clean up empty edges arrays from nodes that don't need them
-  const cleanupEmptyEdges = (node: ElkNode) => {
-    if (node.edges && node.edges.length === 0) {
-      delete node.edges;
-    }
-    if (node.children) {
-      node.children.forEach(cleanupEmptyEdges);
-    }
-  };
-
   rootChildren.forEach(cleanupEmptyEdges);
 
   return {
