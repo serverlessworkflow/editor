@@ -43,7 +43,7 @@ export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
   "org.eclipse.elk.direction": "DOWN",
   "org.eclipse.elk.layered.nodePlacement.strategy": "BRANDES_KOEPF",
   "org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment": "BALANCED",
-  "org.eclipse.elk.layered.nodePlacement.bk.edgeStraightening": "true",
+  "org.eclipse.elk.layered.nodePlacement.bk.edgeStraightening": "IMPROVE_STRAIGHTNESS",
   "org.eclipse.elk.layered.nodePlacement.favorStraightEdges": "true",
   "org.eclipse.elk.layered.priority.straightness": "10",
   "org.eclipse.elk.hierarchyHandling": "INCLUDE_CHILDREN",
@@ -79,7 +79,7 @@ function cleanupEmptyEdges(node: ElkNode): void {
 function findCommonAncestor(
   sourceId: string,
   targetId: string,
-  reactFlowNodeMap: Map<string, { id: string; parentId?: string }>,
+  reactFlowNodeMap: Map<string, { id: string; parentId?: string | undefined }>,
 ): string {
   // Build path from source to root
   const sourcePath = new Set<string>();
@@ -220,15 +220,10 @@ function isEdgeInsideParent(
   edge: { source: string; target: string },
   nodeMap: Map<string, { id: string; parentId: string | undefined }>,
 ): boolean {
-  const sourceNode = nodeMap.get(edge.source);
-  const targetNode = nodeMap.get(edge.target);
-
-  // Edge is inside a parent if both source and target have the same parentId
-  return !!(
-    sourceNode?.parentId &&
-    targetNode?.parentId &&
-    sourceNode.parentId === targetNode.parentId
-  );
+  // Edge is inside a parent if the lowest common ancestor is not the root
+  // This matches the logic used in findCommonAncestor when building the ELK graph
+  const commonAncestor = findCommonAncestor(edge.source, edge.target, nodeMap);
+  return commonAncestor !== "root";
 }
 
 // set
@@ -270,7 +265,7 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
       // Always create new data object, only add wayPoints if there are bend points
       const newData = { ...restData };
       if (bendPoints.length > 0) {
-        // Check if edge is inside a parent node and apply offset
+        // Drop ELK-provided way points for edges nested inside a parent to avoid React Flow rendering distortion
         const isInsideParent = isEdgeInsideParent(edge, reactFlowNodeMap);
         if (isInsideParent) {
           // There is an incompatibility with the react flow library, the wayPoints are calculated correctly by ELK
