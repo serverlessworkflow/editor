@@ -25,11 +25,13 @@ export type DiagramEditorContextType = {
   errors: Error[];
   nodes: RF.Node[];
   edges: RF.Edge[];
+  selectedNodeId: string | null;
 
   setIsReadOnly: React.Dispatch<React.SetStateAction<boolean>>;
   setLocale: React.Dispatch<React.SetStateAction<string>>;
   setNodes: React.Dispatch<React.SetStateAction<RF.Node[]>>;
   setEdges: React.Dispatch<React.SetStateAction<RF.Edge[]>>;
+  setSelectedNodeId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const DiagramEditorContext = React.createContext<DiagramEditorContextType | undefined>(

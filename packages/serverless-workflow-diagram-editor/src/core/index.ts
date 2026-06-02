@@ -16,5 +16,6 @@
 
 export * from "./workflowSdk";
 export * from "./graph";
+export * from "./taskDetails";
 export * from "./taskSubType";
 export * from "./elkjs";

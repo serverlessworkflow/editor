@@ -38,10 +38,12 @@ export const createMockContextValue = (
   errors: [],
   nodes: [],
   edges: [],
+  selectedNodeId: null,
   setIsReadOnly: noop,
   setLocale: noop,
   setEdges: noop,
   setNodes: noop,
+  setSelectedNodeId: noop,
   ...overrides,
 });
 

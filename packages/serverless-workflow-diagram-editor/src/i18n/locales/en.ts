@@ -31,6 +31,11 @@ export const en = {
   "sidebar.title": "Title",
   "sidebar.summary": "Summary",
   "sidebar.tags": "Tags",
+  "sidebar.node": "Node",
+  "sidebar.sectionProperties": "Properties",
+  "sidebar.sectionSource": "Source",
+  "sidebar.viewSource": "View source",
+  "sidebar.noDetails": "No additional details for this node",
 } as const;
 
 export type TranslationKeys = keyof typeof en;
