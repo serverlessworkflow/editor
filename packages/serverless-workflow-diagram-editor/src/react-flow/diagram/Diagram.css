@@ -70,7 +70,7 @@
 /* custom nodes */
 @layer custom-nodes {
   .dec-root .node-label-container {
-    @apply dec:whitespace-pre 
+    @apply dec:whitespace-pre
             dec:p-0.75
             dec:text-black
             dec:text-sm;
@@ -81,11 +81,11 @@
   }
 
   .dec-root .custom-node-container {
-    @apply dec:rounded-[5px] 
-            dec:bg-white 
-            dec:border dec:border-black 
-            dec:transition-[border,box-shadow] 
-            dec:h-full 
+    @apply dec:rounded-[5px]
+            dec:bg-white
+            dec:border dec:border-black
+            dec:transition-[border,box-shadow]
+            dec:h-full
             dec:w-full;
   }
 
@@ -95,26 +95,26 @@
   }
 
   .dec-root .custom-node-container:hover {
-    @apply dec:hover:border dec:hover:border-black 
-            dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)] 
-            dec:hover:h-full 
+    @apply dec:hover:border dec:hover:border-black
+            dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)]
+            dec:hover:h-full
             dec:hover:w-full;
   }
 
   .dec-root.dark .custom-node-container:hover {
-    @apply dec:hover:border-[#5dafd5] 
+    @apply dec:hover:border-[#5dafd5]
             dec:hover:shadow-[0_0_10px_rgba(255,255,255,0.3)];
   }
 
   .dec-root .custom-node-container.selected {
-    @apply dec:bg-[#aebbd5] 
-            dec:border dec:border-black 
+    @apply dec:bg-[#aebbd5]
+            dec:border dec:border-black
             dec:shadow-[0_0_10px_rgba(1,79,248,0.3)];
   }
 
   .dec-root.dark .custom-node-container.selected {
-    @apply dec:bg-[#727676] 
-            dec:border-[#4324dc] 
+    @apply dec:bg-[#727676]
+            dec:border-[#4324dc]
             dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
   }
 
@@ -288,21 +288,29 @@
   .dec-root .dec-task-node-badge,
   .dec-root .dec-task-node-badge-custom {
     color: color-mix(in srgb, var(--task-node-color) 60%, black);
-    background-color: color-mix(in srgb, var(--task-node-color) 12%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--task-node-color) 12%,
+      transparent
+    );
   }
 
   .dec-root.dark .dec-task-node-badge,
   .dec-root.dark .dec-task-node-badge-custom {
     color: color-mix(in srgb, var(--task-node-color) 18%, white);
-    background-color: color-mix(in srgb, var(--task-node-color) 40%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--task-node-color) 40%,
+      transparent
+    );
   }
 
   .dec-root .dec-task-node-badge {
     @apply dec:ml-auto
-      dec:shrink-0 
+      dec:shrink-0
       dec:rounded
-      dec:px-2 
-      dec:py-0.5 
+      dec:px-2
+      dec:py-0.5
       dec:text-[8px]
       dec:font-semibold
       dec:uppercase

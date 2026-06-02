@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as RF from "@xyflow/react";
-import { ReactFlowNodeTypes } from "../nodes/Nodes";
-import "@xyflow/react/dist/style.css";
-import "./Diagram.css";
-import { ResolvedColorMode } from "../../types/colorMode";
-import { ReactFlowEdgeTypes } from "../edges/Edges";
-import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
-import { buildDiagramElements } from "./diagramBuilder";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { applyAutoLayout } from "./autoLayout";
+import * as React from 'react';
+import * as RF from '@xyflow/react';
+import { ReactFlowNodeTypes } from '../nodes/Nodes';
+import '@xyflow/react/dist/style.css';
+import './Diagram.css';
+import { ResolvedColorMode } from '../../types/colorMode';
+import { ReactFlowEdgeTypes } from '../edges/Edges';
+import { useDiagramEditorContext } from '../../store/DiagramEditorContext';
+import { buildDiagramElements } from './diagramBuilder';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { applyAutoLayout } from './autoLayout';
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -45,10 +45,17 @@ export type DiagramProps = {
   colorMode?: ResolvedColorMode;
 };
 
-export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
+export const Diagram = ({ divRef, ref, colorMode = 'light' }: DiagramProps) => {
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
-  const { model, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
-    useDiagramEditorContext();
+  const {
+    model,
+    nodes,
+    edges,
+    isReadOnly,
+    setNodes,
+    setEdges,
+    setSelectedNodeId,
+  } = useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
 
@@ -63,15 +70,18 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   );
 
   const onNodesChange = React.useCallback<RF.OnNodesChange>(
-    (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
+    (changes) =>
+      setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
     [setNodes],
   );
   const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
-    (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
+    (changes) =>
+      setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
     [setEdges],
   );
   const onSelectionChange = React.useCallback<RF.OnSelectionChangeFunc>(
-    ({ nodes: selectedNodes }) => setSelectedNodeId(selectedNodes[0]?.id ?? null),
+    ({ nodes: selectedNodes }) =>
+      setSelectedNodeId(selectedNodes[0]?.id ?? null),
     [setSelectedNodeId],
   );
 
@@ -101,11 +111,11 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         })
         .catch((error) => {
           // Ignore abort errors as they are expected when cancelling
-          if (error.name === "AbortError") {
+          if (error.name === 'AbortError') {
             return;
           }
           // Handle other auto-layout errors to prevent unhandled promise rejections
-          console.error("Failed to apply auto-layout:", error);
+          console.error('Failed to apply auto-layout:', error);
         });
     }, 100); // 150ms debounce delay
 
@@ -133,8 +143,12 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   return (
     <div
       ref={divRef}
-      className={isReadOnly ? "dec:h-full dec:relative read-only" : "dec:h-full dec:relative"}
-      data-testid={"diagram-container"}
+      className={
+        isReadOnly
+          ? 'dec:h-full dec:relative read-only'
+          : 'dec:h-full dec:relative'
+      }
+      data-testid={'diagram-container'}
     >
       <RF.ReactFlow
         nodeTypes={ReactFlowNodeTypes}
@@ -160,11 +174,13 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
             height: 10,
           },
         }}
-        data-testid={"react-flow-canvas"}
+        data-testid={'react-flow-canvas'}
         nodesDraggable={!isReadOnly}
         nodesConnectable={!isReadOnly}
       >
-        {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
+        {minimapVisible && (
+          <RF.MiniMap pannable zoomable position={'top-right'} />
+        )}
 
         <RF.Panel position="top-right">
           <SidebarTrigger />
@@ -172,12 +188,17 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
 
         <RF.Controls
           fitViewOptions={FIT_VIEW_OPTIONS}
-          position={"bottom-right"}
+          position={'bottom-right'}
           showInteractive={false}
         >
-          <RF.ControlButton onClick={() => setMinimapVisible(!minimapVisible)}>M</RF.ControlButton>
+          <RF.ControlButton onClick={() => setMinimapVisible(!minimapVisible)}>
+            M
+          </RF.ControlButton>
         </RF.Controls>
-        <RF.Background className="diagram-background" variant={RF.BackgroundVariant.Cross} />
+        <RF.Background
+          className="diagram-background"
+          variant={RF.BackgroundVariant.Cross}
+        />
       </RF.ReactFlow>
     </div>
   );
