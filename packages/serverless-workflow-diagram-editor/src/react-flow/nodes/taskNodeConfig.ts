@@ -19,7 +19,11 @@ import {
   AlertTriangle,
   ArrowRightLeft,
   AudioLines,
+  Bug,
   Clock,
+  GitFork,
+  IterationCw,
+  List,
   Megaphone,
   PenLine,
   Phone,
@@ -27,6 +31,23 @@ import {
   Terminal,
 } from "lucide-react";
 import type { ComponentType } from "react";
+
+export interface TaskNodeConfig {
+  color: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+  typeLabel: string;
+}
+
+/* Custom react-flow only node type for catch nodes that contain child nodes (i.e are containers) (the sdk uses GraphNodeType.Catch for both leaf and container catch nodes) */
+export const CATCH_CONTAINER_NODE_TYPE = "catch-container";
+
+export type ContainerNodeType =
+  | typeof GraphNodeType.Do
+  | typeof GraphNodeType.For
+  | typeof GraphNodeType.Fork
+  | typeof GraphNodeType.Try
+  | typeof GraphNodeType.TryCatch
+  | typeof CATCH_CONTAINER_NODE_TYPE;
 
 export type LeafNodeType =
   | typeof GraphNodeType.Call
@@ -39,13 +60,7 @@ export type LeafNodeType =
   | typeof GraphNodeType.Switch
   | typeof GraphNodeType.Wait;
 
-export interface TaskNodeConfig {
-  color: string;
-  icon: ComponentType<{ size?: number; className?: string }>;
-  typeLabel: string;
-}
-
-export const taskNodeConfigMap: Record<LeafNodeType, TaskNodeConfig> = {
+export const leafNodeConfigMap: Record<LeafNodeType, TaskNodeConfig> = {
   [GraphNodeType.Call]: {
     color: "#2563EB",
     icon: Phone,
@@ -92,3 +107,46 @@ export const taskNodeConfigMap: Record<LeafNodeType, TaskNodeConfig> = {
     typeLabel: "WAIT",
   },
 };
+
+export const containerNodeConfigMap: Record<ContainerNodeType, TaskNodeConfig> = {
+  [GraphNodeType.Do]: {
+    color: "#0D9488",
+    icon: List,
+    typeLabel: "DO",
+  },
+  [GraphNodeType.For]: {
+    color: "#A855F7",
+    icon: IterationCw,
+    typeLabel: "FOR",
+  },
+  [GraphNodeType.Fork]: {
+    color: "#FBBF24",
+    icon: GitFork,
+    typeLabel: "FORK",
+  },
+  [GraphNodeType.Try]: {
+    color: "#0891B2",
+    icon: Bug,
+    typeLabel: "TRY",
+  },
+  [GraphNodeType.TryCatch]: {
+    color: "#0891B2",
+    icon: Bug,
+    typeLabel: "TRY...CATCH",
+  },
+  [CATCH_CONTAINER_NODE_TYPE]: {
+    color: "#F97316",
+    icon: ShieldAlert,
+    typeLabel: "CATCH",
+  },
+};
+
+const nodeConfigMap: Record<string, TaskNodeConfig> = {
+  ...leafNodeConfigMap,
+  ...containerNodeConfigMap,
+};
+
+/* Resolves the visual config for node type, leaf or container */
+export function getNodeVisualConfig(nodeType: string | undefined): TaskNodeConfig | undefined {
+  return nodeType ? nodeConfigMap[nodeType] : undefined;
+}

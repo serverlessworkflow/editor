@@ -16,7 +16,14 @@
 
 import { it, expect, describe } from "vitest";
 import { GraphNodeType } from "@serverlessworkflow/sdk";
-import { LeafNodeType, taskNodeConfigMap } from "../../../src/react-flow/nodes/taskNodeConfig";
+import {
+  CATCH_CONTAINER_NODE_TYPE,
+  type ContainerNodeType,
+  type LeafNodeType,
+  containerNodeConfigMap,
+  getNodeVisualConfig,
+  leafNodeConfigMap,
+} from "../../../src/react-flow/nodes/taskNodeConfig";
 
 const leafNodeTypes: LeafNodeType[] = [
   GraphNodeType.Call,
@@ -30,18 +37,68 @@ const leafNodeTypes: LeafNodeType[] = [
   GraphNodeType.Catch,
 ];
 
+const containerNodeTypes: ContainerNodeType[] = [
+  GraphNodeType.Do,
+  GraphNodeType.For,
+  GraphNodeType.Fork,
+  GraphNodeType.Try,
+  GraphNodeType.TryCatch,
+  CATCH_CONTAINER_NODE_TYPE,
+];
+
 describe("taskNodeConfig", () => {
   it("should have config for all leaf nodes", () => {
     for (const leaf of leafNodeTypes) {
-      expect(taskNodeConfigMap[leaf]).toBeDefined();
+      expect(leafNodeConfigMap[leaf]).toBeDefined();
     }
   });
 
-  it.each(leafNodeTypes)("should have config color, icon and typeLabel for %s", (leaf) => {
-    const config = taskNodeConfigMap[leaf];
+  it("should have config for all container nodes", () => {
+    for (const container of containerNodeTypes) {
+      expect(containerNodeConfigMap[container]).toBeDefined();
+    }
+  });
+
+  it.each(leafNodeTypes)("should have config color, icon and typeLabel for leaf %s", (leaf) => {
+    const config = leafNodeConfigMap[leaf];
 
     expect(config.color).toMatch(/^#([0-9A-Fa-f]{6})$/);
     expect(config.icon).toBeDefined();
     expect(config.typeLabel).toBe(config.typeLabel.toUpperCase());
+  });
+
+  it.each(containerNodeTypes)(
+    "should have config color, icon and typeLabel for container %s",
+    (container) => {
+      const config = containerNodeConfigMap[container];
+
+      expect(config.color).toMatch(/^#([0-9A-Fa-f]{6})$/);
+      expect(config.icon).toBeDefined();
+      expect(config.typeLabel).toBe(config.typeLabel.toUpperCase());
+    },
+  );
+
+  describe("getNodeVisualConfig", () => {
+    it("resolves a leaf node type", () => {
+      expect(getNodeVisualConfig(GraphNodeType.Call)).toBe(leafNodeConfigMap[GraphNodeType.Call]);
+    });
+
+    it("resolves a container node type", () => {
+      expect(getNodeVisualConfig(GraphNodeType.Do)).toBe(containerNodeConfigMap[GraphNodeType.Do]);
+    });
+
+    it("resolves the custom catch-container node type", () => {
+      expect(getNodeVisualConfig(CATCH_CONTAINER_NODE_TYPE)).toBe(
+        containerNodeConfigMap[CATCH_CONTAINER_NODE_TYPE],
+      );
+    });
+
+    it("returns undefined for an unknown type", () => {
+      expect(getNodeVisualConfig("not-a-node-type")).toBeUndefined();
+    });
+
+    it("returns undefined when type is undefined", () => {
+      expect(getNodeVisualConfig(undefined)).toBeUndefined();
+    });
   });
 });

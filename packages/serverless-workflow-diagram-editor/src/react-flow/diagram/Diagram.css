@@ -117,132 +117,184 @@
             dec:border-[#4324dc] 
             dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
   }
-}
 
-/* custom edges */
-/* React flow SVG components do not work with classes defined into layers */
-.dec-root .edge-line {
-  @apply dec:stroke-[#aea6a6] 
-        dec:stroke-2;
-}
-
-.dec-root .edge-line.error {
-  @apply dec:stroke-red-500 
-        dec:[stroke-dasharray:5_5];
-}
-
-.dec-root .edge-line.condition {
-  @apply dec:stroke-blue-500;
-}
-
-/* custom edge labels */
-@layer custom-edge-labels {
-  .dec-root .edge-label {
-    @apply dec:bg-white 
-            dec:border dec:border-[#ccc] 
-            dec:rounded-[3px] 
-            dec:py-0.5 dec:px-1.5 
-            dec:absolute 
-            dec:text-[10px]
-            dec:pointer-events-auto;
+  /* Hover + selection are shared by every interactive node (leaf + container) */
+  .dec-root .dec-leaf-node:hover,
+  .dec-root .dec-container-node:hover {
+    @apply dec:shadow-[0_0_10px_rgba(0,65,208,0.3)];
   }
 
-  .dec-root.dark .edge-label {
-    @apply dec:bg-gray-800 
-            dec:border-gray-600 
-            dec:text-gray-200;
+  .dec-root.dark .dec-leaf-node:hover,
+  .dec-root.dark .dec-container-node:hover {
+    @apply dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
   }
 
-  .dec-root .edge-label.error {
-    @apply dec:bg-red-50 
-            dec:border-red-500 
-            dec:text-red-500;
+  .dec-root .dec-leaf-node.selected,
+  .dec-root .dec-container-node.selected {
+    box-shadow:
+      0 0 0 2px rgb(59 130 246),
+      0 0 12px 2px rgba(59, 130, 246, 0.45);
   }
 
-  .dec-root .edge-label.condition {
-    @apply dec:bg-blue-50 
-            dec:border-blue-500 
-            dec:text-blue-500;
+  .dec-root.dark .dec-leaf-node.selected,
+  .dec-root.dark .dec-container-node.selected {
+    box-shadow:
+      0 0 0 2px rgb(96 165 250),
+      0 0 16px 4px rgba(96, 165, 250, 0.5);
   }
 
-  .dec-root.dark .edge-label.condition {
-    @apply dec:bg-gray-800 
-            dec:border-gray-600 
-            dec:text-gray-200;
+  /* container nodes (do, for, fork, try, try-catch, catch-container) */
+  .dec-root .dec-container-node {
+    @apply dec:relative
+            dec:rounded-lg
+            dec:h-full
+            dec:w-full
+            dec:transition-[border,box-shadow];
+    border: 1px solid var(--task-node-color);
+    background-color: color-mix(in srgb, var(--task-node-color) 3%, white);
+  }
+
+  .dec-root.dark .dec-container-node {
+    background-color: color-mix(in srgb, var(--task-node-color) 6%, #1a202c);
+  }
+
+  .dec-root .dec-container-node-header {
+    @apply dec:absolute
+            dec:top-0
+            dec:left-0
+            dec:right-0
+            dec:flex
+            dec:items-center
+            dec:gap-3
+            dec:px-3
+            dec:py-2
+            dec:rounded-t-lg
+            dec:rounded-b-none;
+    background-color: color-mix(in srgb, var(--task-node-color) 14%, white);
+    border-bottom: 1px solid var(--task-node-color);
+  }
+
+  .dec-root.dark .dec-container-node-header {
+    background-color: color-mix(in srgb, var(--task-node-color) 18%, #1f2937);
+  }
+
+  .dec-root .dec-container-node-icon {
+    @apply dec:shrink-0;
+    color: var(--task-node-color);
+  }
+
+  .dec-root .dec-container-node-label {
+    @apply dec:flex
+            dec:flex-col
+            dec:gap-0.5
+            dec:min-w-0;
+  }
+
+  .dec-root .dec-container-node-name {
+    @apply dec:truncate
+            dec:text-sm
+            dec:text-black
+            dec:leading-tight;
+  }
+
+  .dec-root.dark .dec-container-node-name {
+    @apply dec:text-white;
+  }
+
+  .dec-root .dec-container-node-type {
+    @apply dec:text-[9px]
+            dec:uppercase
+            dec:leading-tight
+            dec:text-gray-600;
+  }
+
+  .dec-root.dark .dec-container-node-type {
+    @apply dec:text-gray-300;
   }
 
   /* task leaf nodes */
-  .dec-root .dec-task-node-container {
-    @apply dec:rounded-lg
+  .dec-root .dec-leaf-node {
+    @apply dec:flex
+      dec:flex-col
+      dec:justify-center
+      dec:rounded-lg
       dec:bg-white
       dec:shadow-sm
       dec:transition-[border,box-shadow]
       dec:h-full
       dec:w-full;
-    border-top: 4px solid var(--task-node-color);
+    border-top: 3px solid var(--task-node-color);
   }
 
-  .dec-root.dark .dec-task-node-container {
+  .dec-root.dark .dec-leaf-node {
     @apply dec:bg-[#2d3748];
   }
 
-  .dec-root .dec-task-node-container:hover {
-    @apply dec:shadow-[0_0_10px_rgba(0,65,208,0.3)];
-  }
-
-  .dec-root.dark .dec-task-node-container:hover {
-    @apply dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
-  }
-
-  .dec-root .dec-task-node-container.selected {
-    @apply dec:shadow-[0_0_10px_rgba(59,130,246,0.8)];
-  }
-
-  .dec-root.dark .dec-task-node-container.selected {
-    @apply dec:bg-[#3d4a5c] 
-      dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
-  }
-
-  .dec-root .dec-task-node-content {
-    @apply dec:flex 
-      dec:items-center 
-      dec:gap-3 
-      dec:px-3 
+  .dec-root .dec-leaf-node-content {
+    @apply dec:flex
+      dec:items-center
+      dec:gap-3
+      dec:px-3
       dec:py-2;
   }
 
-  .dec-root .dec-task-node-icon {
+  .dec-root .dec-leaf-node-icon {
     @apply dec:shrink-0;
     color: var(--task-node-color);
   }
 
-  .dec-root .dec-task-node-label {
-    @apply dec:flex 
-    dec:flex-col 
-    dec:gap-0.5
-    dec:min-w-0;
+  .dec-root .dec-leaf-node-label {
+    @apply dec:flex
+      dec:flex-1
+      dec:flex-col
+      dec:gap-0.5
+      dec:min-w-0;
   }
 
-  .dec-root .dec-task-node-name {
-    @apply dec:truncate /*TODO: for now truncate text revisit when layout is in and working on styling tweaks */
-    dec:text-sm 
-    dec:text-black 
-    dec:leading-tight;
+  /* Name owns the top row; type label + badge share the metadata row below.
+     Name wraps to 2 lines max, breaking long camelCase identifiers mid-word, then ellipsing. */
+  .dec-root .dec-leaf-node-name {
+    @apply dec:line-clamp-2
+      dec:text-sm
+      dec:text-black
+      dec:leading-tight;
+    overflow-wrap: anywhere;
   }
 
-  .dec-root.dark .dec-task-node-name {
+  .dec-root .dec-leaf-node-meta {
+    @apply dec:flex
+      dec:items-center
+      dec:gap-2;
+  }
+
+  .dec-root.dark .dec-leaf-node-name {
     @apply dec:text-white;
   }
 
-  .dec-root .dec-task-node-type {
-    @apply dec:text-[9px] 
-    dec:uppercase 
-    dec:text-gray-500 
-    dec:leading-tight;
+  .dec-root .dec-leaf-node-type {
+    @apply dec:text-[9px]
+      dec:uppercase
+      dec:text-gray-600
+      dec:leading-tight;
   }
 
-  .dec-root.dark .dec-task-node-type {
-    @apply dec:text-gray-400;
+  .dec-root.dark .dec-leaf-node-type {
+    @apply dec:text-gray-300;
+  }
+
+  /* TaskNodeBadge. A known subtype renders as an uppercased pill; a custom value renders
+     the raw user string (not uppercased, width-capped + truncated, full value
+     on hover). */
+  .dec-root .dec-task-node-badge,
+  .dec-root .dec-task-node-badge-custom {
+    color: color-mix(in srgb, var(--task-node-color) 60%, black);
+    background-color: color-mix(in srgb, var(--task-node-color) 12%, transparent);
+  }
+
+  .dec-root.dark .dec-task-node-badge,
+  .dec-root.dark .dec-task-node-badge-custom {
+    color: color-mix(in srgb, var(--task-node-color) 18%, white);
+    background-color: color-mix(in srgb, var(--task-node-color) 40%, transparent);
   }
 
   .dec-root .dec-task-node-badge {
@@ -255,17 +307,72 @@
       dec:font-semibold
       dec:uppercase
       dec:whitespace-nowrap;
-    color: var(--task-node-color);
-    border: 1px solid var(--task-node-color);
   }
 
-  .dec-root .dec-task-node-badge-icon {
+  .dec-root .dec-task-node-badge-custom {
     @apply dec:ml-auto
-      dec:shrink-0 
-      dec:flex 
-      dec:items-center 
-      dec:justify-center;
-    color: var(--task-node-color);
+      dec:block
+      dec:min-w-0
+      dec:max-w-[7.5rem]
+      dec:truncate
+      dec:rounded
+      dec:px-2
+      dec:py-0.5
+      dec:text-[8px]
+      dec:font-semibold;
   }
   /* end task leaf nodes */
+}
+
+/* custom edges */
+/* React flow SVG components do not work with classes defined into layers */
+.dec-root .edge-line {
+  @apply dec:stroke-[#aea6a6]
+        dec:stroke-2;
+}
+
+.dec-root .edge-line.error {
+  @apply dec:stroke-red-500
+        dec:[stroke-dasharray:5_5];
+}
+
+.dec-root .edge-line.condition {
+  @apply dec:stroke-blue-500;
+}
+
+/* custom edge labels */
+@layer custom-edge-labels {
+  .dec-root .edge-label {
+    @apply dec:bg-white
+            dec:border dec:border-[#ccc]
+            dec:rounded-[3px]
+            dec:py-0.5 dec:px-1.5
+            dec:absolute
+            dec:text-[10px]
+            dec:pointer-events-auto;
+  }
+
+  .dec-root.dark .edge-label {
+    @apply dec:bg-gray-800
+            dec:border-gray-600
+            dec:text-gray-200;
+  }
+
+  .dec-root .edge-label.error {
+    @apply dec:bg-red-50
+            dec:border-red-500
+            dec:text-red-500;
+  }
+
+  .dec-root .edge-label.condition {
+    @apply dec:bg-blue-50
+            dec:border-blue-500
+            dec:text-blue-500;
+  }
+
+  .dec-root.dark .edge-label.condition {
+    @apply dec:bg-gray-800
+            dec:border-gray-600
+            dec:text-gray-200;
+  }
 }

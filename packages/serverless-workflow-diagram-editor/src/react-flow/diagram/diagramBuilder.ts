@@ -16,10 +16,11 @@
 
 import * as RF from "@xyflow/react";
 import { buildFlatGraph } from "../../core";
-import { BaseNodeData, CATCH_CONTAINER_NODE_TYPE, ReactFlowNodeTypes } from "../nodes/Nodes";
+import { BaseNodeData, ReactFlowNodeTypes } from "../nodes/Nodes";
 import { BaseEdgeData, EdgeTypes } from "../edges/Edges";
 import * as sdk from "@serverlessworkflow/sdk";
 import { DEFAULT_NODE_SIZE } from "./autoLayout";
+import { CATCH_CONTAINER_NODE_TYPE } from "../nodes/taskNodeConfig";
 
 export type ReactFlowGraph = {
   nodes: RF.Node[];

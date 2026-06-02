@@ -24,13 +24,13 @@ import {
   getCatchContainerNodeIds,
 } from "../../../src/react-flow/diagram/diagramBuilder";
 import { EdgeTypes } from "../../../src/react-flow/edges/Edges";
-import { CATCH_CONTAINER_NODE_TYPE } from "../../../src/react-flow/nodes/Nodes";
 import { parseWorkflow } from "../../../src/core";
 import {
   BASIC_VALID_WORKFLOW_JSON,
   BASIC_VALID_WORKFLOW_JSON_TASKS,
 } from "../../fixtures/workflows";
 import { createFlatGraph } from "../../test-utils/graph-helpers";
+import { CATCH_CONTAINER_NODE_TYPE } from "../../../src/react-flow/nodes/taskNodeConfig";
 
 // Type alias for diagram elements to reduce verbosity
 type DiagramElements = ReturnType<typeof buildDiagramElements>;

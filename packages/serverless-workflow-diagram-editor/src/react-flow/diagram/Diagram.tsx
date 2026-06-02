@@ -47,7 +47,8 @@ export type DiagramProps = {
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
-  const { model, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } = useDiagramEditorContext();
+  const { model, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
+    useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
 

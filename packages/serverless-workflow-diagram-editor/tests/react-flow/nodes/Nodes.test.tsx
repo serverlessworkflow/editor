@@ -19,7 +19,12 @@ import { vi, it, expect, afterEach, describe } from "vitest";
 import * as RF from "@xyflow/react";
 import { GraphNodeType } from "@serverlessworkflow/sdk";
 import { ReactFlowNodeTypes } from "../../../src/react-flow/nodes/Nodes";
-import { taskNodeConfigMap, type LeafNodeType } from "../../../src/react-flow/nodes/taskNodeConfig";
+import {
+  containerNodeConfigMap,
+  leafNodeConfigMap,
+  type ContainerNodeType,
+  type LeafNodeType,
+} from "../../../src/react-flow/nodes/taskNodeConfig";
 import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
 
 function testNode(
@@ -106,7 +111,7 @@ describe("React Flow custom node types", () => {
     expect(screen.getByTestId("end-node-end")).toBeInTheDocument();
   });
 
-  describe("should render leaf nodes with TaskNodeContent", () => {
+  describe("should render leaf nodes with LeafNodeContent", () => {
     const leafNodes: { id: string; type: LeafNodeType; testId: string }[] = [
       { id: "n1", type: GraphNodeType.Call, testId: "call" },
       { id: "n3", type: GraphNodeType.Switch, testId: "switch" },
@@ -128,11 +133,40 @@ describe("React Flow custom node types", () => {
 
       const nodeData = allNodes.find((n) => n.id === id);
       const node = screen.getByTestId(`${testId}-node-${id}`);
-      const config = taskNodeConfigMap[type];
+      const config = leafNodeConfigMap[type];
 
-      expect(node).toHaveClass("dec-task-node-container");
-      expect(node.querySelector(".dec-task-node-type")?.textContent).toBe(config.typeLabel);
-      expect(node.querySelector(".dec-task-node-name")?.textContent).toBe(nodeData?.data.label);
+      expect(node).toHaveClass("dec-leaf-node");
+      expect(node.querySelector(".dec-leaf-node-type")?.textContent).toBe(config.typeLabel);
+      expect(node.querySelector(".dec-leaf-node-name")?.textContent).toBe(nodeData?.data.label);
+      expect(node.style.getPropertyValue("--task-node-color")).toBe(config.color);
+    });
+  });
+
+  describe("should render container nodes with ContainerNodeContent", () => {
+    const containerNodes: { id: string; type: ContainerNodeType; testId: string }[] = [
+      { id: "n2", type: GraphNodeType.Do, testId: "do" },
+      { id: "n5", type: GraphNodeType.For, testId: "for" },
+      { id: "n6", type: GraphNodeType.Fork, testId: "fork" },
+      { id: "n11", type: GraphNodeType.TryCatch, testId: "try-catch" },
+      { id: "n12", type: GraphNodeType.Try, testId: "try" },
+    ];
+
+    it.each(containerNodes)("should render %s node with correct config", ({ id, type, testId }) => {
+      render(
+        <div>
+          <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={allNodes} edges={allEdges} />
+        </div>,
+      );
+
+      const nodeData = allNodes.find((n) => n.id === id);
+      const node = screen.getByTestId(`${testId}-node-${id}`);
+      const config = containerNodeConfigMap[type];
+
+      expect(node).toHaveClass("dec-container-node");
+      expect(node.querySelector(".dec-container-node-type")?.textContent).toBe(config.typeLabel);
+      expect(node.querySelector(".dec-container-node-name")?.textContent).toBe(
+        nodeData?.data.label,
+      );
       expect(node.style.getPropertyValue("--task-node-color")).toBe(config.color);
     });
   });
@@ -158,7 +192,7 @@ describe("React Flow custom node types", () => {
       expect(listenBadge.textContent).toBe("any");
     });
 
-    it("should render an icon badge for an unknown subtype", () => {
+    it("should render the raw value as a custom badge for an unknown subtype", () => {
       const nodesWithUnknownBadges = [
         testNode("n1", GraphNodeType.Call, 100, "CallNode", { call: "customCall" }),
       ];
@@ -172,8 +206,39 @@ describe("React Flow custom node types", () => {
         </div>,
       );
 
-      const callBadge = screen.getByTestId("call-node-n1-badge-icon");
+      const callBadge = screen.getByTestId("call-node-n1-badge-custom");
       expect(callBadge).toBeInTheDocument();
+      expect(callBadge.textContent).toBe("customCall");
+      expect(callBadge).toHaveAttribute("title", "customCall");
+    });
+
+    it("should render while/compete badges on container nodes", () => {
+      const containerNodesWithBadges = [
+        testNode("n5", GraphNodeType.For, 10, "ForNode", {
+          for: { each: "i", in: "${ .items }" },
+          while: "${ true }",
+        }),
+        testNode("n6", GraphNodeType.Fork, 100, "ForkNode", {
+          fork: { branches: [], compete: true },
+        }),
+      ];
+      render(
+        <div>
+          <RF.ReactFlow
+            nodeTypes={ReactFlowNodeTypes}
+            nodes={containerNodesWithBadges}
+            edges={allEdges}
+          />
+        </div>,
+      );
+
+      const forBadge = screen.getByTestId("for-node-n5-badge");
+      expect(forBadge).toBeInTheDocument();
+      expect(forBadge.textContent).toBe("while");
+
+      const forkBadge = screen.getByTestId("fork-node-n6-badge");
+      expect(forkBadge).toBeInTheDocument();
+      expect(forkBadge.textContent).toBe("compete");
     });
 
     it("should not render a badge when task has no subtype", () => {

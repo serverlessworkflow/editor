@@ -1102,8 +1102,8 @@ describe("autoLayout", () => {
     describe("DEFAULT_NODE_SIZE", () => {
       it("has correct default dimensions", () => {
         expect(DEFAULT_NODE_SIZE).toEqual({
-          height: 60,
-          width: 200,
+          height: 65,
+          width: 220,
         });
       });
     });
