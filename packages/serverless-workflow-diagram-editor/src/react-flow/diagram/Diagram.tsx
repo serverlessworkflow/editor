@@ -128,7 +128,9 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   return (
     <div
       ref={divRef}
-      className={`dec:h-full dec:relative ${isReadOnly ? "read-only" : ""}`}
+      className={["dec:h-full", "dec:relative", isReadOnly && "read-only"]
+        .filter(Boolean)
+        .join(" ")}
       data-testid={"diagram-container"}
     >
       <RF.ReactFlow
