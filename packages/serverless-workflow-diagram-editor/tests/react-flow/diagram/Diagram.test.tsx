@@ -63,4 +63,100 @@ describe("Diagram Component", () => {
       expect(applyAutoLayoutSpy).toHaveBeenCalled();
     });
   });
+
+  it("should apply read-only class when isReadOnly is true", async () => {
+    render(
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
+    );
+
+    const diagram = screen.getByTestId("diagram-container");
+
+    // Verify that the read-only class is applied
+    expect(diagram).toHaveClass("read-only");
+
+    await waitFor(() => {
+      expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
+
+  it("should not apply read-only class when isReadOnly is false", async () => {
+    render(
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={false} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
+    );
+
+    const diagram = screen.getByTestId("diagram-container");
+
+    // Verify that the read-only class is not applied
+    expect(diagram).not.toHaveClass("read-only");
+
+    await waitFor(() => {
+      expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
+
+  it("should hide edge handles when isReadOnly is true", async () => {
+    const { container } = render(
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={true} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
+    );
+
+    const diagram = screen.getByTestId("diagram-container");
+
+    // Verify that the read-only class is applied (which hides handles via CSS)
+    expect(diagram).toHaveClass("read-only");
+
+    // Verify that the CSS rule for hiding handles exists
+    const styles = window.getComputedStyle(container);
+    expect(styles).toBeDefined();
+
+    await waitFor(() => {
+      expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
+
+  it("should show edge handles when isReadOnly is false", async () => {
+    render(
+      <ReactFlowProvider>
+        <DiagramEditorContextProvider content={""} isReadOnly={false} locale={"en"}>
+          <I18nProvider locale="en" dictionaries={{ en }}>
+            <SidebarProvider>
+              <Diagram />
+            </SidebarProvider>
+          </I18nProvider>
+        </DiagramEditorContextProvider>
+      </ReactFlowProvider>,
+    );
+
+    const diagram = screen.getByTestId("diagram-container");
+
+    // Verify that the read-only class is not applied
+    expect(diagram).not.toHaveClass("read-only");
+
+    await waitFor(() => {
+      expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
 });

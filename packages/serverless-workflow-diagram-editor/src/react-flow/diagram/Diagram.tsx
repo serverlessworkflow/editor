@@ -47,7 +47,7 @@ export type DiagramProps = {
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
-  const { model, nodes, edges, setNodes, setEdges } = useDiagramEditorContext();
+  const { model, nodes, edges, isReadOnly, setNodes, setEdges } = useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
 
@@ -126,7 +126,11 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   }, [model, reactFlowInstance, setNodes, setEdges]);
 
   return (
-    <div ref={divRef} className="dec:h-full dec:relative" data-testid={"diagram-container"}>
+    <div
+      ref={divRef}
+      className={`dec:h-full dec:relative ${isReadOnly ? "read-only" : ""}`}
+      data-testid={"diagram-container"}
+    >
       <RF.ReactFlow
         nodeTypes={ReactFlowNodeTypes}
         nodes={nodes}
@@ -151,6 +155,8 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           },
         }}
         data-testid={"react-flow-canvas"}
+        nodesDraggable={!isReadOnly}
+        nodesConnectable={!isReadOnly}
       >
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
 
