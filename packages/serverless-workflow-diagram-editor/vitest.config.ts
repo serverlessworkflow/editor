@@ -32,10 +32,17 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./tests/setupTests.ts", "./.storybook/vitest.setup.ts"],
-    css: true,
-    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    setupFiles: ["./tests/setupTests.ts"],
     projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          css: true,
+          include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+          exclude: ["tests/**/*.story.test.ts", "tests/**/*.story.test.tsx"],
+        },
+      },
       {
         extends: true,
         plugins: [
@@ -51,9 +58,6 @@ export default defineConfig({
             provider: playwright({}),
             instances: [{ browser: "chromium" }],
           },
-          globals: true,
-          environment: "jsdom",
-          setupFiles: ["./tests/setupTests.ts", "./.storybook/vitest.setup.ts"],
         },
       },
     ],

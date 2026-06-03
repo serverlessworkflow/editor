@@ -27,6 +27,8 @@ export const CATCH_CONTAINER_NODE_TYPE = "catch-container";
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
   [GraphNodeType.End]: EndNode,
+  [GraphNodeType.Entry]: EntryNode,
+  [GraphNodeType.Exit]: ExitNode,
   [GraphNodeType.Call]: CallNode,
   [GraphNodeType.Do]: DoNode,
   [GraphNodeType.Emit]: EmitNode,
@@ -154,6 +156,20 @@ export function StartNode({ id, data, selected, type }: RF.NodeProps<StartNodeTy
 /* end node */
 export type EndNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.End>;
 export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* entry node */
+export type EntryNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Entry>;
+export function EntryNode({ id, data, selected, type }: RF.NodeProps<EntryNodeType>) {
+  // TODO: This component is just a placeholder
+  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+}
+
+/* exit node */
+export type ExitNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Exit>;
+export function ExitNode({ id, data, selected, type }: RF.NodeProps<ExitNodeType>) {
   // TODO: This component is just a placeholder
   return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
 }

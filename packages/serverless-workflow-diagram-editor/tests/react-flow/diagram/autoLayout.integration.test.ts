@@ -23,6 +23,7 @@ import {
   applyAutoLayout,
   DEFAULT_NODE_SIZE,
   ROOT_LAYOUT_OPTIONS,
+  PARENT_LAYOUT_OPTIONS,
 } from "../../../src/react-flow/diagram/autoLayout";
 import type { ReactFlowGraph } from "../../../src/react-flow/diagram/diagramBuilder";
 import * as core from "../../../src/core";
@@ -187,6 +188,129 @@ describe("autoLayout", () => {
 
       expect(elkGraph.children).toHaveLength(1);
       expect(elkGraph.children?.[0].id).toBe("node1");
+    });
+
+    it("applies PARENT_LAYOUT_OPTIONS to nodes with children", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          {
+            id: "parent",
+            position: { x: 0, y: 0 },
+            data: {},
+            measured: { width: 300, height: 200 },
+          },
+          {
+            id: "child",
+            position: { x: 10, y: 10 },
+            data: {},
+            parentId: "parent",
+            measured: { width: 100, height: 50 },
+          },
+        ] as Node[],
+        edges: [],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Parent node should have layout options and no fixed dimensions
+      expect(elkGraph.children?.[0].layoutOptions).toBeDefined();
+      expect(elkGraph.children?.[0].layoutOptions?.["org.eclipse.elk.padding"]).toBe(
+        "[top=60,left=20,bottom=20,right=20]",
+      );
+      expect(elkGraph.children?.[0].width).toBeUndefined();
+      expect(elkGraph.children?.[0].height).toBeUndefined();
+
+      // Child node should have fixed dimensions and no layout options
+      expect(elkGraph.children?.[0].children?.[0].width).toBe(100);
+      expect(elkGraph.children?.[0].children?.[0].height).toBe(50);
+      expect(elkGraph.children?.[0].children?.[0].layoutOptions).toBeUndefined();
+    });
+
+    it("places edges at correct hierarchy level - root level", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "node1", position: { x: 0, y: 0 }, data: {} },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "node1", target: "node2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      expect(elkGraph.edges).toHaveLength(1);
+      expect(elkGraph.edges?.[0].id).toBe("edge1");
+    });
+
+    it("places edges at correct hierarchy level - inside parent", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent", position: { x: 0, y: 0 }, data: {} },
+          { id: "child1", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+          { id: "child2", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "child1", target: "child2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Edge should be inside parent, not at root
+      expect(elkGraph.edges).toHaveLength(0);
+      expect(elkGraph.children?.[0].edges).toHaveLength(1);
+      expect(elkGraph.children?.[0].edges?.[0].id).toBe("edge1");
+    });
+
+    it("places edges at lowest common ancestor", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent1", position: { x: 0, y: 0 }, data: {} },
+          { id: "child1", position: { x: 0, y: 0 }, data: {}, parentId: "parent1" },
+          { id: "parent2", position: { x: 0, y: 0 }, data: {} },
+          { id: "child2", position: { x: 0, y: 0 }, data: {}, parentId: "parent2" },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "child1", target: "child2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Edge connects children from different parents, should be at root
+      expect(elkGraph.edges).toHaveLength(1);
+      expect(elkGraph.children?.[0].edges).toBeUndefined();
+      expect(elkGraph.children?.[1].edges).toBeUndefined();
+    });
+
+    it("cleans up empty edges arrays", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent", position: { x: 0, y: 0 }, data: {} },
+          { id: "child", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+        ] as Node[],
+        edges: [],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Nodes should not have empty edges arrays
+      expect(elkGraph.children?.[0].edges).toBeUndefined();
+      expect(elkGraph.children?.[0].children?.[0].edges).toBeUndefined();
+    });
+
+    it("handles multi-level nesting with edges at different levels", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "grandparent", position: { x: 0, y: 0 }, data: {} },
+          { id: "parent", position: { x: 0, y: 0 }, data: {}, parentId: "grandparent" },
+          { id: "child1", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+          { id: "child2", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "child1", target: "child2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Edge should be at parent level (lowest common ancestor)
+      expect(elkGraph.edges).toHaveLength(0);
+      expect(elkGraph.children?.[0].edges).toBeUndefined();
+      expect(elkGraph.children?.[0].children?.[0].edges).toHaveLength(1);
     });
   });
 
@@ -465,6 +589,152 @@ describe("autoLayout", () => {
         { x: 150, y: 100 },
       ]);
     });
+
+    it("handles edges inside parent nodes - removes wayPoints", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent", position: { x: 0, y: 0 }, data: {} },
+          { id: "child1", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+          { id: "child2", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "child1", target: "child2", data: {} }] as Edge[],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [
+          {
+            id: "parent",
+            x: 0,
+            y: 0,
+            children: [
+              { id: "child1", x: 10, y: 10 },
+              { id: "child2", x: 10, y: 70 },
+            ],
+            edges: [
+              {
+                id: "edge1",
+                sources: ["child1"],
+                targets: ["child2"],
+                sections: [
+                  {
+                    id: "section1",
+                    startPoint: { x: 10, y: 10 },
+                    endPoint: { x: 10, y: 70 },
+                    bendPoints: [{ x: 10, y: 40 }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        edges: [],
+      };
+
+      const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
+
+      // wayPoints should be undefined for edges inside parent nodes
+      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+    });
+
+    it("preserves wayPoints for edges not inside parent nodes", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent1", position: { x: 0, y: 0 }, data: {} },
+          { id: "child1", position: { x: 0, y: 0 }, data: {}, parentId: "parent1" },
+          { id: "parent2", position: { x: 0, y: 0 }, data: {} },
+          { id: "child2", position: { x: 0, y: 0 }, data: {}, parentId: "parent2" },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "child1", target: "child2", data: {} }] as Edge[],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [
+          {
+            id: "parent1",
+            x: 0,
+            y: 0,
+            children: [{ id: "child1", x: 10, y: 10 }],
+          },
+          {
+            id: "parent2",
+            x: 200,
+            y: 0,
+            children: [{ id: "child2", x: 10, y: 10 }],
+          },
+        ],
+        edges: [
+          {
+            id: "edge1",
+            sources: ["child1"],
+            targets: ["child2"],
+            sections: [
+              {
+                id: "section1",
+                startPoint: { x: 10, y: 10 },
+                endPoint: { x: 210, y: 10 },
+                bendPoints: [{ x: 100, y: 10 }],
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
+
+      // wayPoints should be preserved for edges crossing parent boundaries
+      expect(result.edges[0].data?.wayPoints).toEqual([{ x: 100, y: 10 }]);
+    });
+
+    it("preserves other edge data when updating wayPoints", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "node1", position: { x: 0, y: 0 }, data: {} },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [
+          {
+            id: "edge1",
+            source: "node1",
+            target: "node2",
+            data: { label: "Test", color: "blue", customProp: 123 },
+          },
+        ] as Edge[],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [
+          { id: "node1", x: 0, y: 0 },
+          { id: "node2", x: 200, y: 100 },
+        ],
+        edges: [
+          {
+            id: "edge1",
+            sources: ["node1"],
+            targets: ["node2"],
+            sections: [
+              {
+                id: "section1",
+                startPoint: { x: 0, y: 0 },
+                endPoint: { x: 200, y: 100 },
+                bendPoints: [{ x: 100, y: 50 }],
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
+
+      expect(result.edges[0].data).toEqual({
+        label: "Test",
+        color: "blue",
+        customProp: 123,
+        wayPoints: [{ x: 100, y: 50 }],
+      });
+    });
   });
 
   describe("applyAutoLayout", () => {
@@ -651,6 +921,40 @@ describe("autoLayout", () => {
       expect(result.nodes[2].position).toEqual({ x: 350, y: 50 });
     });
 
+    it("passes abort signal to processElkLayout", async () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [{ id: "node1", position: { x: 0, y: 0 }, data: {} }] as Node[],
+        edges: [],
+      };
+
+      const layoutedElkGraph: ElkNode = {
+        id: "root",
+        children: [{ id: "node1", x: 50, y: 100 }],
+        edges: [],
+      };
+
+      vi.mocked(core.processElkLayout).mockResolvedValue(layoutedElkGraph);
+
+      const abortController = new AbortController();
+      await applyAutoLayout(reactFlowGraph, abortController.signal);
+
+      expect(core.processElkLayout).toHaveBeenCalledWith(
+        expect.any(Object),
+        abortController.signal,
+      );
+    });
+
+    it("handles processElkLayout rejection gracefully", async () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [{ id: "node1", position: { x: 10, y: 20 }, data: {} }] as Node[],
+        edges: [],
+      };
+
+      vi.mocked(core.processElkLayout).mockRejectedValue(new Error("Layout failed"));
+
+      await expect(applyAutoLayout(reactFlowGraph)).rejects.toThrow("Layout failed");
+    });
+
     describe("buildElkNodeMap helper", () => {
       it("handles nested nodes correctly in matchReactFlowGraphWithElkLayoutedGraph", () => {
         const reactFlowGraph: ReactFlowGraph = {
@@ -806,15 +1110,28 @@ describe("autoLayout", () => {
 
     describe("ROOT_LAYOUT_OPTIONS", () => {
       it("contains required ELK layout options", () => {
-        expect(ROOT_LAYOUT_OPTIONS["elk.algorithm"]).toBe("org.eclipse.elk.layered");
-        expect(ROOT_LAYOUT_OPTIONS["elk.direction"]).toBe("DOWN");
-        expect(ROOT_LAYOUT_OPTIONS["elk.hierarchyHandling"]).toBe("INCLUDE_CHILDREN");
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.algorithm"]).toBe("org.eclipse.elk.layered");
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.direction"]).toBe("DOWN");
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.hierarchyHandling"]).toBe("INCLUDE_CHILDREN");
       });
 
       it("has proper spacing configuration", () => {
-        expect(ROOT_LAYOUT_OPTIONS["spacing"]).toBe("75");
-        expect(ROOT_LAYOUT_OPTIONS["spacing.componentComponent"]).toBe("70");
-        expect(ROOT_LAYOUT_OPTIONS["spacing.nodeNodeBetweenLayers"]).toBe("80");
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.edgeNode"]).toBe("24");
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.componentComponent"]).toBe(
+          "70",
+        );
+        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers"]).toBe(
+          "80",
+        );
+      });
+    });
+
+    describe("PARENT_LAYOUT_OPTIONS", () => {
+      it("extends ROOT_LAYOUT_OPTIONS with padding", () => {
+        expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.padding"]).toBe(
+          "[top=60,left=20,bottom=20,right=20]",
+        );
+        expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.algorithm"]).toBe("org.eclipse.elk.layered");
       });
     });
   });

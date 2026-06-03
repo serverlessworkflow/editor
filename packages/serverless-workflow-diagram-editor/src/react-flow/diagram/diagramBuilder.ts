@@ -92,6 +92,7 @@ function buildReactFlowNode(
     height: DEFAULT_NODE_SIZE.height,
     width: DEFAULT_NODE_SIZE.width,
     position: { x: 0, y: 0 },
+    ...(graphNode.parentId !== "root" && { parentId: graphNode.parentId, extent: "parent" }),
   };
 }
 
@@ -121,12 +122,9 @@ export function buildDiagramElements(model: sdk.Specification.Workflow | null): 
     const graph = buildFlatGraph(model);
     const catchContainerIds = getCatchContainerNodeIds(graph);
 
-    graph.nodes.forEach((graphNode) => {
-      // TODO: only nodes on root level are supported for now
-      if (graphNode.parentId === "root") {
-        nodes.push(buildReactFlowNode(graphNode, catchContainerIds));
-      }
-    });
+    graph.nodes.forEach((graphNode) =>
+      nodes.push(buildReactFlowNode(graphNode, catchContainerIds)),
+    );
 
     // Precompute node ID set for O(1) membership checks
     const nodeIdSet = new Set(nodes.map((node) => node.id));

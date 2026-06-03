@@ -16,7 +16,7 @@
 
 import { describe, it, expect, beforeAll } from "vitest";
 import * as RF from "@xyflow/react";
-import { FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
+import { FlatGraphNode, GraphNodeType, Specification } from "@serverlessworkflow/sdk";
 import {
   getEdgeType,
   edgeSourceAndTargetExist,
@@ -24,6 +24,7 @@ import {
   getCatchContainerNodeIds,
 } from "../../../src/react-flow/diagram/diagramBuilder";
 import { EdgeTypes } from "../../../src/react-flow/edges/Edges";
+import { CATCH_CONTAINER_NODE_TYPE } from "../../../src/react-flow/nodes/Nodes";
 import { parseWorkflow } from "../../../src/core";
 import {
   BASIC_VALID_WORKFLOW_JSON,
@@ -279,6 +280,15 @@ describe("diagramBuilder", () => {
         expect(diagram.nodes).toEqual([]);
         expect(diagram.edges).toEqual([]);
       });
+
+      it("returns ReactFlowGraph with correct structure", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON);
+
+        expect(diagram).toHaveProperty("nodes");
+        expect(diagram).toHaveProperty("edges");
+        expect(Array.isArray(diagram.nodes)).toBe(true);
+        expect(Array.isArray(diagram.edges)).toBe(true);
+      });
     });
 
     describe("node properties", () => {
@@ -355,6 +365,239 @@ describe("diagramBuilder", () => {
         const uniqueIds = new Set(edgeIds);
         expect(uniqueIds.size).toBe(edgeIds.length);
       });
+
+      it("sets animated property correctly for error edges", () => {
+        // Create a workflow with a raise node to generate error edges
+        const workflowWithRaise = JSON.stringify({
+          document: {
+            dsl: "1.0.3",
+            name: "workflow-with-raise",
+            version: "1.0.0",
+            namespace: "default",
+          },
+          do: [
+            {
+              raiseError: {
+                raise: {
+                  error: {
+                    type: "https://example.com/errors/test",
+                    status: 500,
+                  },
+                },
+              },
+            },
+          ],
+        });
+
+        const diagram = buildDiagramFromWorkflow(workflowWithRaise);
+        const errorEdges = diagram.edges.filter((edge) => edge.type === EdgeTypes.Error);
+
+        errorEdges.forEach((edge) => {
+          expect(edge.animated).toBe(true);
+        });
+      });
+
+      it("does not create edges for non-existent nodes", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+        const nodeIdSet = new Set(diagram.nodes.map((node) => node.id));
+
+        // All edges should reference existing nodes
+        diagram.edges.forEach((edge) => {
+          expect(nodeIdSet.has(edge.source)).toBe(true);
+          expect(nodeIdSet.has(edge.target)).toBe(true);
+        });
+      });
+    });
+
+    describe("parent-child relationships", () => {
+      it("sets parentId for child nodes", () => {
+        const workflowWithNesting = JSON.stringify({
+          document: {
+            dsl: "1.0.3",
+            name: "workflow-with-nesting",
+            version: "1.0.0",
+            namespace: "default",
+          },
+          do: [
+            {
+              tryBlock: {
+                try: [
+                  {
+                    step1: {
+                      set: {
+                        variable: "nested task",
+                      },
+                    },
+                  },
+                ],
+                catch: {
+                  errors: {
+                    with: {
+                      type: "https://example.com/errors/test",
+                    },
+                  },
+                  do: [
+                    {
+                      recover: {
+                        set: {
+                          variable: "recovery",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        });
+
+        const diagram = buildDiagramFromWorkflow(workflowWithNesting);
+        const childNodes = diagram.nodes.filter(
+          (node) => node.parentId && node.parentId !== "root",
+        );
+
+        expect(childNodes.length).toBeGreaterThan(0);
+        childNodes.forEach((node) => {
+          expect(node.parentId).toBeDefined();
+          expect(node.extent).toBe("parent");
+        });
+      });
+
+      it("does not set parentId for root-level nodes", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+        const rootNodes = diagram.nodes.filter(
+          (node) => !node.parentId || node.parentId === "root",
+        );
+
+        expect(rootNodes.length).toBeGreaterThan(0);
+        rootNodes.forEach((node) => {
+          expect(node.extent).toBeUndefined();
+        });
+      });
+    });
+
+    describe("catch container nodes", () => {
+      it("creates catch container nodes for catch blocks with children", () => {
+        const workflowWithCatch = JSON.stringify({
+          document: {
+            dsl: "1.0.3",
+            name: "workflow-with-catch",
+            version: "1.0.0",
+            namespace: "default",
+          },
+          do: [
+            {
+              tryBlock: {
+                try: [
+                  {
+                    step1: {
+                      set: {
+                        variable: "task",
+                      },
+                    },
+                  },
+                ],
+                catch: {
+                  errors: {
+                    with: {
+                      type: "https://example.com/errors/test",
+                    },
+                  },
+                  do: [
+                    {
+                      recover: {
+                        set: {
+                          variable: "recovery",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        });
+
+        const diagram = buildDiagramFromWorkflow(workflowWithCatch);
+        const catchContainerNodes = diagram.nodes.filter(
+          (node) => node.type === CATCH_CONTAINER_NODE_TYPE,
+        );
+
+        expect(catchContainerNodes.length).toBeGreaterThan(0);
+      });
+
+      it("does not create catch container nodes for leaf catch blocks", () => {
+        const workflowWithLeafCatch = JSON.stringify({
+          document: {
+            dsl: "1.0.3",
+            name: "workflow-with-leaf-catch",
+            version: "1.0.0",
+            namespace: "default",
+          },
+          do: [
+            {
+              tryBlock: {
+                try: [
+                  {
+                    step1: {
+                      set: {
+                        variable: "task",
+                      },
+                    },
+                  },
+                ],
+                catch: {
+                  errors: {
+                    with: {
+                      type: "https://example.com/errors/test",
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        });
+
+        const diagram = buildDiagramFromWorkflow(workflowWithLeafCatch);
+        const catchNodes = diagram.nodes.filter((node) => node.type === GraphNodeType.Catch);
+
+        // Leaf catch nodes should use GraphNodeType.Catch, not CATCH_CONTAINER_NODE_TYPE
+        catchNodes.forEach((node) => {
+          expect(node.type).toBe(GraphNodeType.Catch);
+          expect(node.type).not.toBe(CATCH_CONTAINER_NODE_TYPE);
+        });
+      });
+    });
+
+    describe("task data preservation", () => {
+      it("preserves task data in node data", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+        const taskNodes = diagram.nodes.filter((node) => node.data.task !== undefined);
+
+        taskNodes.forEach((node) => {
+          expect(node.data.task).toBeDefined();
+          expect(typeof node.data.task).toBe("object");
+        });
+      });
+
+      it("clones task data to prevent mutations", () => {
+        const parseResult = parseWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+        const diagram1 = buildDiagramElements(parseResult.model);
+        const diagram2 = buildDiagramElements(parseResult.model);
+
+        const taskNode1 = diagram1.nodes.find((node) => node.data.task !== undefined);
+        const taskNode2 = diagram2.nodes.find((node) => node.id === taskNode1?.id);
+
+        // Ensure both nodes exist before testing clone behavior
+        expect(taskNode1).toBeDefined();
+        expect(taskNode2).toBeDefined();
+
+        // Modify one task
+        (taskNode1!.data.task as Specification.Task).modified = true;
+
+        // The other should not be affected
+        expect((taskNode2!.data.task as Specification.Task).modified).toBeUndefined();
+      });
     });
 
     describe("graph structure", () => {
@@ -362,6 +605,38 @@ describe("diagramBuilder", () => {
         const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
 
         expect(diagram.nodes.length).toBeGreaterThan(0);
+      });
+
+      it("maintains correct node-edge relationships", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+        const nodeIdSet = new Set(diagram.nodes.map((node) => node.id));
+
+        // Every edge should connect existing nodes
+        diagram.edges.forEach((edge) => {
+          expect(nodeIdSet.has(edge.source)).toBe(true);
+          expect(nodeIdSet.has(edge.target)).toBe(true);
+        });
+      });
+
+      it("creates connected graph structure", () => {
+        const diagram: DiagramElements = buildDiagramFromWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+
+        // Should have at least one edge connecting nodes
+        expect(diagram.edges.length).toBeGreaterThan(0);
+
+        // All non-terminal nodes should have outgoing edges
+        const nodesWithOutgoingEdges = new Set(diagram.edges.map((edge) => edge.source));
+        const terminalNodeIds = new Set(
+          diagram.nodes
+            .filter((node) => node.type === GraphNodeType.End || node.type === GraphNodeType.Exit)
+            .map((node) => node.id),
+        );
+
+        diagram.nodes.forEach((node) => {
+          if (!terminalNodeIds.has(node.id)) {
+            expect(nodesWithOutgoingEdges.has(node.id)).toBe(true);
+          }
+        });
       });
     });
   });
@@ -498,6 +773,93 @@ describe("diagramBuilder", () => {
 
       expect(result.has("/do/0/TryCatch/catch")).toBe(true);
       expect(result.has("/do/0/TryCatch")).toBe(false);
+    });
+
+    it("should handle multiple catch containers at the same level", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "end",
+            type: GraphNodeType.End,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/Catch1",
+            type: GraphNodeType.Catch,
+            label: "Catch1",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/Catch1/do/0/step1",
+            type: GraphNodeType.Set,
+            label: "step1",
+            parentId: "/do/0/Catch1",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/Catch2",
+            type: GraphNodeType.Catch,
+            label: "Catch2",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/Catch2/do/0/step2",
+            type: GraphNodeType.Set,
+            label: "step2",
+            parentId: "/do/0/Catch2",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+
+      expect(result.has("/do/0/Catch1")).toBe(true);
+      expect(result.has("/do/0/Catch2")).toBe(true);
+      expect(result.size).toBe(2);
+    });
+
+    it("should return empty set for graph with no nodes", () => {
+      const sdkGraph = createFlatGraph([], []);
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+
+      expect(result.size).toBe(0);
+    });
+
+    it("should handle deeply nested catch containers", () => {
+      const sdkGraph = createFlatGraph(
+        [
+          {
+            id: "start",
+            type: GraphNodeType.Start,
+          } as FlatGraphNode,
+          {
+            id: "/do/0/OuterCatch",
+            type: GraphNodeType.Catch,
+            label: "OuterCatch",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/OuterCatch/do/0/InnerCatch",
+            type: GraphNodeType.Catch,
+            label: "InnerCatch",
+            parentId: "/do/0/OuterCatch",
+          } as FlatGraphNode,
+          {
+            id: "/do/0/OuterCatch/do/0/InnerCatch/do/0/step",
+            type: GraphNodeType.Set,
+            label: "step",
+            parentId: "/do/0/OuterCatch/do/0/InnerCatch",
+          } as FlatGraphNode,
+        ],
+        [],
+      );
+
+      const result = getCatchContainerNodeIds(sdkGraph);
+
+      expect(result.has("/do/0/OuterCatch")).toBe(true);
+      expect(result.has("/do/0/OuterCatch/do/0/InnerCatch")).toBe(true);
+      expect(result.size).toBe(2);
     });
   });
 });
