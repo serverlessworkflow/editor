@@ -21,8 +21,19 @@ import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorCo
 import { SidebarProvider } from "../../../src/components/ui/sidebar";
 import { I18nProvider } from "@serverlessworkflow/i18n";
 import { en } from "../../../src/i18n/locales/en";
-import { ReactFlowProvider } from "@xyflow/react";
+import { ReactFlowProvider, ReactFlow } from "@xyflow/react";
 import * as autoLayoutModule from "../../../src/react-flow/diagram/autoLayout";
+
+// Mock ReactFlow to capture props
+vi.mock("@xyflow/react", async () => {
+  const actual = await vi.importActual("@xyflow/react");
+  return {
+    ...actual,
+    ReactFlow: vi.fn((props) => {
+      return <div data-testid="react-flow-canvas" {...props} />;
+    }),
+  };
+});
 
 /**
  * Helper function to render the Diagram component with all required providers
@@ -62,6 +73,9 @@ describe("Diagram Component", () => {
       nodes: [],
       edges: [],
     });
+
+    // Clear mock calls before each test
+    vi.mocked(ReactFlow).mockClear();
   });
 
   afterEach(() => {
@@ -122,11 +136,16 @@ describe("Diagram Component", () => {
     const canvas = screen.getByTestId("react-flow-canvas");
     expect(canvas).toBeInTheDocument();
 
-    // Note: The actual CSS visibility of handles cannot be tested in JSDOM as it doesn't apply stylesheets.
-    // The read-only behavior is enforced through:
-    // 1. CSS class "read-only" which hides .react-flow__handle elements
-    // 2. ReactFlow props nodesDraggable={false} and nodesConnectable={false}
-    // For full verification of handle visibility, use e2e tests where CSS is applied.
+    // Wait for ReactFlow to be called
+    await waitFor(() => {
+      expect(ReactFlow).toHaveBeenCalled();
+    });
+
+    // Verify that ReactFlow was called with nodesDraggable={false} and nodesConnectable={false}
+    const mockReactFlow = vi.mocked(ReactFlow);
+    const reactFlowProps = mockReactFlow.mock.calls[mockReactFlow.mock.calls.length - 1][0];
+    expect(reactFlowProps.nodesDraggable).toBe(false);
+    expect(reactFlowProps.nodesConnectable).toBe(false);
 
     await waitFor(() => {
       expect(applyAutoLayoutSpy).toHaveBeenCalled();
@@ -145,9 +164,16 @@ describe("Diagram Component", () => {
     const canvas = screen.getByTestId("react-flow-canvas");
     expect(canvas).toBeInTheDocument();
 
-    // Note: When read-only class is not present, handles are visible via CSS
-    // and ReactFlow props nodesDraggable={true} and nodesConnectable={true} enable interaction.
-    // For full verification of handle visibility and interaction, use e2e tests.
+    // Wait for ReactFlow to be called
+    await waitFor(() => {
+      expect(ReactFlow).toHaveBeenCalled();
+    });
+
+    // Verify that ReactFlow was called with nodesDraggable={true} and nodesConnectable={true}
+    const mockReactFlow = vi.mocked(ReactFlow);
+    const reactFlowProps = mockReactFlow.mock.calls[mockReactFlow.mock.calls.length - 1][0];
+    expect(reactFlowProps.nodesDraggable).toBe(true);
+    expect(reactFlowProps.nodesConnectable).toBe(true);
 
     await waitFor(() => {
       expect(applyAutoLayoutSpy).toHaveBeenCalled();
