@@ -43,7 +43,7 @@ const preview: Preview = {
 
     options: {
       storySort: {
-        order: ["Introduction", "Features", "Use Cases"],
+        order: ["Introduction", "Features", "Examples", "Use Cases"],
       },
     },
   },
