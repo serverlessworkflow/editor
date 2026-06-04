@@ -65,7 +65,7 @@ export const CallCustomFunctionInline: Story = createWorkflowStory(
   workflows.callCustomFunctionInline,
 );
 export const CallGrpc: Story = createWorkflowStory(workflows.callGrpc);
-export const CallHttpQueryHeadersExpression: Story = createWorkflowStory(
+export const CallHttpQueryHeadersExpressions: Story = createWorkflowStory(
   workflows.callHttpQueryHeadersExpressions,
 );
 export const CallMCP: Story = createWorkflowStory(workflows.callMCP);
