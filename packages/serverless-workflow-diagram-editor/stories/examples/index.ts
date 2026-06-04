@@ -29,7 +29,7 @@ export { default as conditionalTask } from "./workflows/conditional-task.yaml?ra
 export { default as doMultiple } from "./workflows/do-multiple.yaml?raw";
 export { default as doSingle } from "./workflows/do-single.yaml?raw";
 export { default as emit } from "./workflows/emit.yaml?raw";
-export { default as for } from "./workflows/for.yaml?raw";
+export { default as forExample } from "./workflows/for.yaml?raw";
 export { default as fork } from "./workflows/fork.yaml?raw";
 export { default as listenToAll } from "./workflows/listen-to-all.yaml?raw";
 export { default as listenToOne } from "./workflows/listen-to-one.yaml?raw";
