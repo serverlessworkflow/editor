@@ -30,7 +30,7 @@ vi.mock("@xyflow/react", async () => {
   return {
     ...actual,
     ReactFlow: vi.fn((props) => {
-      return <div data-testid="react-flow-canvas" {...props} />;
+      return <div data-testid="react-flow-canvas" />;
     }),
   };
 });
@@ -143,7 +143,9 @@ describe("Diagram Component", () => {
 
     // Verify that ReactFlow was called with nodesDraggable={false} and nodesConnectable={false}
     const mockReactFlow = vi.mocked(ReactFlow);
-    const reactFlowProps = mockReactFlow.mock.calls[mockReactFlow.mock.calls.length - 1][0];
+    const lastCall = mockReactFlow.mock.calls.at(-1);
+    expect(lastCall).toBeDefined();
+    const reactFlowProps = lastCall![0];
     expect(reactFlowProps.nodesDraggable).toBe(false);
     expect(reactFlowProps.nodesConnectable).toBe(false);
 
