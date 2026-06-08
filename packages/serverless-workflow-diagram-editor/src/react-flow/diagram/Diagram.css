@@ -56,6 +56,15 @@
   .dec-root .react-flow__pane:active {
     cursor: grabbing !important;
   }
+
+  /* hide handles in read-only mode */
+  .dec-root .read-only .react-flow__handle {
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+  }
 }
 
 /* custom nodes */
