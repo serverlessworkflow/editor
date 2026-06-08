@@ -166,13 +166,6 @@ importers:
         version: 6.0.3
 
   packages/i18n:
-    dependencies:
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
     devDependencies:
       '@testing-library/jest-dom':
         specifier: 'catalog:'
@@ -189,6 +182,12 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.16)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.7(react@19.2.7)
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
