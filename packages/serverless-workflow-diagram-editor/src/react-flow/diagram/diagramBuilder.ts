@@ -19,8 +19,8 @@ import { buildFlatGraph } from "../../core";
 import { BaseNodeData, ReactFlowNodeTypes } from "../nodes/Nodes";
 import { BaseEdgeData, EdgeTypes } from "../edges/Edges";
 import * as sdk from "@serverlessworkflow/sdk";
-import { DEFAULT_NODE_SIZE } from "./autoLayout";
-import { CATCH_CONTAINER_NODE_TYPE } from "../nodes/taskNodeConfig";
+import { getNodeSize } from "./autoLayout";
+import { CATCH_CONTAINER_NODE_TYPE, isTerminalNodeType } from "../nodes/taskNodeConfig";
 
 export type ReactFlowGraph = {
   nodes: RF.Node[];
@@ -83,17 +83,26 @@ function buildReactFlowNode(
     throw new Error(`Unsupported React flow node type: ${type}!`);
   }
 
+  const size = getNodeSize(type);
+  const isTerminal = isTerminalNodeType(type);
+
   return {
     id: graphNode.id,
     type,
     data: {
       label: graphNode.label ?? "",
-      ...(graphNode.task !== undefined && { task: structuredClone(graphNode.task) }),
+      ...(graphNode.task !== undefined && {
+        task: structuredClone(graphNode.task),
+      }),
     },
-    height: DEFAULT_NODE_SIZE.height,
-    width: DEFAULT_NODE_SIZE.width,
+    height: size.height,
+    width: size.width,
     position: { x: 0, y: 0 },
-    ...(graphNode.parentId !== "root" && { parentId: graphNode.parentId, extent: "parent" }),
+    ...(isTerminal && { selectable: false, draggable: false }),
+    ...(graphNode.parentId !== "root" && {
+      parentId: graphNode.parentId,
+      extent: "parent",
+    }),
   };
 }
 

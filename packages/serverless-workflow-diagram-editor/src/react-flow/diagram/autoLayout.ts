@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-import type {
-  ElkNode,
-  LayoutOptions,
-  ElkExtendedEdge,
-} from 'elkjs/lib/elk.bundled.js';
-import { processElkLayout } from '@/core';
-import { ReactFlowGraph } from './diagramBuilder';
+import type { ElkNode, LayoutOptions, ElkExtendedEdge } from "elkjs/lib/elk.bundled.js";
+import { processElkLayout } from "@/core";
+import { ReactFlowGraph } from "./diagramBuilder";
+import { isTerminalNodeType } from "../nodes/taskNodeConfig";
 
 // Defaults
 export const DEFAULT_NODE_SIZE = {
   height: 65,
   width: 220,
 };
+
+// Entry/exit terminals are compact pills, not full task cards
+export const TERMINAL_NODE_SIZE = {
+  height: 30,
+  width: 95,
+};
+
+export function getNodeSize(type: string | undefined): Size {
+  return isTerminalNodeType(type) ? TERMINAL_NODE_SIZE : DEFAULT_NODE_SIZE;
+}
 
 export type Point = {
   x: number;
@@ -43,32 +50,30 @@ export type Size = {
 export type WayPoints = Point[];
 
 export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
-  'org.eclipse.elk.algorithm': 'org.eclipse.elk.layered',
-  'org.eclipse.elk.direction': 'DOWN',
-  'org.eclipse.elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
-  'org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED',
-  'org.eclipse.elk.layered.nodePlacement.bk.edgeStraightening':
-    'IMPROVE_STRAIGHTNESS',
-  'org.eclipse.elk.layered.nodePlacement.favorStraightEdges': 'true',
-  'org.eclipse.elk.layered.priority.straightness': '10',
-  'org.eclipse.elk.hierarchyHandling': 'INCLUDE_CHILDREN',
-  'org.eclipse.elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
-  'org.eclipse.elk.edgeRouting': 'ORTHOGONAL',
-  'org.eclipse.elk.layered.unnecessaryBendpoints': 'true',
-  'org.eclipse.elk.layered.cycleBreaking.strategy': 'GREEDY_MODEL_ORDER',
-  'org.eclipse.elk.layered.considerModelOrder.crossingCounterNodeInfluence':
-    '0.001',
-  'org.eclipse.elk.layered.spacing.edgeNode': '24',
-  'org.eclipse.elk.layered.spacing.edgeNodeBetweenLayers': '40',
-  'org.eclipse.elk.layered.spacing.nodeNode': '24',
-  'org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers': '80',
-  'org.eclipse.elk.layered.spacing.componentComponent': '70',
-  'org.eclipse.elk.layered.mergeEdges': 'true',
+  "org.eclipse.elk.algorithm": "org.eclipse.elk.layered",
+  "org.eclipse.elk.direction": "DOWN",
+  "org.eclipse.elk.layered.nodePlacement.strategy": "BRANDES_KOEPF",
+  "org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment": "BALANCED",
+  "org.eclipse.elk.layered.nodePlacement.bk.edgeStraightening": "IMPROVE_STRAIGHTNESS",
+  "org.eclipse.elk.layered.nodePlacement.favorStraightEdges": "true",
+  "org.eclipse.elk.layered.priority.straightness": "10",
+  "org.eclipse.elk.hierarchyHandling": "INCLUDE_CHILDREN",
+  "org.eclipse.elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
+  "org.eclipse.elk.edgeRouting": "ORTHOGONAL",
+  "org.eclipse.elk.layered.unnecessaryBendpoints": "true",
+  "org.eclipse.elk.layered.cycleBreaking.strategy": "GREEDY_MODEL_ORDER",
+  "org.eclipse.elk.layered.considerModelOrder.crossingCounterNodeInfluence": "0.001",
+  "org.eclipse.elk.layered.spacing.edgeNode": "24",
+  "org.eclipse.elk.layered.spacing.edgeNodeBetweenLayers": "40",
+  "org.eclipse.elk.layered.spacing.nodeNode": "24",
+  "org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers": "50",
+  "org.eclipse.elk.layered.spacing.componentComponent": "70",
+  "org.eclipse.elk.layered.mergeEdges": "true",
 };
 
 export const PARENT_LAYOUT_OPTIONS: LayoutOptions = {
   ...ROOT_LAYOUT_OPTIONS,
-  'org.eclipse.elk.padding': '[top=60,left=20,bottom=20,right=20]',
+  "org.eclipse.elk.padding": "[top=60,left=20,bottom=20,right=20]",
 };
 
 // Helper function to clean up empty edges arrays from nodes
@@ -107,12 +112,10 @@ function findCommonAncestor(
   }
 
   // If no common ancestor found, return "root"
-  return 'root';
+  return "root";
 }
 
-export function buildElkGraphFromReactFlowGraph(
-  reactFlowGraph: ReactFlowGraph,
-): ElkNode {
+export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph): ElkNode {
   // Create a map for easy lookup (without width/height initially)
   const nodeMap = new Map<string, ElkNode>(
     reactFlowGraph.nodes.map((node) => [
@@ -148,14 +151,13 @@ export function buildElkGraphFromReactFlowGraph(
       elkNode.layoutOptions = { ...PARENT_LAYOUT_OPTIONS };
     } else {
       // Leaf nodes get fixed dimensions
-      elkNode.width = node.measured?.width ?? DEFAULT_NODE_SIZE.width;
-      elkNode.height = node.measured?.height ?? DEFAULT_NODE_SIZE.height;
+      const fallbackSize = getNodeSize(node.type);
+      elkNode.width = node.measured?.width ?? fallbackSize.width;
+      elkNode.height = node.measured?.height ?? fallbackSize.height;
     }
   });
 
-  const reactFlowNodeMap = new Map(
-    reactFlowGraph.nodes.map((node) => [node.id, node]),
-  );
+  const reactFlowNodeMap = new Map(reactFlowGraph.nodes.map((node) => [node.id, node]));
 
   // Nest edges in the appropriate hierarchy level
   const rootEdges: ElkExtendedEdge[] = [];
@@ -167,13 +169,9 @@ export function buildElkGraphFromReactFlowGraph(
     };
 
     // Find the lowest common ancestor that contains both source and target
-    const commonAncestor = findCommonAncestor(
-      edge.source,
-      edge.target,
-      reactFlowNodeMap,
-    );
+    const commonAncestor = findCommonAncestor(edge.source, edge.target, reactFlowNodeMap);
 
-    if (commonAncestor === 'root') {
+    if (commonAncestor === "root") {
       rootEdges.push(elkEdge);
     } else {
       const ancestorNode = nodeMap.get(commonAncestor);
@@ -190,7 +188,7 @@ export function buildElkGraphFromReactFlowGraph(
   rootChildren.forEach(cleanupEmptyEdges);
 
   return {
-    id: 'root',
+    id: "root",
     layoutOptions: ROOT_LAYOUT_OPTIONS,
     children: rootChildren,
     edges: rootEdges,
@@ -237,7 +235,7 @@ function isEdgeInsideParent(
   // Edge is inside a parent if the lowest common ancestor is not the root
   // This matches the logic used in findCommonAncestor when building the ELK graph
   const commonAncestor = findCommonAncestor(edge.source, edge.target, nodeMap);
-  return commonAncestor !== 'root';
+  return commonAncestor !== "root";
 }
 
 // set
@@ -251,10 +249,7 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
 
   // Build node map for O(1) lookups in isEdgeInsideParent
   const reactFlowNodeMap = new Map(
-    graph.nodes.map((node) => [
-      node.id,
-      { id: node.id, parentId: node.parentId },
-    ]),
+    graph.nodes.map((node) => [node.id, { id: node.id, parentId: node.parentId }]),
   );
 
   // Map node positions
@@ -277,8 +272,7 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
     if (elkEdge) {
       // Reconstruct data without old wayPoints to avoid stale routing
       const { wayPoints: _oldWayPoints, ...restData } = edge.data || {};
-      const bendPoints =
-        elkEdge.sections?.flatMap((section) => section.bendPoints || []) || [];
+      const bendPoints = elkEdge.sections?.flatMap((section) => section.bendPoints || []) || [];
 
       // Always create new data object, only add wayPoints if there are bend points
       const newData = { ...restData };
