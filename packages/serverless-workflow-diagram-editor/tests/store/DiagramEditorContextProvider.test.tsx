@@ -15,11 +15,15 @@
  */
 
 import * as React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { vi, expect, afterEach, describe, it } from "vitest";
 import { useDiagramEditorContext } from "../../src/store/DiagramEditorContext";
 import { DiagramEditorContextProvider } from "../../src/store/DiagramEditorContextProvider";
-import { BASIC_INVALID_WORKFLOW_YAML, BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
+import {
+  BASIC_INVALID_WORKFLOW_YAML,
+  BASIC_VALID_WORKFLOW_JSON,
+  BASIC_VALID_WORKFLOW_YAML,
+} from "../fixtures/workflows";
 
 const TestComponent: React.FC = () => {
   const { isReadOnly, locale, model, errors } = useDiagramEditorContext();
@@ -36,6 +40,16 @@ const TestComponent: React.FC = () => {
       <p data-testid="test-errors">{`${errors.length}`}</p>
       <p data-testid="test-render">{`${renderCount.current}`}</p>
     </div>
+  );
+};
+
+const SelectionButton: React.FC = () => {
+  const { selectedNodeId, setSelectedNodeId } = useDiagramEditorContext();
+
+  return (
+    <button data-testid="selected-node" onClick={() => setSelectedNodeId("step1")}>
+      {selectedNodeId ?? "null"}
+    </button>
   );
 };
 
@@ -216,6 +230,35 @@ describe("DiagramEditorContextProvider Component", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("test-errors")).toHaveTextContent("1");
+    });
+  });
+
+  it("Clears the selected node when content changes", async () => {
+    const { rerender } = render(
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_YAML}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <SelectionButton />
+      </DiagramEditorContextProvider>,
+    );
+
+    fireEvent.click(screen.getByTestId("selected-node"));
+    expect(screen.getByTestId("selected-node")).toHaveTextContent("step1");
+
+    rerender(
+      <DiagramEditorContextProvider
+        content={BASIC_VALID_WORKFLOW_JSON}
+        isReadOnly={true}
+        locale={"en"}
+      >
+        <SelectionButton />
+      </DiagramEditorContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("selected-node")).toHaveTextContent("null");
     });
   });
 });

@@ -16,37 +16,11 @@
 
 import type { Specification } from "@serverlessworkflow/sdk";
 import { useI18n } from "@serverlessworkflow/i18n";
+import { InlineField, SectionHeader, StackedField } from "./Fields";
 
 type WorkflowInfoViewProps = {
   document: Specification.Document;
 };
-
-function SectionHeader({ label }: { label: string }) {
-  return (
-    <div className="dec-sidebar-section-header">
-      <h3 className="dec-sidebar-section-title">{label}</h3>
-      <div className="dec-sidebar-section-divider" />
-    </div>
-  );
-}
-
-function InlineField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="dec-sidebar-inline-field">
-      <dt className="dec-sidebar-field-label">{label}</dt>
-      <dd className="dec-sidebar-field-value">{value}</dd>
-    </div>
-  );
-}
-
-function StackedField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="dec-sidebar-stacked-field">
-      <dt className="dec-sidebar-stacked-label">{label}</dt>
-      <dd className="dec-sidebar-stacked-value">{value}</dd>
-    </div>
-  );
-}
 
 export function WorkflowInfoView({ document }: WorkflowInfoViewProps) {
   const { t } = useI18n();

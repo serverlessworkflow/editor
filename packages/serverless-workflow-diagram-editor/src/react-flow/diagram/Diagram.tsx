@@ -47,7 +47,7 @@ export type DiagramProps = {
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
-  const { model, nodes, edges, isReadOnly, setNodes, setEdges } = useDiagramEditorContext();
+  const { model, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } = useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
 
@@ -68,6 +68,10 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
     (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
     [setEdges],
+  );
+  const onSelectionChange = React.useCallback<RF.OnSelectionChangeFunc>(
+    ({ nodes: selectedNodes }) => setSelectedNodeId(selectedNodes[0]?.id ?? null),
+    [setSelectedNodeId],
   );
 
   // Rebuild nodes and edges as model changes with debouncing
@@ -138,6 +142,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onSelectionChange={onSelectionChange}
         onlyRenderVisibleElements={true}
         zoomOnDoubleClick={false}
         elementsSelectable={true}

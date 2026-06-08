@@ -14,34 +14,83 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import type * as RF from "@xyflow/react";
 import { useI18n } from "@serverlessworkflow/i18n";
-import { Workflow, Info } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarHeader } from "@/components/ui/sidebar";
+import { Workflow, Info, Box } from "lucide-react";
+import { Sidebar, SidebarContent, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { useDiagramEditorContext } from "@/store/DiagramEditorContext";
 import { WorkflowInfoView } from "@/side-panel/WorkflowInfoView";
+import { NodeDetailsView } from "@/side-panel/NodeDetailsView";
+import { taskNodeConfigMap, type LeafNodeType } from "@/react-flow/nodes/taskNodeConfig";
+import type { BaseNodeData } from "@/react-flow/nodes/Nodes";
 import "./SidePanel.css";
 
 export function SidePanel() {
-  const { model } = useDiagramEditorContext();
+  const { model, nodes, selectedNodeId } = useDiagramEditorContext();
+  const { setOpen } = useSidebar();
   const { t } = useI18n();
+
+  const selectedNode = React.useMemo(
+    () =>
+      selectedNodeId !== null
+        ? ((nodes.find((n) => n.id === selectedNodeId) as RF.Node<BaseNodeData> | undefined) ??
+          null)
+        : null,
+    [selectedNodeId, nodes],
+  );
+
+  const nodeConfig = selectedNode
+    ? taskNodeConfigMap[selectedNode.type as LeafNodeType]
+    : undefined;
+
+  const HeaderIcon = selectedNode ? (nodeConfig?.icon ?? Box) : Workflow;
+
+  const prevSelectedNodeId = React.useRef(selectedNodeId);
+  React.useEffect(() => {
+    if (selectedNodeId === prevSelectedNodeId.current) {
+      return;
+    }
+    prevSelectedNodeId.current = selectedNodeId;
+    setOpen(selectedNodeId !== null);
+  }, [selectedNodeId, setOpen]);
 
   return (
     <Sidebar side="right">
       <SidebarHeader>
         <div className="dec-sidebar-header-title">
-          <Workflow className="dec-sidebar-header-icon" />
+          <span
+            className={`dec-sidebar-header-icon-wrap${nodeConfig ? " colored" : ""}`}
+            style={
+              nodeConfig
+                ? ({ "--task-node-color": nodeConfig.color } as React.CSSProperties)
+                : undefined
+            }
+          >
+            <HeaderIcon className="dec-sidebar-header-icon" />
+          </span>
           <div className="dec-sidebar-header-labels">
-            <span className="dec-sidebar-header-name">{t("sidebar.workflow")}</span>
-            <span className="dec-sidebar-header-subtitle">{t("sidebar.document")}</span>
+            <span className="dec-sidebar-header-name">
+              {selectedNode ? selectedNode.data.label || t("sidebar.node") : t("sidebar.workflow")}
+            </span>
+            <span className="dec-sidebar-header-subtitle">
+              {selectedNode ? (nodeConfig?.typeLabel ?? t("sidebar.node")) : t("sidebar.document")}
+            </span>
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <div className="dec-sidebar-hint">
-          <Info className="dec-sidebar-hint-icon" />
-          <span className="dec-sidebar-hint-text">{t("sidebar.selectNode")}</span>
-        </div>
-        {model !== null ? <WorkflowInfoView document={model.document} /> : null}
+        {selectedNode ? (
+          <NodeDetailsView node={selectedNode} />
+        ) : (
+          <>
+            <div className="dec-sidebar-hint">
+              <Info className="dec-sidebar-hint-icon" />
+              <span className="dec-sidebar-hint-text">{t("sidebar.selectNode")}</span>
+            </div>
+            {model !== null ? <WorkflowInfoView document={model.document} /> : null}
+          </>
+        )}
       </SidebarContent>
     </Sidebar>
   );

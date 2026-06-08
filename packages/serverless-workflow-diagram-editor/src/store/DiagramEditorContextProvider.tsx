@@ -30,6 +30,7 @@ export const DiagramEditorContextProvider = (
   const [locale, setLocale] = React.useState<string>(props.locale);
   const [nodes, setNodes] = React.useState([] as RF.Node[]);
   const [edges, setEdges] = React.useState([] as RF.Edge[]);
+  const [selectedNodeId, setSelectedNodeId] = React.useState<string | null>(null);
 
   const { model, errors } = React.useMemo(() => parseWorkflow(props.content), [props.content]);
 
@@ -38,6 +39,11 @@ export const DiagramEditorContextProvider = (
     setIsReadOnly(props.isReadOnly);
     setLocale(props.locale);
   }, [props.isReadOnly, props.locale, setIsReadOnly, setLocale]);
+
+  // Clear selectedNodeId when model changes
+  React.useEffect(() => {
+    setSelectedNodeId(null);
+  }, [model]);
 
   // Memoize context value to prevent unnecessary re-renders of consumers
   const context = React.useMemo<DiagramEditorContextType>(
@@ -48,12 +54,27 @@ export const DiagramEditorContextProvider = (
       errors,
       nodes,
       edges,
+      selectedNodeId,
       setIsReadOnly,
       setLocale,
       setNodes,
       setEdges,
+      setSelectedNodeId,
     }),
-    [isReadOnly, locale, model, errors, nodes, edges, setIsReadOnly, setLocale, setNodes, setEdges],
+    [
+      isReadOnly,
+      locale,
+      model,
+      errors,
+      nodes,
+      edges,
+      selectedNodeId,
+      setIsReadOnly,
+      setLocale,
+      setNodes,
+      setEdges,
+      setSelectedNodeId,
+    ],
   );
 
   return (
