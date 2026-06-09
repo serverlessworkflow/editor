@@ -18,6 +18,26 @@ import yaml from "js-yaml";
 import * as sdk from "@serverlessworkflow/sdk";
 import { fixNodesConnections } from "./graph";
 
+/**
+ * Sanitizes an object by removing dangerous prototype pollution keys
+ * and creating a new object with null prototype to prevent pollution attacks.
+ *
+ * @param obj - The object to sanitize
+ * @returns A sanitized object with null prototype
+ */
+function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
+  const dangerousKeys = ["__proto__", "constructor", "prototype"];
+  const sanitized = Object.create(null) as Record<string, unknown>;
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && !dangerousKeys.includes(key)) {
+      sanitized[key] = obj[key];
+    }
+  }
+
+  return sanitized;
+}
+
 export type ValidationError = {
   taskId?: string;
   errorType?: string;
@@ -32,6 +52,58 @@ export type WorkflowParseResult = {
   errors: SdkError[];
 };
 
+/**
+ * Parses validation error messages from the Serverless Workflow SDK into structured error objects.
+ *
+ * The SDK produces validation errors in two distinct formats:
+ *
+ * **Format 1: Pipe-delimited with 4 fields (task-specific errors)**
+ * ```
+ * - taskId | errorType | message | object
+ * ```
+ * Example:
+ * ```
+ * - /do/0/task | #/required | must have property | {"missingProperty": "name"}
+ * ```
+ *
+ * **Format 2: Dash-separated with 2 fields (general errors)**
+ * ```
+ * errorType - message
+ * ```
+ * Example:
+ * ```
+ * #/required - must have required property 'document'
+ * ```
+ *
+ * @param message - The raw error message string from the SDK, typically containing multiple lines
+ * @returns Array of structured ValidationError objects. Each error is guaranteed to have:
+ *   - `message`: The error description (always present)
+ *   - `taskId`: The workflow task path (present only in Format 1)
+ *   - `errorType`: The error type/schema reference (present in both formats)
+ *   - `object`: Additional error context as a sanitized object with null prototype (present only in Format 1;
+ *               empty object if JSON parsing fails or if the JSON is not a plain object)
+ *
+ * @remarks
+ * - Lines that don't match either format are silently ignored
+ * - Format 1 handles pipes within the message field by attempting to parse JSON from right to left
+ * - The `object` field is sanitized to prevent prototype pollution attacks by removing dangerous keys
+ *   (`__proto__`, `constructor`, `prototype`) and creating an object with null prototype
+ * - Only plain objects are accepted in the JSON field; arrays, primitives, and null result in an empty object
+ *
+ * @example
+ * ```typescript
+ * const sdkError = `'Workflow' is invalid:
+ * - /do/0/call | #/required | must have property | {"missingProperty": "http"}
+ * #/document - must have required property 'document'`;
+ *
+ * const errors = parseValidationErrorMessage(sdkError);
+ * // [
+ * //   { taskId: "/do/0/call", errorType: "#/required", message: "must have property",
+ * //     object: { missingProperty: "http" } },
+ * //   { errorType: "#/document", message: "must have required property 'document'" }
+ * // ]
+ * ```
+ */
 export function parseValidationErrorMessage(message: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -90,7 +162,8 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
             // Found valid split
             errorMessage = candidateMessage;
             objectStr = candidateObjectStr;
-            parsedObject = parsed;
+            // Sanitize the parsed object to prevent prototype pollution
+            parsedObject = sanitizeObject(parsed);
             foundValidSplit = true;
             break;
           }
