@@ -238,36 +238,36 @@
     @apply dec:mt-4;
   }
 
-  /** collapsible JSON field */
-  .dec-root .dec-sidebar-json-field {
+  /** collapsible YAML field */
+  .dec-root .dec-sidebar-yaml-field {
     @apply dec:py-2 dec:px-1 dec:rounded-sm dec:border-b dec:border-gray-100 dec:transition-colors;
   }
 
-  .dec-root .dec-sidebar-json-field:hover {
+  .dec-root .dec-sidebar-yaml-field:hover {
     @apply dec:bg-gray-100/60;
   }
 
-  .dec-root.dark .dec-sidebar-json-field {
+  .dec-root.dark .dec-sidebar-yaml-field {
     @apply dec:border-gray-800;
   }
 
-  .dec-root.dark .dec-sidebar-json-field:hover {
+  .dec-root.dark .dec-sidebar-yaml-field:hover {
     @apply dec:bg-gray-800/40;
   }
 
-  .dec-root .dec-sidebar-json-summary {
+  .dec-root .dec-sidebar-yaml-summary {
     @apply dec:cursor-pointer dec:text-sm dec:font-semibold dec:text-gray-900 dec:select-none dec:rounded-sm;
   }
 
-  .dec-root.dark .dec-sidebar-json-summary {
+  .dec-root.dark .dec-sidebar-yaml-summary {
     @apply dec:text-gray-100;
   }
 
-  .dec-root .dec-sidebar-json-pre {
+  .dec-root .dec-sidebar-yaml-pre {
     @apply dec:mt-1 dec:max-h-64 dec:overflow-auto dec:rounded-md dec:bg-gray-100 dec:p-2 dec:text-xs dec:text-gray-800 dec:whitespace-pre-wrap dec:break-words;
   }
 
-  .dec-root.dark .dec-sidebar-json-pre {
+  .dec-root.dark .dec-sidebar-yaml-pre {
     @apply dec:bg-gray-800 dec:text-gray-200;
   }
 }

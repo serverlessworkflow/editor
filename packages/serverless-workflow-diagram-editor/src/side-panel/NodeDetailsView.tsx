@@ -15,10 +15,11 @@
  */
 
 import type * as RF from "@xyflow/react";
+import yaml from "js-yaml";
 import { useI18n } from "@serverlessworkflow/i18n";
 import { getTaskDetails, type DetailField } from "@/core/taskDetails";
 import type { BaseNodeData } from "@/react-flow/nodes/Nodes";
-import { JsonField, PropertyField, SectionHeader } from "./Fields";
+import { YamlField, PropertyField, SectionHeader } from "./Fields";
 
 type NodeDetailsViewProps = {
   node: RF.Node<BaseNodeData>;
@@ -68,7 +69,7 @@ export function NodeDetailsView({ node }: NodeDetailsViewProps) {
         <>
           <div className="dec-sidebar-section-spacer" />
           <SectionHeader label={t("sidebar.sectionSource")} />
-          <JsonField json={JSON.stringify(task, null, 2)} summary={t("sidebar.viewSource")} />
+          <YamlField yaml={yaml.dump(task, { indent: 2, lineWidth: -1 })} summary={t("sidebar.viewSource")} />
         </>
       )}
     </div>
