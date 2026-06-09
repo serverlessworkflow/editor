@@ -150,3 +150,34 @@ export const EMPTY_WORKFLOW_JSON = JSON.stringify({
   },
   do: [],
 });
+
+export const VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML = `
+  document:
+    dsl: '1.0.3'
+    namespace: test
+    name: for-example
+    version: '0.1.0'
+  do:
+    - checkup:
+        for:
+          each: pet
+          in: .pets
+          at: index
+        while: .vet != null
+        do:
+          - waitForCheckup:
+              listen:
+                to:
+                  one:
+                    with:
+                      type: com.fake.petclinic.pets.checkup.completed.v2
+              output:
+                as: '.pets + [{ "id": $pet.id }]'   
+          - checkup:
+              for:
+                each: pet
+                in: .pets
+                at: index
+              while: .vet != null
+              do:
+  `;

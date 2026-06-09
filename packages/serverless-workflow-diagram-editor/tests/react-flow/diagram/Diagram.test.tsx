@@ -29,7 +29,7 @@ vi.mock("@xyflow/react", async () => {
   const actual = await vi.importActual("@xyflow/react");
   return {
     ...actual,
-    ReactFlow: vi.fn((props) => {
+    ReactFlow: vi.fn(() => {
       return <div data-testid="react-flow-canvas" />;
     }),
   };

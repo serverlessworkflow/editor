@@ -15,7 +15,12 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { parseWorkflow, validateWorkflow, buildFlatGraph } from "../../src/core";
+import {
+  parseWorkflow,
+  validateWorkflow,
+  buildFlatGraph,
+  parseValidationErrorMessage,
+} from "../../src/core";
 import {
   BASIC_VALID_WORKFLOW_YAML,
   BASIC_VALID_WORKFLOW_JSON,
@@ -23,6 +28,7 @@ import {
   BASIC_INVALID_WORKFLOW_JSON,
   BASIC_VALID_WORKFLOW_JSON_TASKS,
   EMPTY_WORKFLOW_JSON,
+  VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML,
 } from "../fixtures/workflows";
 import { Classes, Specification } from "@serverlessworkflow/sdk";
 
@@ -64,6 +70,34 @@ describe("parseWorkflow", () => {
   });
 });
 
+describe("parseValidationErrorMessage", () => {
+  it("parses validation errors from workflow with validation errors", () => {
+    const result = parseWorkflow(VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML);
+    expect(result.model).not.toBeNull();
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors).toMatchSnapshot();
+  });
+
+  it("returns empty array for message without error lines", () => {
+    const message = "'Workflow' is invalid:\nSome other text without dashes";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(0);
+  });
+
+  it("handles malformed JSON in object field gracefully", () => {
+    const message = "- /do/0/task | #/required | must have property | {invalid json}";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("ignores lines that don't have 4 parts", () => {
+    const message = "- /do/0/task | #/required | incomplete";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(0);
+  });
+});
+
 describe("validateWorkflow", () => {
   it("returns empty array for a valid workflow", () => {
     const valid = new Classes.Workflow({
@@ -74,12 +108,12 @@ describe("validateWorkflow", () => {
     expect(errors).toHaveLength(0);
   });
 
-  it("returns errors for an invalid workflow", () => {
+  it("returns parsed validation errors for an invalid workflow", () => {
     const invalid = new Classes.Workflow({
       do: [{ step1: { set: { variable: "value" } } }],
     }) as Specification.Workflow;
     const errors = validateWorkflow(invalid);
-    expect(errors).toHaveLength(1);
+    expect(errors.length).toBeGreaterThan(0);
     expect(errors).toMatchSnapshot();
   });
 });

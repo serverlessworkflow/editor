@@ -355,6 +355,475 @@ exports[`buildFlatGraph > returns a loaded extended graph object from model 1`] 
 }
 `;
 
+exports[`parseValidationErrorMessage > parses validation errors from workflow with validation errors 1`] = `
+[
+  {
+    "errorType": "#/oneOf/0/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/1/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/2/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/3/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/4/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/5/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/6/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/0/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/1/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/2/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/3/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/4/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/5/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/6/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/type",
+    "message": "must be array",
+    "object": {
+      "type": "array",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup/do",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'fork'",
+    "object": {
+      "missingProperty": "fork",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'emit'",
+    "object": {
+      "missingProperty": "emit",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/type",
+    "message": "must be array",
+    "object": {
+      "type": "array",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup/do",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'listen'",
+    "object": {
+      "missingProperty": "listen",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'raise'",
+    "object": {
+      "missingProperty": "raise",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'run'",
+    "object": {
+      "missingProperty": "run",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'set'",
+    "object": {
+      "missingProperty": "set",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'switch'",
+    "object": {
+      "missingProperty": "switch",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'try'",
+    "object": {
+      "missingProperty": "try",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'wait'",
+    "object": {
+      "missingProperty": "wait",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'fork'",
+    "object": {
+      "missingProperty": "fork",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'emit'",
+    "object": {
+      "missingProperty": "emit",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf/0/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/1/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/2/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/3/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/4/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/5/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf/6/required",
+    "message": "must have required property 'call'",
+    "object": {
+      "missingProperty": "call",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/type",
+    "message": "must be array",
+    "object": {
+      "type": "array",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup/do",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'fork'",
+    "object": {
+      "missingProperty": "fork",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'emit'",
+    "object": {
+      "missingProperty": "emit",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/type",
+    "message": "must be array",
+    "object": {
+      "type": "array",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup/do",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'listen'",
+    "object": {
+      "missingProperty": "listen",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'raise'",
+    "object": {
+      "missingProperty": "raise",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'run'",
+    "object": {
+      "missingProperty": "run",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'set'",
+    "object": {
+      "missingProperty": "set",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'switch'",
+    "object": {
+      "missingProperty": "switch",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'try'",
+    "object": {
+      "missingProperty": "try",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'wait'",
+    "object": {
+      "missingProperty": "wait",
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup/do/1/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'listen'",
+    "object": {
+      "missingProperty": "listen",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'raise'",
+    "object": {
+      "missingProperty": "raise",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'run'",
+    "object": {
+      "missingProperty": "run",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'set'",
+    "object": {
+      "missingProperty": "set",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'switch'",
+    "object": {
+      "missingProperty": "switch",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'try'",
+    "object": {
+      "missingProperty": "try",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/required",
+    "message": "must have required property 'wait'",
+    "object": {
+      "missingProperty": "wait",
+    },
+    "taskId": "/do/0/checkup",
+  },
+  {
+    "errorType": "#/oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "object": {
+      "passingSchemas": null,
+    },
+    "taskId": "/do/0/checkup",
+  },
+]
+`;
+
 exports[`parseWorkflow > parses valid 'JSON' and returns model with no errors 1`] = `
 {
   "errors": [],
@@ -439,7 +908,7 @@ exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAM
 }
 `;
 
-exports[`validateWorkflow > returns errors for an invalid workflow 1`] = `
+exports[`validateWorkflow > returns parsed validation errors for an invalid workflow 1`] = `
 [
   [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
 ]

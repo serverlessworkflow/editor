@@ -18,6 +18,7 @@ import { screen } from "@testing-library/react";
 import { it, expect, describe } from "vitest";
 import { ParsingErrorPage } from "../../../src/diagram-editor/error-pages/ParsingErrorPage";
 import { renderWithProviders, t } from "../../test-utils";
+import type { ValidationError } from "../../../src/core/workflowSdk";
 
 const createMockYAMLException = (reason?: string, snippet?: string): Error => {
   const error = new Error("YAMLException") as Error & {
@@ -32,7 +33,20 @@ const createMockYAMLException = (reason?: string, snippet?: string): Error => {
   return error;
 };
 
-const renderWithErrors = (errors: Error[]) => {
+const createMockValidationError = (
+  taskId: string,
+  errorType: string,
+  message: string,
+): ValidationError => {
+  return {
+    taskId,
+    errorType,
+    message,
+    object: { missingProperty: "call" },
+  };
+};
+
+const renderWithErrors = (errors: (Error | ValidationError)[]) => {
   renderWithProviders(<ParsingErrorPage />, { errors });
 };
 
@@ -67,5 +81,36 @@ describe("ParsingErrorPage", () => {
     renderWithErrors([createMockYAMLException()]);
 
     expect(screen.getByText(t("workflowError.parsing.title"))).toBeInTheDocument();
+  });
+
+  it("Falls back to default error message for ValidationError", () => {
+    const validationError = createMockValidationError(
+      "/do/0/checkup",
+      "#/oneOf/0/required",
+      "must have required property 'call'",
+    );
+    renderWithErrors([validationError]);
+
+    expect(screen.getByText(t("workflowError.title"))).toBeInTheDocument();
+    expect(screen.getByText(t("workflowError.default"))).toBeInTheDocument();
+  });
+
+  it("Falls back to default error message for multiple ValidationErrors", () => {
+    const validationErrors = [
+      createMockValidationError(
+        "/do/0/checkup",
+        "#/oneOf/0/required",
+        "must have required property 'call'",
+      ),
+      createMockValidationError(
+        "/do/0/checkup",
+        "#/oneOf/1/required",
+        "must have required property 'call'",
+      ),
+    ];
+    renderWithErrors(validationErrors);
+
+    expect(screen.getByText(t("workflowError.title"))).toBeInTheDocument();
+    expect(screen.getByText(t("workflowError.default"))).toBeInTheDocument();
   });
 });

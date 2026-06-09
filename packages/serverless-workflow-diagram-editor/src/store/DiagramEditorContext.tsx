@@ -17,12 +17,13 @@
 import type { Specification } from "@serverlessworkflow/sdk";
 import * as React from "react";
 import type * as RF from "@xyflow/react";
+import type { SdkError } from "../core";
 
 export type DiagramEditorContextType = {
   isReadOnly: boolean;
   locale: string;
   model: Specification.Workflow | null;
-  errors: Error[];
+  errors: SdkError[];
   nodes: RF.Node[];
   edges: RF.Edge[];
   selectedNodeId: string | null;

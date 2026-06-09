@@ -18,18 +18,85 @@ import yaml from "js-yaml";
 import * as sdk from "@serverlessworkflow/sdk";
 import { fixNodesConnections } from "./graph";
 
-export type WorkflowParseResult = {
-  model: sdk.Specification.Workflow | null;
-  errors: Error[];
+export type ValidationError = {
+  taskId: string;
+  errorType: string;
+  message: string;
+  object: object;
 };
 
-export function validateWorkflow(model: sdk.Specification.Workflow): Error[] {
+export type SdkError = Error | ValidationError;
+
+export type WorkflowParseResult = {
+  model: sdk.Specification.Workflow | null;
+  errors: SdkError[];
+};
+
+export function parseValidationErrorMessage(message: string): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  // Split message into lines
+  const lines = message.split("\n");
+
+  for (const line of lines) {
+    // Only process lines that begin with "-"
+    const trimmedLine = line.trim();
+    if (!trimmedLine.startsWith("-")) {
+      continue;
+    }
+
+    // Remove the leading "-" and trim
+    const content = trimmedLine.substring(1).trim();
+
+    // Split by "|" to get the fields
+    const parts = content.split("|");
+
+    // We expect 4 parts: taskId, errorType, message, object
+    if (parts.length === 4 && parts[0] && parts[1] && parts[2] && parts[3]) {
+      const taskId = parts[0].trim();
+      const errorType = parts[1].trim();
+      const errorMessage = parts[2].trim();
+      const objectStr = parts[3].trim();
+
+      // Parse the object field from JSON string
+      let parsedObject: object = {};
+      try {
+        parsedObject = JSON.parse(objectStr);
+      } catch {
+        // If parsing fails, use empty object
+        parsedObject = {};
+      }
+
+      errors.push({
+        taskId,
+        errorType,
+        message: errorMessage,
+        object: parsedObject,
+      });
+    }
+  }
+
+  return errors;
+}
+
+export function validateWorkflow(model: sdk.Specification.Workflow): SdkError[] {
   try {
     sdk.validate("Workflow", model);
     return [];
   } catch (err) {
-    // TODO: Parse individual validation errors from the SDK into separate Error objects when we are ready to render them.
-    return [err instanceof Error ? err : new Error(String(err))];
+    const message = err instanceof Error ? err.message : String(err);
+    const parsedErrors = parseValidationErrorMessage(message);
+
+    // If parsing succeeded and returned errors, use them
+    if (parsedErrors.length > 0) {
+      return parsedErrors;
+    }
+
+    // Otherwise, return the original error as-is
+    if (err instanceof Error) {
+      return [err];
+    }
+    return [new Error(message)];
   }
 }
 

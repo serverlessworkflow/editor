@@ -31,7 +31,7 @@ export const ParsingErrorPage = () => {
   // YAML parsing errors the only errors we expect for now so we will just take the first/only error
   const err = errors[0];
 
-  if (err && isYAMLException(err)) {
+  if (err && err instanceof Error && isYAMLException(err)) {
     return (
       <ErrorPage
         title={t("workflowError.parsing.title")}
