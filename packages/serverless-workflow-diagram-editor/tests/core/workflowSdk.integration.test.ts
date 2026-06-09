@@ -28,7 +28,7 @@ import {
   BASIC_INVALID_WORKFLOW_JSON,
   BASIC_VALID_WORKFLOW_JSON_TASKS,
   EMPTY_WORKFLOW_JSON,
-  VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML,
+  PARSEABLE_INVALID_WORKFLOW_YAML,
 } from "../fixtures/workflows";
 import { Classes, Specification } from "@serverlessworkflow/sdk";
 
@@ -72,7 +72,7 @@ describe("parseWorkflow", () => {
 
 describe("parseValidationErrorMessage", () => {
   it("parses validation errors from workflow with validation errors", () => {
-    const result = parseWorkflow(VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML);
+    const result = parseWorkflow(PARSEABLE_INVALID_WORKFLOW_YAML);
     expect(result.model).not.toBeNull();
     expect(result.errors.length).toBeGreaterThan(0);
     expect(result.errors).toMatchSnapshot();
@@ -118,36 +118,14 @@ describe("parseValidationErrorMessage", () => {
     expect(errors[0].object).toEqual({ message: "value | with | pipes" });
   });
 
-  it("rejects null JSON and falls back to empty object", () => {
-    const message = "- /do/0/task | #/required | must have property | null";
-    const errors = parseValidationErrorMessage(message);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].object).toEqual({});
-  });
-
-  it("rejects array JSON and falls back to empty object", () => {
-    const message = '- /do/0/task | #/required | must have property | ["array", "values"]';
-    const errors = parseValidationErrorMessage(message);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].object).toEqual({});
-  });
-
-  it("rejects primitive JSON (string) and falls back to empty object", () => {
-    const message = '- /do/0/task | #/required | must have property | "string value"';
-    const errors = parseValidationErrorMessage(message);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].object).toEqual({});
-  });
-
-  it("rejects primitive JSON (number) and falls back to empty object", () => {
-    const message = "- /do/0/task | #/required | must have property | 42";
-    const errors = parseValidationErrorMessage(message);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].object).toEqual({});
-  });
-
-  it("rejects primitive JSON (boolean) and falls back to empty object", () => {
-    const message = "- /do/0/task | #/required | must have property | true";
+  it.each([
+    { description: "null JSON", jsonValue: "null" },
+    { description: "array JSON", jsonValue: '["array", "values"]' },
+    { description: "primitive JSON (string)", jsonValue: '"string value"' },
+    { description: "primitive JSON (number)", jsonValue: "42" },
+    { description: "primitive JSON (boolean)", jsonValue: "true" },
+  ])("rejects $description and falls back to empty object", ({ jsonValue }) => {
+    const message = `- /do/0/task | #/required | must have property | ${jsonValue}`;
     const errors = parseValidationErrorMessage(message);
     expect(errors).toHaveLength(1);
     expect(errors[0].object).toEqual({});

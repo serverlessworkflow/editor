@@ -151,7 +151,7 @@ export const EMPTY_WORKFLOW_JSON = JSON.stringify({
   do: [],
 });
 
-export const VALID_WORKFLOW_WITH_VALIDATION_ERRORS_YAML = `
+export const PARSEABLE_INVALID_WORKFLOW_YAML = `
   document:
     dsl: '1.0.3'
     namespace: test

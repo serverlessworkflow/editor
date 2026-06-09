@@ -19,10 +19,10 @@ import * as sdk from "@serverlessworkflow/sdk";
 import { fixNodesConnections } from "./graph";
 
 export type ValidationError = {
-  taskId: string;
-  errorType: string;
+  taskId?: string;
+  errorType?: string;
   message: string;
-  object: Record<string, unknown>;
+  object?: Record<string, unknown>;
 };
 
 export type SdkError = Error | ValidationError;
@@ -39,88 +39,101 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
   const lines = message.split("\n");
 
   for (const line of lines) {
-    // Only process lines that begin with "-"
     const trimmedLine = line.trim();
-    if (!trimmedLine.startsWith("-")) {
-      continue;
-    }
 
-    // Remove the leading "-" and trim
-    const content = trimmedLine.substring(1).trim();
+    // Format 1: Lines that begin with "-" and contain pipes (4-field format)
+    if (trimmedLine.startsWith("-")) {
+      // Remove the leading "-" and trim
+      const content = trimmedLine.substring(1).trim();
 
-    // Find all pipe positions
-    const pipePositions: number[] = [];
-    let pos = -1;
-    while ((pos = content.indexOf("|", pos + 1)) !== -1) {
-      pipePositions.push(pos);
-    }
+      // Find all pipe positions
+      const pipePositions: number[] = [];
+      let pos = -1;
+      while ((pos = content.indexOf("|", pos + 1)) !== -1) {
+        pipePositions.push(pos);
+      }
 
-    // We need at least 3 pipes to have 4 fields
-    if (pipePositions.length < 3) {
-      continue;
-    }
-
-    // Extract first two fields using first two pipes
-    const firstPipe = pipePositions[0]!;
-    const secondPipe = pipePositions[1]!;
-
-    const taskId = content.substring(0, firstPipe).trim();
-    const errorType = content.substring(firstPipe + 1, secondPipe).trim();
-
-    // Try to find the last pipe that separates valid JSON
-    // Work backwards from the last pipe to find where valid JSON starts
-    let errorMessage = "";
-    let objectStr = "";
-    let parsedObject: Record<string, unknown> = {};
-    let foundValidSplit = false;
-
-    // Try each remaining pipe position as the separator before the JSON field
-    for (let i = pipePositions.length - 1; i >= 2; i--) {
-      const candidatePipe = pipePositions[i]!;
-      const candidateMessage = content.substring(secondPipe + 1, candidatePipe).trim();
-      const candidateObjectStr = content.substring(candidatePipe + 1).trim();
-
-      if (!candidateMessage || !candidateObjectStr) {
+      // We need at least 3 pipes to have 4 fields
+      if (pipePositions.length < 3) {
         continue;
       }
 
-      // Try to parse the JSON
-      try {
-        const parsed = JSON.parse(candidateObjectStr);
-        // Validate that parsed result is a non-null plain object
-        if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
-          // Found valid split
-          errorMessage = candidateMessage;
-          objectStr = candidateObjectStr;
-          parsedObject = parsed;
-          foundValidSplit = true;
-          break;
+      // Extract first two fields using first two pipes
+      const firstPipe = pipePositions[0]!;
+      const secondPipe = pipePositions[1]!;
+
+      const taskId = content.substring(0, firstPipe).trim();
+      const errorType = content.substring(firstPipe + 1, secondPipe).trim();
+
+      // Try to find the last pipe that separates valid JSON
+      // Work backwards from the last pipe to find where valid JSON starts
+      let errorMessage = "";
+      let objectStr = "";
+      let parsedObject: Record<string, unknown> = {};
+      let foundValidSplit = false;
+
+      // Try each remaining pipe position as the separator before the JSON field
+      for (let i = pipePositions.length - 1; i >= 2; i--) {
+        const candidatePipe = pipePositions[i]!;
+        const candidateMessage = content.substring(secondPipe + 1, candidatePipe).trim();
+        const candidateObjectStr = content.substring(candidatePipe + 1).trim();
+
+        if (!candidateMessage || !candidateObjectStr) {
+          continue;
         }
-      } catch {
-        // Not valid JSON, try next pipe position
+
+        // Try to parse the JSON
+        try {
+          const parsed = JSON.parse(candidateObjectStr);
+          // Validate that parsed result is a non-null plain object
+          if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+            // Found valid split
+            errorMessage = candidateMessage;
+            objectStr = candidateObjectStr;
+            parsedObject = parsed;
+            foundValidSplit = true;
+            break;
+          }
+        } catch {
+          // Not valid JSON, try next pipe position
+          continue;
+        }
+      }
+
+      // If no valid JSON found, fall back to using the 3rd pipe and empty object
+      if (!foundValidSplit) {
+        const thirdPipe = pipePositions[2]!;
+        errorMessage = content.substring(secondPipe + 1, thirdPipe).trim();
+        objectStr = content.substring(thirdPipe + 1).trim();
+        parsedObject = {};
+      }
+
+      // Validate all required fields are non-empty
+      if (!taskId || !errorType || !errorMessage || !objectStr) {
         continue;
       }
-    }
 
-    // If no valid JSON found, fall back to using the 3rd pipe and empty object
-    if (!foundValidSplit) {
-      const thirdPipe = pipePositions[2]!;
-      errorMessage = content.substring(secondPipe + 1, thirdPipe).trim();
-      objectStr = content.substring(thirdPipe + 1).trim();
-      parsedObject = {};
+      errors.push({
+        taskId,
+        errorType,
+        message: errorMessage,
+        object: parsedObject,
+      });
     }
+    // Format 2: Lines containing " - " separator (errorType - message format)
+    else if (trimmedLine.includes(" - ")) {
+      const dashIndex = trimmedLine.indexOf(" - ");
+      const errorType = trimmedLine.substring(0, dashIndex).trim();
+      const errorMessage = trimmedLine.substring(dashIndex + 3).trim();
 
-    // Validate all required fields are non-empty
-    if (!taskId || !errorType || !errorMessage || !objectStr) {
-      continue;
+      // Only add if both parts are non-empty
+      if (errorType && errorMessage) {
+        errors.push({
+          errorType,
+          message: errorMessage,
+        });
+      }
     }
-
-    errors.push({
-      taskId,
-      errorType,
-      message: errorMessage,
-      object: parsedObject,
-    });
   }
 
   return errors;

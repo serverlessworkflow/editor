@@ -873,7 +873,10 @@ exports[`parseWorkflow > parses valid 'YAML' and returns model with no errors 1`
 exports[`parseWorkflow > returns model and errors for invalid but parseable 'JSON' 1`] = `
 {
   "errors": [
-    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
+    {
+      "errorType": "'Workflow' is invalid",
+      "message": "The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.",
+    },
   ],
   "model": Workflow {
     "do": TaskList [
@@ -892,7 +895,10 @@ exports[`parseWorkflow > returns model and errors for invalid but parseable 'JSO
 exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAML' 1`] = `
 {
   "errors": [
-    [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
+    {
+      "errorType": "'Workflow' is invalid",
+      "message": "The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.",
+    },
   ],
   "model": Workflow {
     "do": TaskList [
@@ -910,6 +916,9 @@ exports[`parseWorkflow > returns model and errors for invalid but parseable 'YAM
 
 exports[`validateWorkflow > returns parsed validation errors for an invalid workflow 1`] = `
 [
-  [Error: 'Workflow' is invalid - The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.],
+  {
+    "errorType": "'Workflow' is invalid",
+    "message": "The DSL version of the workflow 'undefined' doesn't match the supported version of the SDK '1.0.3'.",
+  },
 ]
 `;
