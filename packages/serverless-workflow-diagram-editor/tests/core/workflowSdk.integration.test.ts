@@ -96,6 +96,70 @@ describe("parseValidationErrorMessage", () => {
     const errors = parseValidationErrorMessage(message);
     expect(errors).toHaveLength(0);
   });
+
+  it("handles pipes in the message field correctly", () => {
+    const message = '- /do/0/task | #/required | message with | pipes | {"key": "value"}';
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].taskId).toBe("/do/0/task");
+    expect(errors[0].errorType).toBe("#/required");
+    expect(errors[0].message).toBe("message with | pipes");
+    expect(errors[0].object).toEqual({ key: "value" });
+  });
+
+  it("handles pipes in the JSON object field correctly", () => {
+    const message =
+      '- /do/0/task | #/required | must have property | {"message": "value | with | pipes"}';
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].taskId).toBe("/do/0/task");
+    expect(errors[0].errorType).toBe("#/required");
+    expect(errors[0].message).toBe("must have property");
+    expect(errors[0].object).toEqual({ message: "value | with | pipes" });
+  });
+
+  it("rejects null JSON and falls back to empty object", () => {
+    const message = "- /do/0/task | #/required | must have property | null";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("rejects array JSON and falls back to empty object", () => {
+    const message = '- /do/0/task | #/required | must have property | ["array", "values"]';
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("rejects primitive JSON (string) and falls back to empty object", () => {
+    const message = '- /do/0/task | #/required | must have property | "string value"';
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("rejects primitive JSON (number) and falls back to empty object", () => {
+    const message = "- /do/0/task | #/required | must have property | 42";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("rejects primitive JSON (boolean) and falls back to empty object", () => {
+    const message = "- /do/0/task | #/required | must have property | true";
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({});
+  });
+
+  it("accepts valid plain object JSON", () => {
+    const message =
+      '- /do/0/task | #/required | must have property | {"nested": {"key": "value"}, "count": 5}';
+    const errors = parseValidationErrorMessage(message);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].object).toEqual({ nested: { key: "value" }, count: 5 });
+  });
 });
 
 describe("validateWorkflow", () => {

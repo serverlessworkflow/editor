@@ -22,7 +22,7 @@ export type ValidationError = {
   taskId: string;
   errorType: string;
   message: string;
-  object: object;
+  object: Record<string, unknown>;
 };
 
 export type SdkError = Error | ValidationError;
@@ -48,32 +48,79 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
     // Remove the leading "-" and trim
     const content = trimmedLine.substring(1).trim();
 
-    // Split by "|" to get the fields
-    const parts = content.split("|");
+    // Find all pipe positions
+    const pipePositions: number[] = [];
+    let pos = -1;
+    while ((pos = content.indexOf("|", pos + 1)) !== -1) {
+      pipePositions.push(pos);
+    }
 
-    // We expect 4 parts: taskId, errorType, message, object
-    if (parts.length === 4 && parts[0] && parts[1] && parts[2] && parts[3]) {
-      const taskId = parts[0].trim();
-      const errorType = parts[1].trim();
-      const errorMessage = parts[2].trim();
-      const objectStr = parts[3].trim();
+    // We need at least 3 pipes to have 4 fields
+    if (pipePositions.length < 3) {
+      continue;
+    }
 
-      // Parse the object field from JSON string
-      let parsedObject: object = {};
-      try {
-        parsedObject = JSON.parse(objectStr);
-      } catch {
-        // If parsing fails, use empty object
-        parsedObject = {};
+    // Extract first two fields using first two pipes
+    const firstPipe = pipePositions[0]!;
+    const secondPipe = pipePositions[1]!;
+
+    const taskId = content.substring(0, firstPipe).trim();
+    const errorType = content.substring(firstPipe + 1, secondPipe).trim();
+
+    // Try to find the last pipe that separates valid JSON
+    // Work backwards from the last pipe to find where valid JSON starts
+    let errorMessage = "";
+    let objectStr = "";
+    let parsedObject: Record<string, unknown> = {};
+    let foundValidSplit = false;
+
+    // Try each remaining pipe position as the separator before the JSON field
+    for (let i = pipePositions.length - 1; i >= 2; i--) {
+      const candidatePipe = pipePositions[i]!;
+      const candidateMessage = content.substring(secondPipe + 1, candidatePipe).trim();
+      const candidateObjectStr = content.substring(candidatePipe + 1).trim();
+
+      if (!candidateMessage || !candidateObjectStr) {
+        continue;
       }
 
-      errors.push({
-        taskId,
-        errorType,
-        message: errorMessage,
-        object: parsedObject,
-      });
+      // Try to parse the JSON
+      try {
+        const parsed = JSON.parse(candidateObjectStr);
+        // Validate that parsed result is a non-null plain object
+        if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+          // Found valid split
+          errorMessage = candidateMessage;
+          objectStr = candidateObjectStr;
+          parsedObject = parsed;
+          foundValidSplit = true;
+          break;
+        }
+      } catch {
+        // Not valid JSON, try next pipe position
+        continue;
+      }
     }
+
+    // If no valid JSON found, fall back to using the 3rd pipe and empty object
+    if (!foundValidSplit) {
+      const thirdPipe = pipePositions[2]!;
+      errorMessage = content.substring(secondPipe + 1, thirdPipe).trim();
+      objectStr = content.substring(thirdPipe + 1).trim();
+      parsedObject = {};
+    }
+
+    // Validate all required fields are non-empty
+    if (!taskId || !errorType || !errorMessage || !objectStr) {
+      continue;
+    }
+
+    errors.push({
+      taskId,
+      errorType,
+      message: errorMessage,
+      object: parsedObject,
+    });
   }
 
   return errors;

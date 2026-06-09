@@ -28,7 +28,8 @@ const isYAMLException = (err: Error): err is YAMLExceptionLike => err.name === "
 export const ParsingErrorPage = () => {
   const { errors } = useDiagramEditorContext();
   const { t } = useI18n();
-  // YAML parsing errors the only errors we expect for now so we will just take the first/only error
+  // Errors can be YAML parsing errors (Error instances) or validation errors (structured objects).
+  // We only handle YAML parsing errors in this component, so we take the first error.
   const err = errors[0];
 
   if (err && err instanceof Error && isYAMLException(err)) {
