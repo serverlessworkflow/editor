@@ -50,12 +50,12 @@ export function StackedField({ label, value }: { label: string; value: string })
   );
 }
 
-export function JsonField({ json, summary = "{...}" }: { json: string; summary?: string }) {
+export function YamlField({ yaml, summary = "{...}" }: { yaml: string; summary?: string }) {
   return (
-    <div className="dec-sidebar-json-field">
-      <details className="dec-sidebar-json-details">
-        <summary className="dec-sidebar-json-summary">{summary}</summary>
-        <pre className="dec-sidebar-json-pre">{json}</pre>
+    <div className="dec-sidebar-yaml-field">
+      <details className="dec-sidebar-yaml-details">
+        <summary className="dec-sidebar-yaml-summary">{summary}</summary>
+        <pre className="dec-sidebar-yaml-pre">{yaml}</pre>
       </details>
     </div>
   );
