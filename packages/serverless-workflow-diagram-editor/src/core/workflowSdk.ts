@@ -39,7 +39,7 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
 }
 
 export type ValidationError = {
-  taskId?: string;
+  path?: string;
   errorType?: string;
   message: string;
   object?: Record<string, unknown>;
@@ -59,7 +59,7 @@ export type WorkflowParseResult = {
  *
  * **Format 1: Pipe-delimited with 4 fields (task-specific errors)**
  * ```
- * - taskId | errorType | message | object
+ * - path | errorType | message | object
  * ```
  * Example:
  * ```
@@ -78,7 +78,7 @@ export type WorkflowParseResult = {
  * @param message - The raw error message string from the SDK, typically containing multiple lines
  * @returns Array of structured ValidationError objects. Each error is guaranteed to have:
  *   - `message`: The error description (always present)
- *   - `taskId`: The workflow task path (present only in Format 1)
+ *   - `path`: The workflow task path (present only in Format 1)
  *   - `errorType`: The error type/schema reference (present in both formats)
  *   - `object`: Additional error context as a sanitized object with null prototype (present only in Format 1;
  *               empty object if JSON parsing fails or if the JSON is not a plain object)
@@ -98,7 +98,7 @@ export type WorkflowParseResult = {
  *
  * const errors = parseValidationErrorMessage(sdkError);
  * // [
- * //   { taskId: "/do/0/call", errorType: "#/required", message: "must have property",
+ * //   { path: "/do/0/call", errorType: "#/required", message: "must have property",
  * //     object: { missingProperty: "http" } },
  * //   { errorType: "#/document", message: "must have required property 'document'" }
  * // ]
@@ -134,7 +134,7 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
       const firstPipe = pipePositions[0]!;
       const secondPipe = pipePositions[1]!;
 
-      const taskId = content.substring(0, firstPipe).trim();
+      const path = content.substring(0, firstPipe).trim();
       const errorType = content.substring(firstPipe + 1, secondPipe).trim();
 
       // Try to find the last pipe that separates valid JSON
@@ -182,12 +182,12 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
       }
 
       // Validate all required fields are non-empty
-      if (!taskId || !errorType || !errorMessage || !objectStr) {
+      if (!path || !errorType || !errorMessage || !objectStr) {
         continue;
       }
 
       errors.push({
-        taskId,
+        path,
         errorType,
         message: errorMessage,
         object: parsedObject,
@@ -212,13 +212,31 @@ export function parseValidationErrorMessage(message: string): ValidationError[] 
   return errors;
 }
 
+/*
+ * The SDK repeats its full error block within a single message, so the parsed list
+ * contains duplicates (identical path + errorType + message). Those carry no
+ * extra information and would otherwise surface the same error twice on a node and
+ * inflate error counts, so collapse exact duplicates here at the produce point.
+ */
+function dedupeValidationErrors(errors: ValidationError[]): ValidationError[] {
+  const seen = new Set<string>();
+  return errors.filter((error) => {
+    const signature = `${error.path ?? ""}|${error.errorType}|${error.message}`;
+    if (seen.has(signature)) {
+      return false;
+    }
+    seen.add(signature);
+    return true;
+  });
+}
+
 export function validateWorkflow(model: sdk.Specification.Workflow): SdkError[] {
   try {
     sdk.validate("Workflow", model);
     return [];
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    const parsedErrors = parseValidationErrorMessage(message);
+    const parsedErrors = dedupeValidationErrors(parseValidationErrorMessage(message));
 
     // If parsing succeeded and returned errors, use them
     if (parsedErrors.length > 0) {
@@ -237,7 +255,9 @@ export function parseWorkflow(text: string): WorkflowParseResult {
   let raw: Partial<sdk.Specification.Workflow>;
 
   try {
-    raw = yaml.load(text, { schema: yaml.DEFAULT_SCHEMA }) as Partial<sdk.Specification.Workflow>;
+    raw = yaml.load(text, {
+      schema: yaml.DEFAULT_SCHEMA,
+    }) as Partial<sdk.Specification.Workflow>;
   } catch (err) {
     return {
       model: null,

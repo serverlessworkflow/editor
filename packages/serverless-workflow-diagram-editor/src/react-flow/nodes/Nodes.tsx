@@ -28,6 +28,7 @@ import {
   terminalNodeConfigMap,
 } from "./taskNodeConfig";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
+import { CircleAlert } from "lucide-react";
 
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
@@ -72,6 +73,7 @@ const KNOWN_BADGES = new Set([
 export type BaseNodeData<T = Specification.Task | void> = {
   label: string;
   task?: T;
+  hasError?: boolean;
 };
 
 interface NodeContentProps {
@@ -106,15 +108,20 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
   );
 }
 
+function NodeErrorBadge({ testId }: { testId: string }) {
+  return <CircleAlert className="dec-node-error-badge" data-testid={testId} />;
+}
+
 function LeafNodeContent({ id, data, selected, type, badge }: NodeContentProps) {
   const config = leafNodeConfigMap[type as LeafNodeType];
   const Icon = config.icon;
   return (
     <div
-      className={`dec-leaf-node ${selected ? "selected" : ""}`}
+      className={`dec-leaf-node ${selected ? "selected" : ""} ${data.hasError ? "has-error" : ""}`}
       style={{ "--task-node-color": config.color } as React.CSSProperties}
       data-testid={`${type}-node-${id}`}
     >
+      {data.hasError && <NodeErrorBadge testId={`${type}-node-${id}-error`} />}
       <RF.Handle type="target" position={RF.Position.Top} />
       <div className="dec-leaf-node-content">
         <Icon size={20} className="dec-leaf-node-icon" />
@@ -136,10 +143,11 @@ function ContainerNodeContent({ id, data, selected, type, badge }: NodeContentPr
   const Icon = config.icon;
   return (
     <div
-      className={`dec-container-node ${selected ? "selected" : ""}`}
+      className={`dec-container-node ${selected ? "selected" : ""} ${data.hasError ? "has-error" : ""}`}
       style={{ "--task-node-color": config.color } as React.CSSProperties}
       data-testid={`${type}-node-${id}`}
     >
+      {data.hasError && <NodeErrorBadge testId={`${type}-node-${id}-error`} />}
       <RF.Handle type="target" position={RF.Position.Top} />
       <div className="dec-container-node-header">
         <Icon size={20} className="dec-container-node-icon" />

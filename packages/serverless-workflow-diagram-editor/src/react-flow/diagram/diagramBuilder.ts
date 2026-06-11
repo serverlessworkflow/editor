@@ -15,7 +15,7 @@
  */
 
 import * as RF from "@xyflow/react";
-import { buildFlatGraph } from "../../core";
+import { buildFlatGraph, getErrorNodeIds, type SdkError } from "../../core";
 import { BaseNodeData, ReactFlowNodeTypes } from "../nodes/Nodes";
 import { BaseEdgeData, EdgeTypes } from "../edges/Edges";
 import * as sdk from "@serverlessworkflow/sdk";
@@ -76,6 +76,7 @@ function resolveNodeType(graphNode: sdk.FlatGraphNode, catchContainerIds: Set<st
 function buildReactFlowNode(
   graphNode: sdk.FlatGraphNode,
   catchContainerIds: Set<string>,
+  erroringNodeIds: Set<string>,
 ): RF.Node<BaseNodeData> {
   const type = resolveNodeType(graphNode, catchContainerIds);
   // There is no corresponding react flow component implemented
@@ -91,9 +92,8 @@ function buildReactFlowNode(
     type,
     data: {
       label: graphNode.label ?? "",
-      ...(graphNode.task !== undefined && {
-        task: structuredClone(graphNode.task),
-      }),
+      ...(graphNode.task !== undefined && { task: structuredClone(graphNode.task) }),
+      ...(erroringNodeIds.has(graphNode.id) && { hasError: true }),
     },
     height: size.height,
     width: size.width,
@@ -124,16 +124,21 @@ function buildReactFlowEdge(
   };
 }
 
-export function buildDiagramElements(model: sdk.Specification.Workflow | null): ReactFlowGraph {
+export function buildDiagramElements(
+  model: sdk.Specification.Workflow | null,
+  errors: SdkError[] = [],
+): ReactFlowGraph {
   const nodes: RF.Node[] = [];
   const edges: RF.Edge[] = [];
 
   if (model) {
     const graph = buildFlatGraph(model);
     const catchContainerIds = getCatchContainerNodeIds(graph);
+    const nodeIds = new Set(graph.nodes.map((graphNode) => graphNode.id));
+    const nodeIdsWithErrors = getErrorNodeIds(errors, nodeIds);
 
     graph.nodes.forEach((graphNode) =>
-      nodes.push(buildReactFlowNode(graphNode, catchContainerIds)),
+      nodes.push(buildReactFlowNode(graphNode, catchContainerIds, nodeIdsWithErrors)),
     );
 
     // Precompute node ID set for O(1) membership checks

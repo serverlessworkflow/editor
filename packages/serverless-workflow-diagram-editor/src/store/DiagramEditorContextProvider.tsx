@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { parseWorkflow } from "../core";
+import { buildFlatGraph, parseWorkflow } from "../core";
 import { DiagramEditorProps } from "../diagram-editor/DiagramEditor";
 import { DiagramEditorContext, DiagramEditorContextType } from "./DiagramEditorContext";
 import type * as RF from "@xyflow/react";
@@ -33,6 +33,11 @@ export const DiagramEditorContextProvider = (
   const [selectedNodeId, setSelectedNodeId] = React.useState<string | null>(null);
 
   const { model, errors } = React.useMemo(() => parseWorkflow(props.content), [props.content]);
+
+  const nodeIds = React.useMemo(
+    () => (model ? new Set(buildFlatGraph(model).nodes.map((node) => node.id)) : new Set<string>()),
+    [model],
+  );
 
   // Update states on props changes
   React.useEffect(() => {
@@ -54,6 +59,7 @@ export const DiagramEditorContextProvider = (
       errors,
       nodes,
       edges,
+      nodeIds,
       selectedNodeId,
       setIsReadOnly,
       setLocale,
@@ -68,6 +74,7 @@ export const DiagramEditorContextProvider = (
       errors,
       nodes,
       edges,
+      nodeIds,
       selectedNodeId,
       setIsReadOnly,
       setLocale,

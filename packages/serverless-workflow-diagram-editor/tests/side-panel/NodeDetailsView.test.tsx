@@ -33,7 +33,11 @@ describe("NodeDetailsView", () => {
     const node = makeNode({
       label: "getPets",
       // eslint-disable-next-line unicorn/no-thenable -- 'then' is a real SWF directive
-      task: { call: "http", with: { endpoint: "https://api.example.com" }, then: "continue" },
+      task: {
+        call: "http",
+        with: { endpoint: "https://api.example.com" },
+        then: "continue",
+      },
     });
 
     renderWithProviders(<NodeDetailsView node={node} />);
@@ -73,7 +77,10 @@ describe("NodeDetailsView", () => {
   });
 
   it("renders a collapsed Source section with full yaml task", () => {
-    const task = { call: "http", with: { endpoint: "https://api.example.com" } };
+    const task = {
+      call: "http",
+      with: { endpoint: "https://api.example.com" },
+    };
     const node = makeNode({ label: "getPets", task });
 
     const { container } = renderWithProviders(<NodeDetailsView node={node} />);
@@ -94,5 +101,65 @@ describe("NodeDetailsView", () => {
     expect(screen.queryByText("Properties")).not.toBeInTheDocument();
     expect(screen.queryByText("Source")).not.toBeInTheDocument();
     expect(screen.getByText("No additional details for this node")).toBeInTheDocument();
+  });
+
+  describe("validation errors", () => {
+    const nodeIds = new Set(["node-1"]);
+
+    it("renders the node's errors above the Properties section, with field labels", () => {
+      const node = makeNode({
+        label: "getPets",
+        task: { call: "http", with: {} },
+      });
+
+      renderWithProviders(<NodeDetailsView node={node} />, {
+        nodeIds,
+        errors: [
+          {
+            path: "node-1/with",
+            message: "must have required property 'endpoint'",
+          },
+        ],
+      });
+
+      expect(screen.getByTestId("sidebar-errors")).toBeInTheDocument();
+      // field label derived relative to the node id
+      const field = document.querySelector(".dec-sidebar-error-field");
+      expect(field?.textContent).toBe("with");
+      expect(screen.getByText("must have required property 'endpoint'")).toBeInTheDocument();
+      // Properties still render alongside the errors
+      expect(screen.getByText("Properties")).toBeInTheDocument();
+    });
+
+    it("renders node details (errors only) when a task-less node has errors", () => {
+      const node = makeNode({ label: "start" }, "start");
+
+      renderWithProviders(<NodeDetailsView node={node} />, {
+        nodeIds,
+        errors: [{ path: "node-1", message: "something is wrong" }],
+      });
+
+      expect(screen.getByTestId("node-details")).toBeInTheDocument();
+      expect(screen.getByTestId("sidebar-errors")).toBeInTheDocument();
+      expect(screen.getByText("something is wrong")).toBeInTheDocument();
+      // No task -> no Properties, no Source, and not the empty hint
+      expect(screen.queryByText("Properties")).not.toBeInTheDocument();
+      expect(screen.queryByText("No additional details for this node")).not.toBeInTheDocument();
+    });
+
+    it("does not render the errors section when the node has no errors", () => {
+      const node = makeNode({
+        label: "getPets",
+        task: { call: "http", with: { endpoint: "x" } },
+      });
+
+      renderWithProviders(<NodeDetailsView node={node} />, {
+        nodeIds,
+        errors: [],
+      });
+
+      expect(screen.queryByTestId("sidebar-errors")).not.toBeInTheDocument();
+      expect(screen.getByText("Properties")).toBeInTheDocument();
+    });
   });
 });
