@@ -25,6 +25,7 @@ import {
   ReactFlowEdgeTypes,
   ErrorEdge,
   createPathFromWayPoints,
+  getWayPointsMidpoint,
 } from "../../../src/react-flow/edges/Edges";
 import * as RF from "@xyflow/react";
 
@@ -288,5 +289,93 @@ describe("EdgeLabel component", () => {
       const path = container.querySelector(selector);
       expect(path).toBeTruthy();
     });
+  });
+});
+
+describe("getWayPointsMidpoint helper function", () => {
+  it.each([
+    {
+      description: "single bend point returns that point",
+      wayPoints: [{ x: 50, y: 0 }],
+      expected: { x: 50, y: 0 },
+    },
+    {
+      description: "odd count returns the central bend point",
+      wayPoints: [
+        { x: 25, y: 0 },
+        { x: 50, y: 50 },
+        { x: 75, y: 0 },
+      ],
+      expected: { x: 50, y: 50 },
+    },
+    {
+      description: "even count averages the two central bend points",
+      wayPoints: [
+        { x: 100, y: 0 },
+        { x: 100, y: 100 },
+      ],
+      expected: { x: 100, y: 50 },
+    },
+    {
+      description: "even count of four averages the two central bend points",
+      wayPoints: [
+        { x: 0, y: 0 },
+        { x: 40, y: 20 },
+        { x: 60, y: 40 },
+        { x: 100, y: 100 },
+      ],
+      expected: { x: 50, y: 30 },
+    },
+    {
+      description: "negative coordinates",
+      wayPoints: [{ x: -25, y: -75 }],
+      expected: { x: -25, y: -75 },
+    },
+  ])("$description", ({ wayPoints, expected }) => {
+    const result = getWayPointsMidpoint(wayPoints);
+    expect(result?.x).toBeCloseTo(expected.x);
+    expect(result?.y).toBeCloseTo(expected.y);
+  });
+
+  it("returns undefined for an empty path", () => {
+    expect(getWayPointsMidpoint([])).toBeUndefined();
+  });
+});
+
+describe("EdgeLabel positioning", () => {
+  it("positions a waypoint edge label on the middle bend point of the custom path", () => {
+    const wayPoints = [{ x: 100, y: 0 }];
+    const mid = getWayPointsMidpoint(wayPoints);
+
+    const result = EdgeLabel({
+      sourceX: 0,
+      sourceY: 0,
+      targetX: 100,
+      targetY: 100,
+      data: { label: "Test", wayPoints },
+    });
+
+    expect(JSON.stringify(result)).toContain(`translate(${mid?.x}px,${mid?.y}px)`);
+  });
+
+  it("positions a smooth-step edge label using React Flow's default behaviour", () => {
+    const [, labelX, labelY] = RF.getSmoothStepPath({
+      sourceX: 0,
+      sourceY: 0,
+      sourcePosition: RF.Position.Bottom,
+      targetX: 100,
+      targetY: 40,
+      targetPosition: RF.Position.Top,
+    });
+
+    const result = EdgeLabel({
+      sourceX: 0,
+      sourceY: 0,
+      targetX: 100,
+      targetY: 40,
+      data: { label: "Test" },
+    });
+
+    expect(JSON.stringify(result)).toContain(`translate(${labelX}px,${labelY}px)`);
   });
 });
