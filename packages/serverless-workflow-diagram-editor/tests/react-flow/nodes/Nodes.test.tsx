@@ -22,10 +22,14 @@ import { ReactFlowNodeTypes } from "../../../src/react-flow/nodes/Nodes";
 import {
   containerNodeConfigMap,
   leafNodeConfigMap,
+  terminalNodeConfigMap,
   type ContainerNodeType,
   type LeafNodeType,
+  type TerminalNodeType,
 } from "../../../src/react-flow/nodes/taskNodeConfig";
 import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
+import { en } from "../../../src/i18n/locales/en";
+import { renderWithProviders } from "../../test-utils/render-helpers";
 
 function testNode(
   id: string,
@@ -169,6 +173,43 @@ describe("React Flow custom node types", () => {
       );
       expect(node.style.getPropertyValue("--task-node-color")).toBe(config.color);
     });
+  });
+
+  describe("should render terminal nodes with TerminalNodeContent", () => {
+    const terminalNodes: {
+      id: string;
+      type: TerminalNodeType;
+      testId: string;
+      handleType: "source" | "target";
+    }[] = [
+      { id: "entry1", type: GraphNodeType.Entry, testId: "entry", handleType: "source" },
+      { id: "exit1", type: GraphNodeType.Exit, testId: "exit", handleType: "target" },
+    ];
+
+    it.each(terminalNodes)(
+      "renders $testId node as a neutral pill",
+      ({ id, type, testId, handleType }) => {
+        const nodes = [testNode(id, type, 0, "raw-label-should-not-show")];
+        renderWithProviders(
+          <div>
+            <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={nodes} edges={[]} />
+          </div>,
+        );
+
+        const node = screen.getByTestId(`${testId}-node-${id}`);
+        const label = en[terminalNodeConfigMap[type].labelKey];
+
+        expect(node).toHaveClass("dec-terminal-node");
+        // shows the translated label, not the node's raw data.label
+        expect(node).toHaveTextContent(label);
+        expect(node).not.toHaveTextContent("raw-label-should-not-show");
+
+        // renders single handle source or target
+        const handles = node.querySelectorAll(".react-flow__handle");
+        expect(handles).toHaveLength(1);
+        expect(handles[0]).toHaveClass(handleType);
+      },
+    );
   });
 
   describe("badge rendering", () => {

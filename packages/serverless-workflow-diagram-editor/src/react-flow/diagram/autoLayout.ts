@@ -17,12 +17,23 @@
 import type { ElkNode, LayoutOptions, ElkExtendedEdge } from "elkjs/lib/elk.bundled.js";
 import { processElkLayout } from "@/core";
 import { ReactFlowGraph } from "./diagramBuilder";
+import { isTerminalNodeType } from "../nodes/taskNodeConfig";
 
 // Defaults
 export const DEFAULT_NODE_SIZE = {
   height: 65,
   width: 220,
 };
+
+// Entry/exit terminals are compact pills, not full task cards
+export const TERMINAL_NODE_SIZE = {
+  height: 30,
+  width: 95,
+};
+
+export function getNodeSize(type: string | undefined): Size {
+  return isTerminalNodeType(type) ? TERMINAL_NODE_SIZE : DEFAULT_NODE_SIZE;
+}
 
 export type Point = {
   x: number;
@@ -55,7 +66,7 @@ export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
   "org.eclipse.elk.layered.spacing.edgeNode": "24",
   "org.eclipse.elk.layered.spacing.edgeNodeBetweenLayers": "40",
   "org.eclipse.elk.layered.spacing.nodeNode": "24",
-  "org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers": "80",
+  "org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers": "50",
   "org.eclipse.elk.layered.spacing.componentComponent": "70",
   "org.eclipse.elk.layered.mergeEdges": "true",
 };
@@ -140,8 +151,9 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
       elkNode.layoutOptions = { ...PARENT_LAYOUT_OPTIONS };
     } else {
       // Leaf nodes get fixed dimensions
-      elkNode.width = node.measured?.width ?? DEFAULT_NODE_SIZE.width;
-      elkNode.height = node.measured?.height ?? DEFAULT_NODE_SIZE.height;
+      const fallbackSize = getNodeSize(node.type);
+      elkNode.width = node.measured?.width ?? fallbackSize.width;
+      elkNode.height = node.measured?.height ?? fallbackSize.height;
     }
   });
 

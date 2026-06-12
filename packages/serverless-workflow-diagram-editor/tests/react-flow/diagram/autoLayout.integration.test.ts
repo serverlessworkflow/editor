@@ -1121,7 +1121,7 @@ describe("autoLayout", () => {
           "70",
         );
         expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers"]).toBe(
-          "80",
+          "50",
         );
       });
     });

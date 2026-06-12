@@ -322,6 +322,42 @@
       dec:font-semibold;
   }
   /* end task leaf nodes */
+
+  /* start terminal markers (entry/exit) */
+  .dec-root .dec-terminal-node {
+    @apply dec:flex
+      dec:h-full
+      dec:w-full
+      dec:items-center
+      dec:justify-center
+      dec:gap-1.5
+      dec:rounded-full
+      dec:border
+      dec:border-slate-300
+      dec:bg-slate-100
+      dec:px-2.5
+      dec:text-[10px]
+      dec:font-medium
+      dec:uppercase
+      dec:leading-none
+      dec:tracking-wide
+      dec:text-slate-600;
+  }
+
+  .dec-root.dark .dec-terminal-node {
+    @apply dec:border-slate-600
+      dec:bg-slate-800
+      dec:text-slate-300;
+  }
+
+  .dec-root .dec-terminal-node-icon {
+    @apply dec:shrink-0;
+  }
+
+  .dec-root .dec-terminal-node-label {
+    @apply dec:truncate;
+  }
+  /* end terminal markers */
 }
 
 /* custom edges */
