@@ -15,29 +15,35 @@
  */
 
 import { downloadFile } from "../../src/lib/download";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 
 describe("downloadFile", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("creates and triggers file download", () => {
     const mockClick = vi.fn();
     const mockAppendChild = vi.fn();
     const mockRemoveChild = vi.fn();
-    const mockCreateElement = vi.fn().mockReturnValue({
+    const mockElement = {
       click: mockClick,
       href: "",
       download: "",
-    });
+    };
 
-    globalThis.document.createElement = mockCreateElement;
-    globalThis.document.body.appendChild = mockAppendChild;
-    globalThis.document.body.removeChild = mockRemoveChild;
-    globalThis.URL.createObjectURL = vi.fn().mockReturnValue("blob:mock-url");
-    globalThis.URL.revokeObjectURL = vi.fn();
+    vi.spyOn(document, "createElement").mockReturnValue(
+      mockElement as unknown as HTMLAnchorElement,
+    );
+    vi.spyOn(document.body, "appendChild").mockImplementation(mockAppendChild);
+    vi.spyOn(document.body, "removeChild").mockImplementation(mockRemoveChild);
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(vi.fn());
 
     const testCode = "flowchart TD\n  A --> B";
     downloadFile(testCode, "test.mmd");
 
-    expect(mockCreateElement).toHaveBeenCalledWith("a");
+    expect(document.createElement).toHaveBeenCalledWith("a");
     expect(mockClick).toHaveBeenCalled();
     expect(mockAppendChild).toHaveBeenCalled();
     expect(mockRemoveChild).toHaveBeenCalled();

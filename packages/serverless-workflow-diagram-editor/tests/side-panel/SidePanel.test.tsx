@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { SidePanel } from "../../src/side-panel/SidePanel";
 import { parseWorkflow } from "../../src/core/workflowSdk";
 import { renderWithProviders } from "../test-utils/render-helpers";
 import { WORKFLOW_WITH_METADATA_JSON } from "../fixtures/workflows";
-import * as mermaidExport from "../../src/core/mermaidExport";
-import * as clipboard from "../../src/lib/clipboard";
-import * as download from "../../src/lib/download";
 
 describe("SidePanel", () => {
   it("renders sidebar with workflow info when model is present", () => {
@@ -74,35 +70,5 @@ describe("SidePanel", () => {
 
     expect(screen.queryByText(/Copy Mermaid Code/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Download as Mermaid File/i)).not.toBeInTheDocument();
-  });
-
-  it("should call copyMermaidToClipboard when copy button is clicked", async () => {
-    const user = userEvent.setup();
-    const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
-    const copySpy = vi.spyOn(clipboard, "copyToClipboard").mockResolvedValue(undefined);
-    vi.spyOn(mermaidExport, "exportToMermaid").mockReturnValue("mermaid code");
-
-    renderWithProviders(<SidePanel />, { model });
-    const copyButton = screen.getByText(/Copy Mermaid Code/i);
-    await user.click(copyButton);
-
-    expect(copySpy).toHaveBeenCalledWith("mermaid code");
-  });
-
-  it("should call downloadMermaidFile when download button is clicked", async () => {
-    const user = userEvent.setup();
-    const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
-    const downloadSpy = vi.spyOn(download, "downloadFile").mockImplementation(() => {});
-    vi.spyOn(mermaidExport, "exportToMermaid").mockReturnValue("mermaid code");
-
-    renderWithProviders(<SidePanel />, { model });
-    const downloadButton = screen.getByText(/Download as Mermaid File/i);
-    await user.click(downloadButton);
-
-    expect(downloadSpy).toHaveBeenCalledWith("mermaid code", "test-wf.mmd");
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 });

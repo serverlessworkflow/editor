@@ -53,7 +53,7 @@ export function MermaidActions({ model }: { model: Specification.Workflow }): Re
       }, 2000);
     } catch (error) {
       console.error("Failed to copy mermaid code:", error);
-      alert("Failed to copy mermaid code. Please try again.");
+      alert(t("sidebar.exportMermaid.copyError"));
     }
   };
 
@@ -61,11 +61,16 @@ export function MermaidActions({ model }: { model: Specification.Workflow }): Re
     if (!model) return;
     try {
       const mermaidCode = exportToMermaid(model);
-      const filename = `${model.document?.name || "workflow"}.mmd`;
+      const sanitizedName = (model.document?.name || "workflow")
+        .replace(/[/\\:*?"<>|]/g, "_")
+        .replace(/\s+/g, "_")
+        .trim()
+        .substring(0, 200);
+      const filename = `${sanitizedName}.mmd`;
       downloadFile(mermaidCode, filename);
     } catch (error) {
       console.error("Failed to download mermaid file:", error);
-      alert("Failed to download mermaid file. Please try again.");
+      alert(t("sidebar.exportMermaid.downloadError"));
     }
   };
 

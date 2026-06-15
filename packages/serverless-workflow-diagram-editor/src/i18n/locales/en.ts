@@ -39,6 +39,8 @@ export const en = {
   "sidebar.exportMermaid.copy": "Copy Mermaid Code",
   "sidebar.exportMermaid.download": "Download as Mermaid File",
   "sidebar.exportMermaid.copied": "Copied!",
+  "sidebar.exportMermaid.copyError": "Failed to copy mermaid code. Please try again.",
+  "sidebar.exportMermaid.downloadError": "Failed to download mermaid file. Please try again.",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

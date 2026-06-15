@@ -15,14 +15,25 @@
  */
 
 import { copyToClipboard } from "../../src/lib/clipboard";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 
 describe("copyToClipboard", () => {
+  const originalClipboard = Object.getOwnPropertyDescriptor(navigator, "clipboard");
+
+  afterEach(() => {
+    if (originalClipboard) {
+      Object.defineProperty(navigator, "clipboard", originalClipboard);
+    } else {
+      delete (navigator as unknown as { clipboard?: Clipboard }).clipboard;
+    }
+  });
+
   it("copies text to clipboard successfully", async () => {
     const mockWriteText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
       value: { writeText: mockWriteText },
       writable: true,
+      configurable: true,
     });
 
     const testCode = "flowchart TD\n  A --> B";
@@ -34,6 +45,7 @@ describe("copyToClipboard", () => {
     Object.defineProperty(navigator, "clipboard", {
       value: undefined,
       writable: true,
+      configurable: true,
     });
 
     await expect(copyToClipboard("test")).rejects.toThrow(
