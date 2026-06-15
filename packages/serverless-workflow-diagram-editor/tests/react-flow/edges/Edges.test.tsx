@@ -110,7 +110,7 @@ describe("createPathFromWayPoints helper function", () => {
       targetX: 100,
       targetY: 100,
       wayPoints: undefined,
-      expected: "M 0,0 L 100,100",
+      expected: "M 0,0 L 100,0 L 100,100",
     },
     {
       description: "creates simple path with empty waypoints array",
@@ -119,7 +119,7 @@ describe("createPathFromWayPoints helper function", () => {
       targetX: 100,
       targetY: 100,
       wayPoints: [],
-      expected: "M 0,0 L 100,100",
+      expected: "M 0,0 L 100,0 L 100,100",
     },
     {
       description: "creates path with single waypoint",
@@ -128,7 +128,7 @@ describe("createPathFromWayPoints helper function", () => {
       targetX: 100,
       targetY: 100,
       wayPoints: [{ x: 50, y: 50 }],
-      expected: "M 0,0 L 50,50 L 100,100",
+      expected: "M 0,0 L 50,0 L 50,50 L 100,50 L 100,100",
     },
     {
       description: "creates path with multiple waypoints",
@@ -141,7 +141,7 @@ describe("createPathFromWayPoints helper function", () => {
         { x: 50, y: 50 },
         { x: 75, y: 75 },
       ],
-      expected: "M 0,0 L 25,25 L 50,50 L 75,75 L 100,100",
+      expected: "M 0,0 L 25,0 L 25,25 L 50,25 L 50,50 L 75,50 L 75,75 L 100,75 L 100,100",
     },
     {
       description: "creates path with negative coordinates",
@@ -153,7 +153,7 @@ describe("createPathFromWayPoints helper function", () => {
         { x: -50, y: -50 },
         { x: 50, y: 50 },
       ],
-      expected: "M -100,-100 L -50,-50 L 50,50 L 100,100",
+      expected: "M -100,-100 L -50,-100 L -50,-50 L 50,-50 L 50,50 L 100,50 L 100,100",
     },
     {
       description: "creates path with decimal coordinates",
@@ -162,7 +162,7 @@ describe("createPathFromWayPoints helper function", () => {
       targetX: 100.75,
       targetY: 200.5,
       wayPoints: [{ x: 50.5, y: 75.25 }],
-      expected: "M 0.5,10.25 L 50.5,75.25 L 100.75,200.5",
+      expected: "M 0.5,10.25 L 50.5,10.25 L 50.5,75.25 L 100.75,75.25 L 100.75,200.5",
     },
     {
       description: "handles complex path with many waypoints",
@@ -178,7 +178,8 @@ describe("createPathFromWayPoints helper function", () => {
         { x: 80, y: 40 },
         { x: 90, y: 90 },
       ],
-      expected: "M 0,0 L 10,10 L 20,30 L 40,20 L 60,50 L 80,40 L 90,90 L 100,100",
+      expected:
+        "M 0,0 L 10,0 L 10,10 L 20,10 L 20,30 L 40,30 L 40,20 L 60,20 L 60,50 L 80,50 L 80,40 L 90,40 L 90,90 L 100,90 L 100,100",
     },
     {
       description: "preserves coordinate precision",
@@ -190,7 +191,8 @@ describe("createPathFromWayPoints helper function", () => {
         { x: 33.333333, y: 66.666666 },
         { x: 77.777777, y: 88.888888 },
       ],
-      expected: "M 0.1,0.2 L 33.333333,66.666666 L 77.777777,88.888888 L 99.9,99.8",
+      expected:
+        "M 0.1,0.2 L 33.333333,0.2 L 33.333333,66.666666 L 77.777777,66.666666 L 77.777777,88.888888 L 99.9,88.888888 L 99.9,99.8",
     },
   ])("$description", ({ sourceX, sourceY, targetX, targetY, wayPoints, expected }) => {
     const path = createPathFromWayPoints(sourceX, sourceY, targetX, targetY, wayPoints);

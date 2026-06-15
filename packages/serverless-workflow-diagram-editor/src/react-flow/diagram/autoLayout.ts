@@ -50,29 +50,45 @@ export type Size = {
 export type WayPoints = Point[];
 
 export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
-  "org.eclipse.elk.algorithm": "org.eclipse.elk.layered",
-  "org.eclipse.elk.direction": "DOWN",
-  "org.eclipse.elk.layered.nodePlacement.strategy": "BRANDES_KOEPF",
-  "org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment": "BALANCED",
-  "org.eclipse.elk.layered.nodePlacement.bk.edgeStraightening": "IMPROVE_STRAIGHTNESS",
-  "org.eclipse.elk.layered.nodePlacement.favorStraightEdges": "true",
-  "org.eclipse.elk.layered.priority.straightness": "10",
-  "org.eclipse.elk.hierarchyHandling": "INCLUDE_CHILDREN",
-  "org.eclipse.elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
-  "org.eclipse.elk.edgeRouting": "ORTHOGONAL",
-  "org.eclipse.elk.layered.unnecessaryBendpoints": "true",
-  "org.eclipse.elk.layered.cycleBreaking.strategy": "GREEDY_MODEL_ORDER",
-  "org.eclipse.elk.layered.considerModelOrder.crossingCounterNodeInfluence": "0.001",
-  "org.eclipse.elk.layered.spacing.edgeNode": "24",
-  "org.eclipse.elk.layered.spacing.edgeNodeBetweenLayers": "40",
-  "org.eclipse.elk.layered.spacing.nodeNode": "24",
-  "org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers": "50",
-  "org.eclipse.elk.layered.spacing.componentComponent": "70",
-  "org.eclipse.elk.layered.mergeEdges": "true",
+  // layout algorithm
+  "elk.algorithm": "org.eclipse.elk.layered",
+  "elk.direction": "DOWN",
+  "layered.priority.direction": "MAX_VALUE",
+  "elk.hierarchyHandling": "INCLUDE_CHILDREN",
+  "elk.edgeRouting": "ORTHOGONAL",
+  "layered.layering.strategy": "INTERACTIVE",
+  // edge routing and crossing minimization
+  "layered.cycleBreaking.strategy": "DEPTH_FIRST",
+  "layered.crossingMinimization.greedySwitch.type": "TWO_SIDED",
+  "layered.crossingMinimization.greedySwitch.activationThreshold": "40",
+  "layered.crossingMinimization.semiInteractive": "true",
+  "layered.considerModelOrder.crossingCounterNodeInfluence": "1",
+  "elk.portConstraints": "FIXED_SIDE",
+  "layered.northOrSouthPort": "true",
+  "layered.thoroughness": "15",
+  "layered.nodePlacement.bk.edgeStraightening": "IMPROVE_STRAIGHTNESS",
+  "layered.unnecessaryBendpoints": "true",
+  "layered.mergeEdges": "true",
+  // node placement
+  "layered.nodePlacement.strategy": "BRANDES_KOEPF",
+  "layered.nodePlacement.bk.fixedAlignment": "BALANCED",
+  "layered.considerModelOrder.strategy": "PREFER_EDGES",
+  "layered.nodePlacement.favorStraightEdges": "true",
+  "layered.nodePlacement.bk.iterations": "100",
+  "layered.nodePlacement.bk.initialTemperature": "1000",
+  "layered.nodePlacement.bk.coolFactor": "0.005",
+  "elk.alignment": "TOP",
+  // spacing
+  "spacing.edgeNode": "44",
+  "spacing.edgeEdge": "44",
+  "spacing.componentComponent": "100",
+  "spacing.nodeNodeBetweenLayers": "100",
+  "spacing.edgeNodeBetweenLayers": "50",
 };
 
 export const PARENT_LAYOUT_OPTIONS: LayoutOptions = {
   ...ROOT_LAYOUT_OPTIONS,
+  "org.eclipse.elk.layered.considerModelOrder.strategy": "NONE",
   "org.eclipse.elk.padding": "[top=60,left=20,bottom=20,right=20]",
 };
 
@@ -159,12 +175,42 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
 
   const reactFlowNodeMap = new Map(reactFlowGraph.nodes.map((node) => [node.id, node]));
 
+  // Track which nodes are sources of edges (to add ports)
+  const nodeOutgoingEdges = new Map<string, number>();
+  reactFlowGraph.edges.forEach((edge) => {
+    const count = nodeOutgoingEdges.get(edge.source) || 0;
+    nodeOutgoingEdges.set(edge.source, count + 1);
+  });
+
+  // Add ports to parent nodes that have outgoing edges
+  nodeOutgoingEdges.forEach((count, nodeId) => {
+    const elkNode = nodeMap.get(nodeId);
+    const reactFlowNode = reactFlowNodeMap.get(nodeId);
+
+    // Only add port if this is a parent node (has children)
+    if (elkNode && reactFlowNode && elkNode.children && elkNode.children.length > 0) {
+      // Add a single output port at the bottom center
+      elkNode.ports = [
+        {
+          id: `${nodeId}_out`,
+          layoutOptions: {
+            "port.side": "SOUTH",
+            "port.index": "0",
+          },
+        },
+      ];
+    }
+  });
+
   // Nest edges in the appropriate hierarchy level
   const rootEdges: ElkExtendedEdge[] = [];
   reactFlowGraph.edges.forEach((edge) => {
+    const sourceNode = nodeMap.get(edge.source);
+    const hasPort = sourceNode?.ports && sourceNode.ports.length > 0;
+
     const elkEdge: ElkExtendedEdge = {
       id: edge.id,
-      sources: [edge.source],
+      sources: hasPort ? [`${edge.source}_out`] : [edge.source],
       targets: [edge.target],
     };
 
@@ -227,18 +273,62 @@ function buildElkEdgeMap(
   return map;
 }
 
-// Helper function to check if an edge is inside a parent node
-function isEdgeInsideParent(
-  edge: { source: string; target: string },
-  nodeMap: Map<string, { id: string; parentId: string | undefined }>,
-): boolean {
-  // Edge is inside a parent if the lowest common ancestor is not the root
-  // This matches the logic used in findCommonAncestor when building the ELK graph
-  const commonAncestor = findCommonAncestor(edge.source, edge.target, nodeMap);
-  return commonAncestor !== "root";
+// Helper function to find the parent node containing an edge
+function findEdgeParent(elkNode: ElkNode, edgeId: string): ElkNode | null {
+  if (elkNode.edges?.some((e) => e.id === edgeId)) {
+    return elkNode;
+  }
+  if (elkNode.children) {
+    for (const child of elkNode.children) {
+      const parent = findEdgeParent(child, edgeId);
+      if (parent) {
+        return parent;
+      }
+    }
+  }
+  return null;
 }
 
-// set
+// Helper function to calculate absolute position of a node
+function getAbsolutePosition(nodeId: string, elkNodeMap: Map<string, ElkNode>): Point {
+  const node = elkNodeMap.get(nodeId);
+  if (!node || node.x === undefined || node.y === undefined) {
+    return { x: 0, y: 0 };
+  }
+
+  let absoluteX = node.x;
+  let absoluteY = node.y;
+
+  // Traverse up the hierarchy to accumulate parent positions
+  let currentNode = node;
+  while (currentNode) {
+    const parentId = findParentId(currentNode.id, elkNodeMap);
+    if (!parentId || parentId === "root") {
+      break;
+    }
+    const parent = elkNodeMap.get(parentId);
+    if (parent && parent.x !== undefined && parent.y !== undefined) {
+      absoluteX += parent.x;
+      absoluteY += parent.y;
+      currentNode = parent;
+    } else {
+      break;
+    }
+  }
+
+  return { x: absoluteX, y: absoluteY };
+}
+
+// Helper function to find parent ID of a node
+function findParentId(nodeId: string, elkNodeMap: Map<string, ElkNode>): string | null {
+  for (const [id, node] of elkNodeMap.entries()) {
+    if (node.children?.some((child) => child.id === nodeId)) {
+      return id;
+    }
+  }
+  return null;
+}
+
 export function matchReactFlowGraphWithElkLayoutedGraph(
   graph: ReactFlowGraph,
   layoutedGraph: ElkNode,
@@ -246,11 +336,6 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
   // Build flat maps for O(1) lookups
   const elkNodeMap = buildElkNodeMap(layoutedGraph);
   const elkEdgeMap = buildElkEdgeMap(layoutedGraph);
-
-  // Build node map for O(1) lookups in isEdgeInsideParent
-  const reactFlowNodeMap = new Map(
-    graph.nodes.map((node) => [node.id, { id: node.id, parentId: node.parentId }]),
-  );
 
   // Map node positions
   const layoutedNodes = graph.nodes.map((node) => {
@@ -272,20 +357,49 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
     if (elkEdge) {
       // Reconstruct data without old wayPoints to avoid stale routing
       const { wayPoints: _oldWayPoints, ...restData } = edge.data || {};
-      const bendPoints = elkEdge.sections?.flatMap((section) => section.bendPoints || []) || [];
 
-      // Always create new data object, only add wayPoints if there are bend points
+      // Use full ELK section geometry instead of only bend points.
+      // This avoids mixing React Flow anchor coordinates with ELK bend points,
+      // which is especially problematic for edges inside parent nodes.
+      const sectionPoints =
+        elkEdge.sections?.flatMap((section) => {
+          const points = [];
+          if (section.startPoint) {
+            points.push(section.startPoint);
+          }
+          if (section.bendPoints) {
+            points.push(...section.bendPoints);
+          }
+          if (section.endPoint) {
+            points.push(section.endPoint);
+          }
+          return points;
+        }) || [];
+
       const newData = { ...restData };
-      if (bendPoints.length > 0) {
-        // Drop ELK-provided way points for edges nested inside a parent to avoid React Flow rendering distortion
-        const isInsideParent = isEdgeInsideParent(edge, reactFlowNodeMap);
-        if (isInsideParent) {
-          // There is an incompatibility with the react flow library, the wayPoints are calculated correctly by ELK
-          // but the way react flow render edges inside parent nodes cause path distortions.
-          newData.wayPoints = undefined;
+      if (sectionPoints.length >= 2) {
+        // Find the parent node containing this edge
+        const edgeParent = findEdgeParent(layoutedGraph, edge.id);
+
+        // If edge is inside a parent node (not at root level), convert coordinates to absolute
+        if (edgeParent && edgeParent.id !== "root") {
+          const parentAbsolutePos = getAbsolutePosition(edgeParent.id, elkNodeMap);
+
+          // Convert all waypoints from parent-relative to absolute coordinates
+          const absoluteWayPoints = sectionPoints.slice(1, -1).map((point) => ({
+            x: point.x + parentAbsolutePos.x,
+            y: point.y + parentAbsolutePos.y,
+          }));
+
+          newData.wayPoints = absoluteWayPoints;
         } else {
-          newData.wayPoints = bendPoints;
+          // Edge is at root level, use coordinates as-is
+          // React Flow already knows the rendered source/target anchors.
+          // Keep only the intermediate ELK points so the path stays in one coordinate space.
+          newData.wayPoints = sectionPoints.slice(1, -1);
         }
+      } else {
+        newData.wayPoints = undefined;
       }
 
       return {

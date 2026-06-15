@@ -294,6 +294,87 @@ describe("autoLayout", () => {
       expect(elkGraph.children?.[0].children?.[0].edges).toBeUndefined();
     });
 
+    it("adds ports to parent nodes with outgoing edges", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent", position: { x: 0, y: 0 }, data: {} },
+          { id: "child", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "parent", target: "node2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Parent node should have a port since it has an outgoing edge
+      expect(elkGraph.children?.[0].ports).toBeDefined();
+      expect(elkGraph.children?.[0].ports).toHaveLength(1);
+      expect(elkGraph.children?.[0].ports?.[0]).toEqual({
+        id: "parent_out",
+        layoutOptions: {
+          "port.side": "SOUTH",
+          "port.index": "0",
+        },
+      });
+    });
+
+    it("does not add ports to leaf nodes with outgoing edges", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "node1", position: { x: 0, y: 0 }, data: {} },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "node1", target: "node2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Leaf nodes should not have ports
+      expect(elkGraph.children?.[0].ports).toBeUndefined();
+      expect(elkGraph.children?.[1].ports).toBeUndefined();
+    });
+
+    it("uses port ID in edge sources for parent nodes", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "parent", position: { x: 0, y: 0 }, data: {} },
+          { id: "child", position: { x: 0, y: 0 }, data: {}, parentId: "parent" },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "parent", target: "node2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Edge from parent node should use port ID
+      expect(elkGraph.edges).toHaveLength(1);
+      expect(elkGraph.edges?.[0]).toEqual({
+        id: "edge1",
+        sources: ["parent_out"],
+        targets: ["node2"],
+      });
+    });
+
+    it("uses node ID in edge sources for leaf nodes", () => {
+      const reactFlowGraph: ReactFlowGraph = {
+        nodes: [
+          { id: "node1", position: { x: 0, y: 0 }, data: {} },
+          { id: "node2", position: { x: 0, y: 0 }, data: {} },
+        ] as Node[],
+        edges: [{ id: "edge1", source: "node1", target: "node2", data: {} }] as Edge[],
+      };
+
+      const elkGraph = buildElkGraphFromReactFlowGraph(reactFlowGraph);
+
+      // Edge from leaf node should use node ID directly
+      expect(elkGraph.edges).toHaveLength(1);
+      expect(elkGraph.edges?.[0]).toEqual({
+        id: "edge1",
+        sources: ["node1"],
+        targets: ["node2"],
+      });
+    });
+
     it("handles multi-level nesting with edges at different levels", () => {
       const reactFlowGraph: ReactFlowGraph = {
         nodes: [
@@ -435,7 +516,8 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
-      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+      // When there are no bend points, wayPoints should be an empty array
+      expect(result.edges[0].data?.wayPoints).toEqual([]);
     });
 
     it("clears stale wayPoints when ELK edge has no sections", () => {
@@ -503,8 +585,9 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
-      expect(result.edges[0].data).toEqual({ label: "Test Edge" });
-      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+      // When there are no bend points, wayPoints should be an empty array
+      expect(result.edges[0].data).toEqual({ label: "Test Edge", wayPoints: [] });
+      expect(result.edges[0].data?.wayPoints).toEqual([]);
     });
 
     it("preserves edge data when no ELK edge found", () => {
@@ -584,13 +667,17 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
+      // Should include all intermediate points (excluding first startPoint and last endPoint)
+      // When multiple sections exist, all intermediate points are included (including section boundaries)
       expect(result.edges[0].data?.wayPoints).toEqual([
-        { x: 50, y: 0 },
-        { x: 150, y: 100 },
+        { x: 50, y: 0 }, // bendPoint from section1
+        { x: 100, y: 50 }, // endPoint of section1
+        { x: 100, y: 50 }, // startPoint of section2 (duplicate of previous)
+        { x: 150, y: 100 }, // bendPoint from section2
       ]);
     });
 
-    it("handles edges inside parent nodes - removes wayPoints", () => {
+    it("handles edges inside parent nodes - converts wayPoints to absolute coordinates", () => {
       const reactFlowGraph: ReactFlowGraph = {
         nodes: [
           { id: "parent", position: { x: 0, y: 0 }, data: {} },
@@ -605,8 +692,8 @@ describe("autoLayout", () => {
         children: [
           {
             id: "parent",
-            x: 0,
-            y: 0,
+            x: 100,
+            y: 200,
             children: [
               { id: "child1", x: 10, y: 10 },
               { id: "child2", x: 10, y: 70 },
@@ -633,8 +720,10 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
-      // wayPoints should be undefined for edges inside parent nodes
-      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+      // wayPoints should be converted to absolute coordinates for edges inside parent nodes
+      // Parent is at (100, 200), bendPoint is at (10, 40) relative to parent
+      // So absolute position should be (110, 240)
+      expect(result.edges[0].data?.wayPoints).toEqual([{ x: 110, y: 240 }]);
     });
 
     it("preserves wayPoints for edges not inside parent nodes", () => {
@@ -900,13 +989,22 @@ describe("autoLayout", () => {
             width: 300,
             height: 200,
             children: [{ id: "child1", x: 10, y: 10, width: 100, height: 50 }],
+            ports: [
+              {
+                id: "parent_out",
+                layoutOptions: {
+                  "port.side": "SOUTH",
+                  "port.index": "0",
+                },
+              },
+            ],
           },
           { id: "node2", x: 350, y: 50, width: 200, height: 60 },
         ],
         edges: [
           {
             id: "edge1",
-            sources: ["parent"],
+            sources: ["parent_out"],
             targets: ["node2"],
           },
         ],
@@ -1110,19 +1208,15 @@ describe("autoLayout", () => {
 
     describe("ROOT_LAYOUT_OPTIONS", () => {
       it("contains required ELK layout options", () => {
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.algorithm"]).toBe("org.eclipse.elk.layered");
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.direction"]).toBe("DOWN");
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.hierarchyHandling"]).toBe("INCLUDE_CHILDREN");
+        expect(ROOT_LAYOUT_OPTIONS["elk.algorithm"]).toBe("org.eclipse.elk.layered");
+        expect(ROOT_LAYOUT_OPTIONS["elk.direction"]).toBe("DOWN");
+        expect(ROOT_LAYOUT_OPTIONS["elk.hierarchyHandling"]).toBe("INCLUDE_CHILDREN");
       });
 
       it("has proper spacing configuration", () => {
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.edgeNode"]).toBe("24");
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.componentComponent"]).toBe(
-          "70",
-        );
-        expect(ROOT_LAYOUT_OPTIONS["org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers"]).toBe(
-          "50",
-        );
+        expect(ROOT_LAYOUT_OPTIONS["spacing.edgeNode"]).toBe("44");
+        expect(ROOT_LAYOUT_OPTIONS["spacing.componentComponent"]).toBe("100");
+        expect(ROOT_LAYOUT_OPTIONS["spacing.nodeNodeBetweenLayers"]).toBe("100");
       });
     });
 
@@ -1131,7 +1225,7 @@ describe("autoLayout", () => {
         expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.padding"]).toBe(
           "[top=60,left=20,bottom=20,right=20]",
         );
-        expect(PARENT_LAYOUT_OPTIONS["org.eclipse.elk.algorithm"]).toBe("org.eclipse.elk.layered");
+        expect(PARENT_LAYOUT_OPTIONS["elk.algorithm"]).toBe("org.eclipse.elk.layered");
       });
     });
   });
