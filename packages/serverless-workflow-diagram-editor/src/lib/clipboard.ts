@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import { convertToMermaidCode } from "@serverlessworkflow/sdk";
-import type { Specification } from "@serverlessworkflow/sdk";
-
-/**
- * Converts a workflow model to Mermaid diagram code
- * @param workflow - The workflow object (parsed from JSON/YAML)
- * @returns Mermaid diagram code as a string
- */
-export function exportToMermaid(workflow: Specification.Workflow): string {
-  return convertToMermaidCode(workflow);
+export function copyToClipboard(text: string): Promise<void> {
+  if (typeof navigator === "undefined" || !navigator.clipboard) {
+    return Promise.reject(new Error("Clipboard API is not available in this environment"));
+  }
+  return navigator.clipboard.writeText(text);
 }

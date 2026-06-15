@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-import { convertToMermaidCode } from "@serverlessworkflow/sdk";
-import type { Specification } from "@serverlessworkflow/sdk";
+export function downloadFile(content: string, filename: string, mimeType = "text/plain"): void {
+  if (typeof document === "undefined") {
+    throw new Error("Document API is not available in this environment");
+  }
 
-/**
- * Converts a workflow model to Mermaid diagram code
- * @param workflow - The workflow object (parsed from JSON/YAML)
- * @returns Mermaid diagram code as a string
- */
-export function exportToMermaid(workflow: Specification.Workflow): string {
-  return convertToMermaidCode(workflow);
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 100);
 }

@@ -17,7 +17,7 @@
 import * as React from "react";
 import type * as RF from "@xyflow/react";
 import { useI18n } from "@serverlessworkflow/i18n";
-import { Workflow, Info, Box, Copy, Download } from "lucide-react";
+import { Workflow, Info, Box } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,20 +25,18 @@ import {
   useSidebar,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { useDiagramEditorContext } from "@/store/DiagramEditorContext";
 import { WorkflowInfoView } from "@/side-panel/WorkflowInfoView";
 import { NodeDetailsView } from "@/side-panel/NodeDetailsView";
+import { MermaidActions } from "@/side-panel/MermaidActions";
 import { taskNodeConfigMap, type LeafNodeType } from "@/react-flow/nodes/taskNodeConfig";
 import type { BaseNodeData } from "@/react-flow/nodes/Nodes";
 import "./SidePanel.css";
-import { exportToMermaid, copyMermaidToClipboard, downloadMermaidFile } from "@/core";
 
 export function SidePanel() {
   const { model, nodes, selectedNodeId } = useDiagramEditorContext();
   const { setOpen } = useSidebar();
   const { t } = useI18n();
-  const [isCopied, setIsCopied] = React.useState(false);
 
   const selectedNode = React.useMemo(
     () =>
@@ -63,45 +61,6 @@ export function SidePanel() {
     prevSelectedNodeId.current = selectedNodeId;
     setOpen(selectedNodeId !== null);
   }, [selectedNodeId, setOpen]);
-
-  const copyTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  React.useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleCopyMermaid = async () => {
-    if (!model) return;
-    try {
-      const mermaidCode = exportToMermaid(model);
-      await copyMermaidToClipboard(mermaidCode);
-      setIsCopied(true);
-
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current);
-      }
-
-      copyTimeoutRef.current = setTimeout(() => {
-        setIsCopied(false);
-        copyTimeoutRef.current = null;
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to copy mermaid code:", error);
-    }
-  };
-
-  const handleDownloadMermaid = () => {
-    if (!model) return;
-    try {
-      const mermaidCode = exportToMermaid(model);
-      downloadMermaidFile(mermaidCode);
-    } catch (error) {
-      console.error("Failed to download mermaid file:", error);
-    }
-  };
 
   return (
     <Sidebar side="right">
@@ -141,18 +100,7 @@ export function SidePanel() {
         )}
       </SidebarContent>
       <SidebarFooter>
-        {model !== null && selectedNodeId === null && (
-          <>
-            <Button onClick={handleCopyMermaid} variant="outline" size="sm">
-              <Copy />
-              {isCopied ? t("sidebar.exportMermaid.copied") : t("sidebar.exportMermaid.copy")}
-            </Button>
-            <Button onClick={handleDownloadMermaid} variant="outline" size="sm">
-              <Download />
-              {t("sidebar.exportMermaid.download")}
-            </Button>
-          </>
-        )}
+        {model !== null && selectedNodeId === null && <MermaidActions model={model} />}
       </SidebarFooter>
     </Sidebar>
   );

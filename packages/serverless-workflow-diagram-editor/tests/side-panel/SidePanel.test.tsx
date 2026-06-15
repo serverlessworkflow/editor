@@ -22,6 +22,8 @@ import { parseWorkflow } from "../../src/core/workflowSdk";
 import { renderWithProviders } from "../test-utils/render-helpers";
 import { WORKFLOW_WITH_METADATA_JSON } from "../fixtures/workflows";
 import * as mermaidExport from "../../src/core/mermaidExport";
+import * as clipboard from "../../src/lib/clipboard";
+import * as download from "../../src/lib/download";
 
 describe("SidePanel", () => {
   it("renders sidebar with workflow info when model is present", () => {
@@ -77,7 +79,7 @@ describe("SidePanel", () => {
   it("should call copyMermaidToClipboard when copy button is clicked", async () => {
     const user = userEvent.setup();
     const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
-    const copySpy = vi.spyOn(mermaidExport, "copyMermaidToClipboard").mockResolvedValue(undefined);
+    const copySpy = vi.spyOn(clipboard, "copyToClipboard").mockResolvedValue(undefined);
     vi.spyOn(mermaidExport, "exportToMermaid").mockReturnValue("mermaid code");
 
     renderWithProviders(<SidePanel />, { model });
@@ -90,14 +92,14 @@ describe("SidePanel", () => {
   it("should call downloadMermaidFile when download button is clicked", async () => {
     const user = userEvent.setup();
     const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
-    const downloadSpy = vi.spyOn(mermaidExport, "downloadMermaidFile").mockImplementation(() => {});
+    const downloadSpy = vi.spyOn(download, "downloadFile").mockImplementation(() => {});
     vi.spyOn(mermaidExport, "exportToMermaid").mockReturnValue("mermaid code");
 
     renderWithProviders(<SidePanel />, { model });
     const downloadButton = screen.getByText(/Download as Mermaid File/i);
     await user.click(downloadButton);
 
-    expect(downloadSpy).toHaveBeenCalledWith("mermaid code");
+    expect(downloadSpy).toHaveBeenCalledWith("mermaid code", "test-wf.mmd");
   });
 
   afterEach(() => {
