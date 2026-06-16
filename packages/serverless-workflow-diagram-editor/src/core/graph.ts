@@ -121,9 +121,6 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
       sourceNode.parentId &&
       isTargetOutsideSourceParent(sourceNode, targetNode)
     ) {
-      // Check if source is itself a parent node (has children)
-      const sourceIsParent = graph.nodes.some((n) => n.parentId === sourceNode.id);
-
       // Find the topmost parent that the target is outside of
       let currentNode = sourceNode;
       let topmostParentId = sourceNode.parentId;
@@ -146,16 +143,8 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
         }
       }
 
-      // Determine which exit node to use
-      let exitNodeToUse: string | undefined;
-      if (sourceIsParent) {
-        // If source is a parent node, it cannot connect to its own exit node
-        // Instead, connect to its parent's exit node (same level as the parent)
-        exitNodeToUse = parentToExitNode.get(sourceNode.parentId);
-      } else {
-        // If source is a regular task, use its immediate parent's exit node
-        exitNodeToUse = parentToExitNode.get(sourceNode.parentId);
-      }
+      // Use the immediate parent's exit node
+      const exitNodeToUse = parentToExitNode.get(sourceNode.parentId);
 
       if (exitNodeToUse) {
         // Redirect the edge to the appropriate exit node

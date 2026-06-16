@@ -176,14 +176,13 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
   const reactFlowNodeMap = new Map(reactFlowGraph.nodes.map((node) => [node.id, node]));
 
   // Track which nodes are sources of edges (to add ports)
-  const nodeOutgoingEdges = new Map<string, number>();
+  const nodeOutgoingEdges = new Set<string>();
   reactFlowGraph.edges.forEach((edge) => {
-    const count = nodeOutgoingEdges.get(edge.source) || 0;
-    nodeOutgoingEdges.set(edge.source, count + 1);
+    nodeOutgoingEdges.add(edge.source);
   });
 
   // Add ports to parent nodes that have outgoing edges
-  nodeOutgoingEdges.forEach((count, nodeId) => {
+  nodeOutgoingEdges.forEach((nodeId) => {
     const elkNode = nodeMap.get(nodeId);
     const reactFlowNode = reactFlowNodeMap.get(nodeId);
 
@@ -241,56 +240,65 @@ export function buildElkGraphFromReactFlowGraph(reactFlowGraph: ReactFlowGraph):
   };
 }
 
-// Helper function to recursively build a flat map of all ELK nodes
-function buildElkNodeMap(
-  elkNode: ElkNode,
-  map: Map<string, ElkNode> = new Map(),
-): Map<string, ElkNode> {
-  map.set(elkNode.id, elkNode);
-  if (elkNode.children) {
-    for (const child of elkNode.children) {
-      buildElkNodeMap(child, map);
-    }
-  }
-  return map;
+/**
+ * Precomputed maps for O(1) parent lookups
+ */
+interface ElkMaps {
+  nodeMap: Map<string, ElkNode>;
+  edgeMap: Map<string, ElkExtendedEdge>;
+  nodeParentMap: Map<string, string>; // nodeId -> parentNodeId
+  edgeParentMap: Map<string, string>; // edgeId -> parentNodeId
 }
 
-// Helper function to recursively collect all edges from ELK graph
-function buildElkEdgeMap(
-  elkNode: ElkNode,
-  map: Map<string, ElkExtendedEdge> = new Map(),
-): Map<string, ElkExtendedEdge> {
-  if (elkNode.edges) {
-    for (const edge of elkNode.edges) {
-      map.set(edge.id, edge);
-    }
-  }
-  if (elkNode.children) {
-    for (const child of elkNode.children) {
-      buildElkEdgeMap(child, map);
-    }
-  }
-  return map;
-}
+/**
+ * Build all maps in a single traversal for O(1) lookups.
+ * This replaces multiple O(N) scans with a single O(N) traversal.
+ */
+function buildElkMaps(elkNode: ElkNode, parentId: string | null = null): ElkMaps {
+  const nodeMap = new Map<string, ElkNode>();
+  const edgeMap = new Map<string, ElkExtendedEdge>();
+  const nodeParentMap = new Map<string, string>();
+  const edgeParentMap = new Map<string, string>();
 
-// Helper function to find the parent node containing an edge
-function findEdgeParent(elkNode: ElkNode, edgeId: string): ElkNode | null {
-  if (elkNode.edges?.some((e) => e.id === edgeId)) {
-    return elkNode;
-  }
-  if (elkNode.children) {
-    for (const child of elkNode.children) {
-      const parent = findEdgeParent(child, edgeId);
-      if (parent) {
-        return parent;
+  function traverse(node: ElkNode, parentNodeId: string | null) {
+    // Add node to map
+    nodeMap.set(node.id, node);
+
+    // Record parent relationship (skip root)
+    if (parentNodeId !== null) {
+      nodeParentMap.set(node.id, parentNodeId);
+    }
+
+    // Process edges at this level
+    if (node.edges) {
+      for (const edge of node.edges) {
+        edgeMap.set(edge.id, edge);
+        edgeParentMap.set(edge.id, node.id);
+      }
+    }
+
+    // Recursively process children
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child, node.id);
       }
     }
   }
-  return null;
+
+  traverse(elkNode, parentId);
+
+  return { nodeMap, edgeMap, nodeParentMap, edgeParentMap };
 }
 
-// Helper function to calculate absolute position of a node
-function getAbsolutePosition(nodeId: string, elkNodeMap: Map<string, ElkNode>): Point {
+/**
+ * Calculate absolute position of a node using precomputed parent map.
+ * Time complexity: O(depth) instead of O(N * depth)
+ */
+function getAbsolutePosition(
+  nodeId: string,
+  elkNodeMap: Map<string, ElkNode>,
+  nodeParentMap: Map<string, string>,
+): Point {
   const node = elkNodeMap.get(nodeId);
   if (!node || node.x === undefined || node.y === undefined) {
     return { x: 0, y: 0 };
@@ -299,18 +307,14 @@ function getAbsolutePosition(nodeId: string, elkNodeMap: Map<string, ElkNode>): 
   let absoluteX = node.x;
   let absoluteY = node.y;
 
-  // Traverse up the hierarchy to accumulate parent positions
-  let currentNode = node;
-  while (currentNode) {
-    const parentId = findParentId(currentNode.id, elkNodeMap);
-    if (!parentId || parentId === "root") {
-      break;
-    }
-    const parent = elkNodeMap.get(parentId);
+  // Traverse up the hierarchy using precomputed parent map
+  let currentId: string | undefined = nodeParentMap.get(nodeId);
+  while (currentId && currentId !== "root") {
+    const parent = elkNodeMap.get(currentId);
     if (parent && parent.x !== undefined && parent.y !== undefined) {
       absoluteX += parent.x;
       absoluteY += parent.y;
-      currentNode = parent;
+      currentId = nodeParentMap.get(currentId);
     } else {
       break;
     }
@@ -319,23 +323,17 @@ function getAbsolutePosition(nodeId: string, elkNodeMap: Map<string, ElkNode>): 
   return { x: absoluteX, y: absoluteY };
 }
 
-// Helper function to find parent ID of a node
-function findParentId(nodeId: string, elkNodeMap: Map<string, ElkNode>): string | null {
-  for (const [id, node] of elkNodeMap.entries()) {
-    if (node.children?.some((child) => child.id === nodeId)) {
-      return id;
-    }
-  }
-  return null;
-}
-
 export function matchReactFlowGraphWithElkLayoutedGraph(
   graph: ReactFlowGraph,
   layoutedGraph: ElkNode,
 ): ReactFlowGraph {
-  // Build flat maps for O(1) lookups
-  const elkNodeMap = buildElkNodeMap(layoutedGraph);
-  const elkEdgeMap = buildElkEdgeMap(layoutedGraph);
+  // Build all maps in a single traversal for O(1) lookups
+  const {
+    nodeMap: elkNodeMap,
+    edgeMap: elkEdgeMap,
+    nodeParentMap,
+    edgeParentMap,
+  } = buildElkMaps(layoutedGraph);
 
   // Map node positions
   const layoutedNodes = graph.nodes.map((node) => {
@@ -362,31 +360,33 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
       // This avoids mixing React Flow anchor coordinates with ELK bend points,
       // which is especially problematic for edges inside parent nodes.
       const sectionPoints =
-        elkEdge.sections?.flatMap((section) => {
-          const points = [];
-          if (section.startPoint) {
-            points.push(section.startPoint);
-          }
-          if (section.bendPoints) {
-            points.push(...section.bendPoints);
-          }
-          if (section.endPoint) {
-            points.push(section.endPoint);
-          }
-          return points;
-        }) || [];
+        elkEdge.sections?.flatMap(
+          (section: { startPoint?: Point; bendPoints?: Point[]; endPoint?: Point }) => {
+            const points: Point[] = [];
+            if (section.startPoint) {
+              points.push(section.startPoint);
+            }
+            if (section.bendPoints) {
+              points.push(...section.bendPoints);
+            }
+            if (section.endPoint) {
+              points.push(section.endPoint);
+            }
+            return points;
+          },
+        ) || [];
 
       const newData = { ...restData };
       if (sectionPoints.length >= 2) {
-        // Find the parent node containing this edge
-        const edgeParent = findEdgeParent(layoutedGraph, edge.id);
+        // Use O(1) lookup to find the parent node containing this edge
+        const edgeParentId = edgeParentMap.get(edge.id);
 
         // If edge is inside a parent node (not at root level), convert coordinates to absolute
-        if (edgeParent && edgeParent.id !== "root") {
-          const parentAbsolutePos = getAbsolutePosition(edgeParent.id, elkNodeMap);
+        if (edgeParentId && edgeParentId !== "root") {
+          const parentAbsolutePos = getAbsolutePosition(edgeParentId, elkNodeMap, nodeParentMap);
 
           // Convert all waypoints from parent-relative to absolute coordinates
-          const absoluteWayPoints = sectionPoints.slice(1, -1).map((point) => ({
+          const absoluteWayPoints = sectionPoints.slice(1, -1).map((point: Point) => ({
             x: point.x + parentAbsolutePos.x,
             y: point.y + parentAbsolutePos.y,
           }));

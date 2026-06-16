@@ -53,16 +53,13 @@ export function createPathFromWayPoints(
   wayPoints?: WayPoints,
 ): string {
   const points = [{ x: sourceX, y: sourceY }, ...(wayPoints || []), { x: targetX, y: targetY }];
-  const [firstPoint, ...remainingPoints] = points;
 
-  if (!firstPoint || remainingPoints.length === 0) {
-    return `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
-  }
+  // points always contains at least source and target, so points[0] is guaranteed
+  let path = `M ${points[0]!.x},${points[0]!.y}`;
+  let previous = points[0]!;
 
-  let path = `M ${firstPoint.x},${firstPoint.y}`;
-  let previous = firstPoint;
-
-  for (const current of remainingPoints) {
+  for (let i = 1; i < points.length; i++) {
+    const current = points[i]!;
     if (previous.x !== current.x && previous.y !== current.y) {
       path += ` L ${current.x},${previous.y}`;
     }
