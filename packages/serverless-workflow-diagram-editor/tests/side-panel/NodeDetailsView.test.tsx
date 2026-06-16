@@ -17,7 +17,6 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import type * as RF from "@xyflow/react";
-import yaml from "js-yaml";
 import { NodeDetailsView } from "../../src/side-panel/NodeDetailsView";
 import type { BaseNodeData } from "../../src/react-flow/nodes/Nodes";
 import { renderWithProviders } from "../test-utils/render-helpers";
@@ -82,7 +81,8 @@ describe("NodeDetailsView", () => {
     expect(screen.getByRole("heading", { name: "Source" })).toBeInTheDocument();
     expect(container.querySelector(".dec-sidebar-yaml-summary")?.textContent).toBe("View source");
     expect(container.querySelector(".dec-sidebar-yaml-pre")?.textContent).toBe(
-      'call: http\nwith:\n  endpoint: https://api.example.com\n')
+      "call: http\nwith:\n  endpoint: https://api.example.com\n",
+    );
   });
 
   it("renders node details message when the task has no task", () => {
