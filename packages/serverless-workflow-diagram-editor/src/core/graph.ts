@@ -20,6 +20,39 @@ export function getNodesByType(graph: FlatGraph, type: GraphNodeType): FlatGraph
   return graph.nodes.filter((node) => node.type === type);
 }
 
+// Helper function to check if target is outside source's parent hierarchy
+export function isTargetOutsideSourceParent(
+  sourceNode: FlatGraphNode,
+  targetNode: FlatGraphNode,
+  nodeMap: Map<string, FlatGraphNode>,
+): boolean {
+  if (!sourceNode.parentId) {
+    return false;
+  }
+
+  // Check if target is the source's parent itself
+  if (targetNode.id === sourceNode.parentId) {
+    return false;
+  }
+
+  // Check if target shares the same parent
+  if (targetNode.parentId === sourceNode.parentId) {
+    return false;
+  }
+
+  // Check if target is inside source's parent hierarchy
+  let currentParentId: string | undefined = targetNode.parentId;
+  while (currentParentId) {
+    if (currentParentId === sourceNode.parentId) {
+      return false;
+    }
+    const parentNode = nodeMap.get(currentParentId);
+    currentParentId = parentNode?.parentId;
+  }
+
+  return true;
+}
+
 // Inner entry and exit nodes cannot be connected external nodes so connections shall be moved to parent node
 export function fixNodesConnections(graph: FlatGraph): FlatGraph {
   const entryNodes = getNodesByType(graph, GraphNodeType.Entry);
@@ -54,38 +87,6 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
     }
   });
 
-  // Helper function to check if target is outside source's parent hierarchy
-  const isTargetOutsideSourceParent = (
-    sourceNode: FlatGraphNode,
-    targetNode: FlatGraphNode,
-  ): boolean => {
-    if (!sourceNode.parentId) {
-      return false;
-    }
-
-    // Check if target is the source's parent itself
-    if (targetNode.id === sourceNode.parentId) {
-      return false;
-    }
-
-    // Check if target shares the same parent
-    if (targetNode.parentId === sourceNode.parentId) {
-      return false;
-    }
-
-    // Check if target is inside source's parent hierarchy
-    let currentParentId: string | undefined = targetNode.parentId;
-    while (currentParentId) {
-      if (currentParentId === sourceNode.parentId) {
-        return false;
-      }
-      const parentNode = nodeMap.get(currentParentId);
-      currentParentId = parentNode?.parentId;
-    }
-
-    return true;
-  };
-
   const graphClone = structuredClone(graph);
   const newEdges: typeof graphClone.edges = [];
 
@@ -119,7 +120,7 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
       sourceNode &&
       targetNode &&
       sourceNode.parentId &&
-      isTargetOutsideSourceParent(sourceNode, targetNode)
+      isTargetOutsideSourceParent(sourceNode, targetNode, nodeMap)
     ) {
       // Find the topmost parent that the target is outside of
       let currentNode = sourceNode;
@@ -131,7 +132,7 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
         if (!parentNode) break;
 
         // Check if target is outside this parent
-        if (parentNode.parentId && isTargetOutsideSourceParent(parentNode, targetNode)) {
+        if (parentNode.parentId && isTargetOutsideSourceParent(parentNode, targetNode, nodeMap)) {
           // Target is also outside this parent's parent, keep going up
           topmostParentId = parentNode.parentId;
           currentNode = parentNode;

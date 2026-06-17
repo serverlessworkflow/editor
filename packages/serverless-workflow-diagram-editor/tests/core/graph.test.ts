@@ -16,7 +16,11 @@
 
 import { describe, it, expect } from "vitest";
 import { FlatGraphNode, GraphNodeType } from "@serverlessworkflow/sdk";
-import { getNodesByType, fixNodesConnections } from "../../src/core/graph";
+import {
+  getNodesByType,
+  fixNodesConnections,
+  isTargetOutsideSourceParent,
+} from "../../src/core/graph";
 import { createFlatGraph } from "../test-utils/graph-helpers";
 
 describe("graph utils", () => {
@@ -73,6 +77,334 @@ describe("graph utils", () => {
 
       expect(callNodes).toHaveLength(3);
       expect(callNodes.every((node) => node.type === GraphNodeType.Call)).toBe(true);
+    });
+  });
+
+  describe("isTargetOutsideSourceParent", () => {
+    describe("returns false", () => {
+      it.each([
+        {
+          description: "when source node has no parent",
+          setup: () => {
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is the source's parent itself",
+          setup: () => {
+            const parentNode: FlatGraphNode = {
+              id: "parent",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["parent", parentNode],
+              ["source", sourceNode],
+            ]);
+            return { sourceNode, targetNode: parentNode, nodeMap };
+          },
+        },
+        {
+          description: "when target shares the same parent as source",
+          setup: () => {
+            const parentNode: FlatGraphNode = {
+              id: "parent",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["parent", parentNode],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is inside source's parent hierarchy (direct child)",
+          setup: () => {
+            const grandparentNode: FlatGraphNode = {
+              id: "grandparent",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const parentNode: FlatGraphNode = {
+              id: "parent",
+              type: GraphNodeType.Do,
+              parentId: "grandparent",
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "grandparent",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["grandparent", grandparentNode],
+              ["parent", parentNode],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is inside source's parent hierarchy (nested multiple levels)",
+          setup: () => {
+            const rootNode: FlatGraphNode = {
+              id: "root",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const level1Node: FlatGraphNode = {
+              id: "level1",
+              type: GraphNodeType.Do,
+              parentId: "root",
+            } as FlatGraphNode;
+            const level2Node: FlatGraphNode = {
+              id: "level2",
+              type: GraphNodeType.Do,
+              parentId: "level1",
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "root",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "level2",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["root", rootNode],
+              ["level1", level1Node],
+              ["level2", level2Node],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+      ])("$description", ({ setup }) => {
+        const { sourceNode, targetNode, nodeMap } = setup();
+        const result = isTargetOutsideSourceParent(sourceNode, targetNode, nodeMap);
+        expect(result).toBe(false);
+      });
+    });
+
+    describe("returns true", () => {
+      it.each([
+        {
+          description: "when target is completely outside source's parent hierarchy",
+          setup: () => {
+            const parentNode: FlatGraphNode = {
+              id: "parent",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["parent", parentNode],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is in a different parent hierarchy",
+          setup: () => {
+            const parent1Node: FlatGraphNode = {
+              id: "parent1",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const parent2Node: FlatGraphNode = {
+              id: "parent2",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent1",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "parent2",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["parent1", parent1Node],
+              ["parent2", parent2Node],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is at root level and source is nested",
+          setup: () => {
+            const parentNode: FlatGraphNode = {
+              id: "parent",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["parent", parentNode],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when target is in a sibling branch of parent hierarchy",
+          setup: () => {
+            const rootNode: FlatGraphNode = {
+              id: "root",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const branch1Node: FlatGraphNode = {
+              id: "branch1",
+              type: GraphNodeType.Do,
+              parentId: "root",
+            } as FlatGraphNode;
+            const branch2Node: FlatGraphNode = {
+              id: "branch2",
+              type: GraphNodeType.Do,
+              parentId: "root",
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "branch1",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "branch2",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["root", rootNode],
+              ["branch1", branch1Node],
+              ["branch2", branch2Node],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when parent node is missing in nodeMap",
+          setup: () => {
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "parent",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "missing-parent",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+        {
+          description: "when deeply nested source with target at intermediate level outside",
+          setup: () => {
+            const level0Node: FlatGraphNode = {
+              id: "level0",
+              type: GraphNodeType.Do,
+            } as FlatGraphNode;
+            const level1Node: FlatGraphNode = {
+              id: "level1",
+              type: GraphNodeType.Do,
+              parentId: "level0",
+            } as FlatGraphNode;
+            const level2Node: FlatGraphNode = {
+              id: "level2",
+              type: GraphNodeType.Do,
+              parentId: "level1",
+            } as FlatGraphNode;
+            const level3Node: FlatGraphNode = {
+              id: "level3",
+              type: GraphNodeType.Do,
+              parentId: "level2",
+            } as FlatGraphNode;
+            const sourceNode: FlatGraphNode = {
+              id: "source",
+              type: GraphNodeType.Call,
+              parentId: "level3",
+            } as FlatGraphNode;
+            const targetNode: FlatGraphNode = {
+              id: "target",
+              type: GraphNodeType.Call,
+              parentId: "level1",
+            } as FlatGraphNode;
+            const nodeMap = new Map<string, FlatGraphNode>([
+              ["level0", level0Node],
+              ["level1", level1Node],
+              ["level2", level2Node],
+              ["level3", level3Node],
+              ["source", sourceNode],
+              ["target", targetNode],
+            ]);
+            return { sourceNode, targetNode, nodeMap };
+          },
+        },
+      ])("$description", ({ setup }) => {
+        const { sourceNode, targetNode, nodeMap } = setup();
+        const result = isTargetOutsideSourceParent(sourceNode, targetNode, nodeMap);
+        expect(result).toBe(true);
+      });
     });
   });
 

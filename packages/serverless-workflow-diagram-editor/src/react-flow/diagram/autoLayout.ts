@@ -254,40 +254,41 @@ interface ElkMaps {
  * Build all maps in a single traversal for O(1) lookups.
  * This replaces multiple O(N) scans with a single O(N) traversal.
  */
-function buildElkMaps(elkNode: ElkNode, parentId: string | null = null): ElkMaps {
-  const nodeMap = new Map<string, ElkNode>();
-  const edgeMap = new Map<string, ElkExtendedEdge>();
-  const nodeParentMap = new Map<string, string>();
-  const edgeParentMap = new Map<string, string>();
+function buildElkMaps(elkNode: ElkNode, parentId: string | null = null, maps?: ElkMaps): ElkMaps {
+  // Initialize maps on first call
+  if (!maps) {
+    maps = {
+      nodeMap: new Map<string, ElkNode>(),
+      edgeMap: new Map<string, ElkExtendedEdge>(),
+      nodeParentMap: new Map<string, string>(),
+      edgeParentMap: new Map<string, string>(),
+    };
+  }
 
-  function traverse(node: ElkNode, parentNodeId: string | null) {
-    // Add node to map
-    nodeMap.set(node.id, node);
+  // Add node to map
+  maps.nodeMap.set(elkNode.id, elkNode);
 
-    // Record parent relationship (skip root)
-    if (parentNodeId !== null) {
-      nodeParentMap.set(node.id, parentNodeId);
-    }
+  // Record parent relationship (skip root)
+  if (parentId !== null) {
+    maps.nodeParentMap.set(elkNode.id, parentId);
+  }
 
-    // Process edges at this level
-    if (node.edges) {
-      for (const edge of node.edges) {
-        edgeMap.set(edge.id, edge);
-        edgeParentMap.set(edge.id, node.id);
-      }
-    }
-
-    // Recursively process children
-    if (node.children) {
-      for (const child of node.children) {
-        traverse(child, node.id);
-      }
+  // Process edges at this level
+  if (elkNode.edges) {
+    for (const edge of elkNode.edges) {
+      maps.edgeMap.set(edge.id, edge);
+      maps.edgeParentMap.set(edge.id, elkNode.id);
     }
   }
 
-  traverse(elkNode, parentId);
+  // Recursively process children
+  if (elkNode.children) {
+    for (const child of elkNode.children) {
+      buildElkMaps(child, elkNode.id, maps);
+    }
+  }
 
-  return { nodeMap, edgeMap, nodeParentMap, edgeParentMap };
+  return maps;
 }
 
 /**
