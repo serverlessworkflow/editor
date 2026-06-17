@@ -25,6 +25,7 @@ import {
   containerNodeConfigMap,
 } from "./taskNodeConfig";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
@@ -88,14 +89,25 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
   const isUnknown = !KNOWN_BADGES.has(badge.toLowerCase());
 
   if (isUnknown) {
-    /* TODO: instead of using the browser default to display tool tip like below, replace with tooltip component when we add it */
     return (
-      <span title={badge} className="dec-task-node-badge-custom" data-testid={`${testId}-custom`}>
-        {badge}
-      </span>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="dec-task-node-badge-custom" data-testid={`${testId}-custom`}>
+            {badge}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p
+            style={{
+              color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000",
+            }}
+          >
+            {badge}
+          </p>
+        </TooltipContent>
+      </Tooltip>
     );
   }
-
   return (
     <span className="dec-task-node-badge" data-testid={testId}>
       {badge}
