@@ -1215,9 +1215,9 @@ describe("autoLayout", () => {
       });
 
       it("has proper spacing configuration", () => {
-        expect(ROOT_LAYOUT_OPTIONS["spacing.edgeNode"]).toBe("44");
-        expect(ROOT_LAYOUT_OPTIONS["spacing.componentComponent"]).toBe("100");
-        expect(ROOT_LAYOUT_OPTIONS["spacing.nodeNodeBetweenLayers"]).toBe("100");
+        expect(ROOT_LAYOUT_OPTIONS["spacing.edgeNode"]).toBe("24");
+        expect(ROOT_LAYOUT_OPTIONS["spacing.componentComponent"]).toBe("70");
+        expect(ROOT_LAYOUT_OPTIONS["spacing.nodeNodeBetweenLayers"]).toBe("70");
       });
     });
 

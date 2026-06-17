@@ -79,11 +79,11 @@ export const ROOT_LAYOUT_OPTIONS: LayoutOptions = {
   "layered.nodePlacement.bk.coolFactor": "0.005",
   "elk.alignment": "TOP",
   // spacing
-  "spacing.edgeNode": "44",
-  "spacing.edgeEdge": "44",
-  "spacing.componentComponent": "100",
-  "spacing.nodeNodeBetweenLayers": "100",
-  "spacing.edgeNodeBetweenLayers": "50",
+  "spacing.edgeNode": "24",
+  "spacing.edgeEdge": "24",
+  "spacing.componentComponent": "70",
+  "spacing.nodeNodeBetweenLayers": "70",
+  "spacing.edgeNodeBetweenLayers": "40",
 };
 
 export const PARENT_LAYOUT_OPTIONS: LayoutOptions = {
