@@ -378,6 +378,8 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
         ) || [];
 
       const newData = { ...restData };
+      // Normalize wayPoints: always use empty array when ELK edge exists but has no intermediate points.
+      // Reserve undefined only for "no ELK edge found" case (handled by returning edge unchanged at line 411).
       if (sectionPoints.length >= 2) {
         // Use O(1) lookup to find the parent node containing this edge
         const edgeParentId = edgeParentMap.get(edge.id);
@@ -400,7 +402,9 @@ export function matchReactFlowGraphWithElkLayoutedGraph(
           newData.wayPoints = sectionPoints.slice(1, -1);
         }
       } else {
-        newData.wayPoints = undefined;
+        // ELK edge exists but has fewer than 2 points (no intermediate points)
+        // Use empty array to indicate "no bend points" rather than undefined
+        newData.wayPoints = [];
       }
 
       return {

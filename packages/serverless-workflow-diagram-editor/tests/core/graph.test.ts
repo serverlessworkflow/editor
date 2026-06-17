@@ -955,11 +955,11 @@ describe("graph utils", () => {
       expect(fixedGraph.edges[1]?.targetId).toBe("end");
     });
 
-    it("does not create duplicate edges when connection already exists", () => {
+    it("creates separate edges for each child connection to preserve all edge information", () => {
       // Scenario: parent1 contains taskChild1 and taskChild2
       // taskChild1 has an edge to taskOutside
       // taskChild2 also has an edge to taskOutside
-      // Expected: only one edge from parent1 to taskOutside should be created
+      // Expected: TWO edges from parent1 to taskOutside (one for each child connection)
       const parent1: FlatGraphNode = {
         id: "parent-1",
         type: GraphNodeType.Do,
@@ -1000,10 +1000,14 @@ describe("graph utils", () => {
       expect(fixedGraph.edges[1]?.sourceId).toBe("task-child-2");
       expect(fixedGraph.edges[1]?.targetId).toBe("exit-1");
 
-      // Only ONE new edge from parent1 to taskOutside should be created (no duplicate)
-      expect(fixedGraph.edges).toHaveLength(3);
+      // TWO new edges from parent1 to taskOutside should be created (one for each original edge)
+      expect(fixedGraph.edges).toHaveLength(4);
       expect(fixedGraph.edges[2]?.sourceId).toBe("parent-1");
       expect(fixedGraph.edges[2]?.targetId).toBe("task-outside");
+      expect(fixedGraph.edges[2]?.id).toBe("edge-1-redirected");
+      expect(fixedGraph.edges[3]?.sourceId).toBe("parent-1");
+      expect(fixedGraph.edges[3]?.targetId).toBe("task-outside");
+      expect(fixedGraph.edges[3]?.id).toBe("edge-2-redirected");
     });
   });
 });

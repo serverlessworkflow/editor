@@ -90,14 +90,6 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
   const graphClone = structuredClone(graph);
   const newEdges: typeof graphClone.edges = [];
 
-  // Helper function to check if an edge already exists
-  const edgeExists = (sourceId: string, targetId: string): boolean => {
-    return (
-      graphClone.edges.some((e) => e.sourceId === sourceId && e.targetId === targetId) ||
-      newEdges.some((e) => e.sourceId === sourceId && e.targetId === targetId)
-    );
-  };
-
   // Single pass over edges to rewrite sourceId/targetId
   graphClone.edges.forEach((edge) => {
     // Move entry node incoming connections to parent
@@ -152,15 +144,13 @@ export function fixNodesConnections(graph: FlatGraph): FlatGraph {
         edge.targetId = exitNodeToUse;
 
         // Create a new edge from the TOPMOST parent to the original target
-        // Only if an edge with the same source and target doesn't already exist
-        if (!edgeExists(topmostParentId, targetNode.id)) {
-          newEdges.push({
-            id: `${edge.id}-redirected`,
-            sourceId: topmostParentId,
-            targetId: targetNode.id,
-            label: edge.label || "",
-          });
-        }
+        // All edges are preserved to maintain complete connection information
+        newEdges.push({
+          id: `${edge.id}-redirected`,
+          sourceId: topmostParentId,
+          targetId: targetNode.id,
+          label: edge.label || "",
+        });
       }
     }
   });

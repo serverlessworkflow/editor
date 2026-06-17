@@ -547,8 +547,9 @@ describe("autoLayout", () => {
 
       const result = matchReactFlowGraphWithElkLayoutedGraph(reactFlowGraph, layoutedElkGraph);
 
-      expect(result.edges[0].data).toEqual({ label: "Test Edge" });
-      expect(result.edges[0].data?.wayPoints).toBeUndefined();
+      // When ELK edge exists but has no sections, wayPoints is normalized to empty array
+      expect(result.edges[0].data).toEqual({ label: "Test Edge", wayPoints: [] });
+      expect(result.edges[0].data?.wayPoints).toEqual([]);
     });
 
     it("clears stale wayPoints when ELK edge sections have no bend points", () => {
