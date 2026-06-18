@@ -396,7 +396,7 @@
     @apply dec:absolute dec:z-10 dec:h-[18px] dec:w-[18px] dec:rounded-full;
     top: -8px;
     left: -8px;
-    fill: #ef4444;
+    fill: var(--dec-error-accent);
     color: #ffffff;
     stroke-width: 2.25;
   }
