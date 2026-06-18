@@ -4,13 +4,13 @@ catalog:
   "@changesets/changelog-github": ^0.7.0
   "@changesets/cli": ^2.31.0
   "@chromatic-com/storybook": ^5.2.0
-  "@playwright/test": ^1.60.0
+  "@playwright/test": ^1.61.0
   "@serverlessworkflow/sdk": ^1.0.3-alpha1
-  "@storybook/addon-a11y": ^10.4.3
-  "@storybook/addon-docs": ^10.4.3
-  "@storybook/addon-vitest": ^10.4.3
-  "@storybook/react-vite": ^10.4.3
-  "@tailwindcss/vite": ^4.3.0
+  "@storybook/addon-a11y": ^10.4.6
+  "@storybook/addon-docs": ^10.4.6
+  "@storybook/addon-vitest": ^10.4.6
+  "@storybook/react-vite": ^10.4.6
+  "@tailwindcss/vite": ^4.3.1
   "@testing-library/dom": ^10.4.1
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/react": ^16.3.2
@@ -19,10 +19,10 @@ catalog:
   "@types/node": ^25.9.3
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
-  "@vitest/coverage-v8": ^4.1.8
-  "@vitest/ui": ^4.1.8
-  "@vitest/browser": ^4.1.8
-  "@vitest/browser-playwright": ^4.1.8
+  "@vitest/coverage-v8": ^4.1.9
+  "@vitest/ui": ^4.1.9
+  "@vitest/browser": ^4.1.9
+  "@vitest/browser-playwright": ^4.1.9
   "@xyflow/react": ^12.11.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
@@ -30,20 +30,20 @@ catalog:
   husky: ^9.1.7
   "js-yaml": ^4.2.0
   jsdom: ^29.1.0
-  lucide-react: ^1.17.0
+  lucide-react: ^1.21.0
   lint-staged: ^17.0.7
-  oxfmt: ^0.54.0
-  oxlint: ^1.69.0
-  radix-ui: ^1.5.0
+  oxfmt: ^0.55.0
+  oxlint: ^1.70.0
+  radix-ui: ^1.6.0
   react: ^19.2.7
   react-dom: ^19.2.7
   rimraf: ^6.1.3
-  storybook: ^10.4.3
-  syncpack: ^15.2.0
-  tailwindcss: ^4.3.0
+  storybook: ^10.4.6
+  syncpack: ^15.3.2
+  tailwindcss: ^4.3.1
   typescript: ^6.0.3
   vite: ^8.0.16
-  vitest: ^4.1.8
+  vitest: ^4.1.9
 cleanupUnusedCatalogs: true
 onlyBuiltDependencies:
   - "@swc/core"
