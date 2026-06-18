@@ -38,6 +38,9 @@ export const en = {
   "sidebar.noDetails": "No additional details for this node",
   "node.entry": "Entry",
   "node.exit": "Exit",
+  "sidebar.exportMermaid.copy": "Copy Mermaid Code",
+  "sidebar.exportMermaid.download": "Download as Mermaid File",
+  "sidebar.exportMermaid.copied": "Copied!",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

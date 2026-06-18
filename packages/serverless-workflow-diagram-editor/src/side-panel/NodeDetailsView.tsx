@@ -69,7 +69,10 @@ export function NodeDetailsView({ node }: NodeDetailsViewProps) {
         <>
           <div className="dec-sidebar-section-spacer" />
           <SectionHeader label={t("sidebar.sectionSource")} />
-          <YamlField yaml={yaml.dump(task, { indent: 2, lineWidth: -1 })} summary={t("sidebar.viewSource")} />
+          <YamlField
+            yaml={yaml.dump(task, { indent: 2, lineWidth: -1 })}
+            summary={t("sidebar.viewSource")}
+          />
         </>
       )}
     </div>

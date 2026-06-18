@@ -18,10 +18,17 @@ import * as React from "react";
 import type * as RF from "@xyflow/react";
 import { useI18n } from "@serverlessworkflow/i18n";
 import { Workflow, Info, Box } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  useSidebar,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
 import { useDiagramEditorContext } from "@/store/DiagramEditorContext";
 import { WorkflowInfoView } from "@/side-panel/WorkflowInfoView";
 import { NodeDetailsView } from "@/side-panel/NodeDetailsView";
+import { MermaidActions } from "@/side-panel/MermaidActions";
 import { getNodeVisualConfig } from "@/react-flow/nodes/taskNodeConfig";
 import type { BaseNodeData } from "@/react-flow/nodes/Nodes";
 import "./SidePanel.css";
@@ -90,6 +97,9 @@ export function SidePanel() {
           </>
         )}
       </SidebarContent>
+      <SidebarFooter>
+        {model !== null && selectedNodeId === null && <MermaidActions model={model} />}
+      </SidebarFooter>
     </Sidebar>
   );
 }

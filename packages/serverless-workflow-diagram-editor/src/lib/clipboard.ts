@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./graph";
-export * from "./taskDetails";
-export * from "./taskSubType";
-export * from "./elkjs";
-export * from "./mermaidExport";
+export function copyToClipboard(text: string): Promise<void> {
+  if (typeof navigator === "undefined" || !navigator.clipboard) {
+    return Promise.reject(new Error("Clipboard API is not available in this environment"));
+  }
+  return navigator.clipboard.writeText(text);
+}

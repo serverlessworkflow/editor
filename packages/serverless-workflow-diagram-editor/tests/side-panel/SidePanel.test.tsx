@@ -39,4 +39,36 @@ describe("SidePanel", () => {
 
     expect(screen.queryByTestId("workflow-info")).not.toBeInTheDocument();
   });
+
+  it("renders export buttons when model is present and no node is selected", () => {
+    const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
+    renderWithProviders(<SidePanel />, { model, selectedNodeId: null });
+    expect(screen.getByText(/Copy Mermaid Code/i)).toBeInTheDocument();
+    expect(screen.getByText(/Download as Mermaid File/i)).toBeInTheDocument();
+  });
+
+  it("does not render export buttons when a node is selected", () => {
+    const { model } = parseWorkflow(WORKFLOW_WITH_METADATA_JSON);
+    const mockNode = {
+      id: "some-node-id",
+      type: "set",
+      position: { x: 0, y: 0 },
+      data: { label: "Test Node" },
+    };
+
+    renderWithProviders(<SidePanel />, {
+      model,
+      selectedNodeId: "some-node-id",
+      nodes: [mockNode],
+    });
+    expect(screen.queryByText(/Copy Mermaid Code/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Download as Mermaid File/i)).not.toBeInTheDocument();
+  });
+
+  it("does not render export buttons when model is null", () => {
+    renderWithProviders(<SidePanel />, { model: null });
+
+    expect(screen.queryByText(/Copy Mermaid Code/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Download as Mermaid File/i)).not.toBeInTheDocument();
+  });
 });

@@ -118,12 +118,9 @@ describe("taskNodeConfig", () => {
       expect(getNodeVisualConfig("not-a-node-type")).toBeUndefined();
     });
 
-    it.each(terminalNodeTypes)(
-      "returns undefined for terminal node type %s",
-      (terminal) => {
-        expect(getNodeVisualConfig(terminal)).toBeUndefined();
-      },
-    );
+    it.each(terminalNodeTypes)("returns undefined for terminal node type %s", (terminal) => {
+      expect(getNodeVisualConfig(terminal)).toBeUndefined();
+    });
 
     it("returns undefined when type is undefined", () => {
       expect(getNodeVisualConfig(undefined)).toBeUndefined();
