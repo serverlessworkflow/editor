@@ -37,7 +37,6 @@ export function MermaidActions({ model }: { model: Specification.Workflow }): Re
   }, []);
 
   const handleCopyMermaid = async () => {
-    if (!model) return;
     try {
       const mermaidCode = exportToMermaid(model);
       await copyToClipboard(mermaidCode);
@@ -53,12 +52,11 @@ export function MermaidActions({ model }: { model: Specification.Workflow }): Re
       }, 2000);
     } catch (error) {
       console.error("Failed to copy mermaid code:", error);
-      alert(t("sidebar.exportMermaid.copyError"));
+      // TODO: Create component to show errors to users
     }
   };
 
   const handleDownloadMermaid = () => {
-    if (!model) return;
     try {
       const mermaidCode = exportToMermaid(model);
       const sanitizedName = (model.document?.name || "workflow")
@@ -70,7 +68,7 @@ export function MermaidActions({ model }: { model: Specification.Workflow }): Re
       downloadFile(mermaidCode, filename);
     } catch (error) {
       console.error("Failed to download mermaid file:", error);
-      alert(t("sidebar.exportMermaid.downloadError"));
+      // TODO: Create component to show errors to users
     }
   };
 
