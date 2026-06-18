@@ -15,6 +15,7 @@
  */
 
 export * from "./workflowSdk";
+export * from "./validationErrors";
 export * from "./graph";
 export * from "./taskDetails";
 export * from "./taskSubType";

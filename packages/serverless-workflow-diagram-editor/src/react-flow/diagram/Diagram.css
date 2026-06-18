@@ -358,6 +358,50 @@
     @apply dec:truncate;
   }
   /* end terminal markers */
+  /* Validation errors */
+  .dec-root .dec-leaf-node.has-error,
+  .dec-root .dec-container-node.has-error {
+    box-shadow:
+      0 0 0 1px var(--dec-error-accent),
+      0 0 10px 1px var(--dec-error-glow);
+  }
+
+  .dec-root.dark .dec-leaf-node.has-error,
+  .dec-root.dark .dec-container-node.has-error {
+    box-shadow:
+      0 0 0 1px var(--dec-error-accent),
+      0 0 12px 2px rgba(248, 113, 113, 0.4);
+  }
+
+  .dec-root .dec-leaf-node.has-error.selected,
+  .dec-root .dec-container-node.has-error.selected {
+    box-shadow:
+      0 0 0 2px var(--dec-error-accent),
+      0 0 0 4px rgb(59 130 246),
+      0 0 12px 4px rgba(59, 130, 246, 0.45);
+  }
+
+  .dec-root.dark .dec-leaf-node.has-error.selected,
+  .dec-root.dark .dec-container-node.has-error.selected {
+    box-shadow:
+      0 0 0 2px var(--dec-error-accent),
+      0 0 0 4px rgb(96 165 250),
+      0 0 16px 4px rgba(96, 165, 250, 0.5);
+  }
+
+  .dec-root .dec-leaf-node.has-error {
+    @apply dec:relative;
+  }
+  .dec-root .dec-node-error-badge {
+    @apply dec:absolute dec:z-10 dec:h-[18px] dec:w-[18px] dec:rounded-full;
+    top: -8px;
+    left: -8px;
+    fill: var(--dec-error-accent);
+    color: #ffffff;
+    stroke-width: 2.25;
+  }
+
+    /* end validation errors */
 }
 
 /* custom edges */
@@ -368,8 +412,8 @@
 }
 
 .dec-root .edge-line.error {
-  @apply dec:stroke-red-500
-        dec:[stroke-dasharray:5_5];
+  stroke: var(--dec-error-accent);
+  @apply  dec:[stroke-dasharray:5_5];
 }
 
 .dec-root .edge-line.condition {

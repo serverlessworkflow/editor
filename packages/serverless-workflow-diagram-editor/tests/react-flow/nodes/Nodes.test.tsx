@@ -147,7 +147,11 @@ describe("React Flow custom node types", () => {
   });
 
   describe("should render container nodes with ContainerNodeContent", () => {
-    const containerNodes: { id: string; type: ContainerNodeType; testId: string }[] = [
+    const containerNodes: {
+      id: string;
+      type: ContainerNodeType;
+      testId: string;
+    }[] = [
       { id: "n2", type: GraphNodeType.Do, testId: "do" },
       { id: "n5", type: GraphNodeType.For, testId: "for" },
       { id: "n6", type: GraphNodeType.Fork, testId: "fork" },
@@ -182,8 +186,18 @@ describe("React Flow custom node types", () => {
       testId: string;
       handleType: "source" | "target";
     }[] = [
-      { id: "entry1", type: GraphNodeType.Entry, testId: "entry", handleType: "source" },
-      { id: "exit1", type: GraphNodeType.Exit, testId: "exit", handleType: "target" },
+      {
+        id: "entry1",
+        type: GraphNodeType.Entry,
+        testId: "entry",
+        handleType: "source",
+      },
+      {
+        id: "exit1",
+        type: GraphNodeType.Exit,
+        testId: "exit",
+        handleType: "target",
+      },
     ];
 
     it.each(terminalNodes)(
@@ -216,7 +230,9 @@ describe("React Flow custom node types", () => {
     it("should render a text badge for known subtypes", () => {
       const nodesWithBadges = [
         testNode("n1", GraphNodeType.Call, 10, "CallNode", { call: "http" }),
-        testNode("n2", GraphNodeType.Listen, 100, "ListenNode", { listen: { to: { any: [] } } }),
+        testNode("n2", GraphNodeType.Listen, 100, "ListenNode", {
+          listen: { to: { any: [] } },
+        }),
       ];
       render(
         <div>
@@ -235,7 +251,9 @@ describe("React Flow custom node types", () => {
 
     it("should render the raw value as a custom badge for an unknown subtype", () => {
       const nodesWithUnknownBadges = [
-        testNode("n1", GraphNodeType.Call, 100, "CallNode", { call: "customCall" }),
+        testNode("n1", GraphNodeType.Call, 100, "CallNode", {
+          call: "customCall",
+        }),
       ];
       render(
         <div>
@@ -299,5 +317,63 @@ describe("React Flow custom node types", () => {
       const badge = screen.queryByTestId("wait-node-n1-badge");
       expect(badge).not.toBeInTheDocument();
     });
+  });
+
+  describe("error badge rendering", () => {
+    const withError = (node: RF.Node): RF.Node => ({
+      ...node,
+      data: { ...node.data, hasError: true },
+    });
+
+    it.each([
+      {
+        kind: "leaf",
+        id: "n1",
+        type: GraphNodeType.Call,
+        testId: "call",
+        nodeClass: "dec-leaf-node",
+      },
+      {
+        kind: "container",
+        id: "n2",
+        type: GraphNodeType.Do,
+        testId: "do",
+        nodeClass: "dec-container-node",
+      },
+    ])(
+      "renders the error badge and has-error class on a $kind node when data.hasError is set",
+      ({ id, type, testId, nodeClass }) => {
+        const nodes = [withError(testNode(id, type, 0, "Node"))];
+        render(
+          <div>
+            <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={nodes} edges={[]} />
+          </div>,
+        );
+
+        const node = screen.getByTestId(`${testId}-node-${id}`);
+        expect(node).toHaveClass(nodeClass);
+        expect(node).toHaveClass("has-error");
+        expect(screen.getByTestId(`${testId}-node-${id}-error`)).toBeInTheDocument();
+      },
+    );
+
+    it.each([
+      { kind: "leaf", id: "n1", type: GraphNodeType.Call, testId: "call" },
+      { kind: "container", id: "n2", type: GraphNodeType.Do, testId: "do" },
+    ])(
+      "does not render the error badge or has-error class on a $kind node without hasError",
+      ({ id, type, testId }) => {
+        const nodes = [testNode(id, type, 0, "Node")];
+        render(
+          <div>
+            <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={nodes} edges={[]} />
+          </div>,
+        );
+
+        const node = screen.getByTestId(`${testId}-node-${id}`);
+        expect(node).not.toHaveClass("has-error");
+        expect(screen.queryByTestId(`${testId}-node-${id}-error`)).not.toBeInTheDocument();
+      },
+    );
   });
 });

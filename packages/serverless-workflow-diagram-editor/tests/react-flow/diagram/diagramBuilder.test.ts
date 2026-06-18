@@ -29,7 +29,7 @@ import {
   TERMINAL_NODE_SIZE,
   getNodeSize,
 } from "../../../src/react-flow/diagram/autoLayout";
-import { parseWorkflow } from "../../../src/core";
+import { parseWorkflow, type SdkError } from "../../../src/core";
 import {
   BASIC_VALID_WORKFLOW_JSON,
   BASIC_VALID_WORKFLOW_JSON_TASKS,
@@ -602,6 +602,50 @@ describe("diagramBuilder", () => {
 
         // The other should not be affected
         expect((taskNode2!.data.task as Specification.Task).modified).toBeUndefined();
+      });
+    });
+
+    describe("validation error highlighting", () => {
+      const { model } = parseWorkflow(BASIC_VALID_WORKFLOW_JSON_TASKS);
+      const baseline = buildDiagramElements(model);
+      const targetId = baseline.nodes.find((node) => node.data.task !== undefined)!.id;
+
+      it("does not set hasError on any node when no errors are passed", () => {
+        const diagram = buildDiagramElements(model);
+        diagram.nodes.forEach((node) => expect(node.data.hasError).toBeUndefined());
+      });
+
+      it("sets hasError only on the node owning a error", () => {
+        const errors: SdkError[] = [{ path: targetId, message: "missing endpoint" }];
+        const diagram = buildDiagramElements(model, errors);
+
+        const target = diagram.nodes.find((node) => node.id === targetId)!;
+        expect(target.data.hasError).toBe(true);
+
+        diagram.nodes
+          .filter((node) => node.id !== targetId)
+          .forEach((node) => expect(node.data.hasError).toBeUndefined());
+      });
+
+      it("attributes a field error to its owning node", () => {
+        const errors: SdkError[] = [{ path: `${targetId}/with`, message: "missing endpoint" }];
+        const diagram = buildDiagramElements(model, errors);
+
+        expect(diagram.nodes.find((node) => node.id === targetId)!.data.hasError).toBe(true);
+      });
+
+      it("does not set hasError for noise errors", () => {
+        const errors: SdkError[] = [{ path: targetId, errorType: "#/oneOf", message: "noise" }];
+        const diagram = buildDiagramElements(model, errors);
+
+        expect(diagram.nodes.find((node) => node.id === targetId)!.data.hasError).toBeUndefined();
+      });
+
+      it("does not set hasError for general unowned errors", () => {
+        const errors: SdkError[] = [{ path: "/document", message: "missing version" }];
+        const diagram = buildDiagramElements(model, errors);
+
+        diagram.nodes.forEach((node) => expect(node.data.hasError).toBeUndefined());
       });
     });
 

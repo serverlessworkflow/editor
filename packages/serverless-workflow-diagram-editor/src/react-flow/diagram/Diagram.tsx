@@ -23,8 +23,8 @@ import { ResolvedColorMode } from "../../types/colorMode";
 import { ReactFlowEdgeTypes } from "../edges/Edges";
 import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { applyAutoLayout } from "./autoLayout";
+import { SidePanelTrigger } from "@/side-panel/SidePanelTrigger";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -47,7 +47,7 @@ export type DiagramProps = {
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
-  const { model, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
+  const { model, errors, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
     useDiagramEditorContext();
 
   const [minimapVisible, setMinimapVisible] = React.useState(false);
@@ -87,7 +87,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
       // Create abort controller for this layout operation
       abortController = new AbortController();
 
-      const graph = buildDiagramElements(model);
+      const graph = buildDiagramElements(model, errors);
       applyAutoLayout(graph, abortController.signal)
         .then(({ nodes, edges }) => {
           // Only update if this effect is still active (not cancelled by cleanup)
@@ -128,7 +128,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         abortController.abort();
       }
     };
-  }, [model, reactFlowInstance, setNodes, setEdges]);
+  }, [model, errors, reactFlowInstance, setNodes, setEdges]);
 
   return (
     <div
@@ -167,7 +167,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
 
         <RF.Panel position="top-right">
-          <SidebarTrigger />
+          <SidePanelTrigger />
         </RF.Panel>
 
         <RF.Controls
