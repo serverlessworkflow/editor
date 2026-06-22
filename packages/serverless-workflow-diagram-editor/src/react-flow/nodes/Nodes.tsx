@@ -25,7 +25,8 @@ import {
   containerNodeConfigMap,
 } from "./taskNodeConfig";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
@@ -92,26 +93,18 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="dec-task-node-badge-custom" data-testid={`${testId}-custom`}>
-            {badge}
-          </span>
+          <p className="dec-task-node-badge-custom">{badge}</p>
         </TooltipTrigger>
-        <TooltipContent>
-          <p
-            style={{
-              color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000",
-            }}
-          >
-            {badge}
-          </p>
+        <TooltipContent className="tooltip-content">
+          <p>{badge}</p>
         </TooltipContent>
       </Tooltip>
     );
   }
   return (
-    <span className="dec-task-node-badge" data-testid={testId}>
+    <p className="dec-task-node-badge" data-testid={testId}>
       {badge}
-    </span>
+    </p>
   );
 }
 
