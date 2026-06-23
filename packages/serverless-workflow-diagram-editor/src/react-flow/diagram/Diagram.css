@@ -431,7 +431,6 @@
 }
 
 .dec-root .react-flow__edge.selected .edge-line.condition {
-  @apply dec:stroke-blue-500;
   stroke: rgb(59 130 246) !important;
 }
 

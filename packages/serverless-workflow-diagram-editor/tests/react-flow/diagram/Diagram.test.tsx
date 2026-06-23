@@ -203,23 +203,29 @@ describe("Diagram Component", () => {
       expect(typeof onEdgesChange).toBe("function");
     });
 
-    it("should apply zIndex correctly when edges are updated", () => {
-      // Test the zIndex mapping logic directly
-      const mockEdges: RF.Edge[] = [
-        { id: "edge1", source: "n1", target: "n2", selected: true },
-        { id: "edge2", source: "n2", target: "n3", selected: false },
-        { id: "edge3", source: "n3", target: "n4", selected: true },
-      ];
+    it("should apply zIndex correctly when edges are updated", async () => {
+      applyAutoLayoutSpy.mockResolvedValueOnce({
+        nodes: [],
+        edges: [
+          { id: "edge1", source: "n1", target: "n2", selected: false },
+          { id: "edge2", source: "n2", target: "n3", selected: true },
+        ],
+      });
 
-      // Apply the same logic as in onEdgesChange
-      const updatedEdges = mockEdges.map((edge) => ({
-        ...edge,
-        zIndex: edge.selected ? 1000 : 0,
-      }));
+      renderDiagram({ isReadOnly: false });
 
-      expect(updatedEdges[0].zIndex).toBe(1000);
-      expect(updatedEdges[1].zIndex).toBe(0);
-      expect(updatedEdges[2].zIndex).toBe(1000);
+      await waitFor(() => {
+        const lastCall = vi.mocked(ReactFlow).mock.calls.at(-1);
+        expect(lastCall).toBeDefined();
+        expect(lastCall![0].edges).toHaveLength(2);
+      });
+      const onEdgesChange = vi.mocked(ReactFlow).mock.calls.at(-1)![0].onEdgesChange;
+      onEdgesChange?.([{ id: "edge1", type: "select", selected: true }] as any);
+      await waitFor(() => {
+        const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
+        expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(1000);
+        expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(1000);
+      });
     });
   });
 });
