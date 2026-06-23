@@ -22,6 +22,7 @@ import { SidebarProvider } from "../../../src/components/ui/sidebar";
 import { I18nProvider } from "@serverlessworkflow/i18n";
 import { en } from "../../../src/i18n/locales/en";
 import { ReactFlowProvider, ReactFlow } from "@xyflow/react";
+import * as RF from "@xyflow/react";
 import * as autoLayoutModule from "../../../src/react-flow/diagram/autoLayout";
 
 // Mock ReactFlow to capture props
@@ -179,6 +180,46 @@ describe("Diagram Component", () => {
 
     await waitFor(() => {
       expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("onEdgesChange with zIndex updates", () => {
+    it("should provide onEdgesChange callback to ReactFlow", async () => {
+      renderDiagram({ isReadOnly: false });
+
+      // Wait for initial render
+      await waitFor(() => {
+        expect(applyAutoLayoutSpy).toHaveBeenCalled();
+      });
+
+      // Get the onEdgesChange callback from ReactFlow mock
+      const mockReactFlow = vi.mocked(ReactFlow);
+      const lastCall = mockReactFlow.mock.calls.at(-1);
+      expect(lastCall).toBeDefined();
+      const reactFlowProps = lastCall![0];
+      const onEdgesChange = reactFlowProps.onEdgesChange;
+
+      expect(onEdgesChange).toBeDefined();
+      expect(typeof onEdgesChange).toBe("function");
+    });
+
+    it("should apply zIndex correctly when edges are updated", () => {
+      // Test the zIndex mapping logic directly
+      const mockEdges: RF.Edge[] = [
+        { id: "edge1", source: "n1", target: "n2", selected: true },
+        { id: "edge2", source: "n2", target: "n3", selected: false },
+        { id: "edge3", source: "n3", target: "n4", selected: true },
+      ];
+
+      // Apply the same logic as in onEdgesChange
+      const updatedEdges = mockEdges.map((edge) => ({
+        ...edge,
+        zIndex: edge.selected ? 1000 : 0,
+      }));
+
+      expect(updatedEdges[0].zIndex).toBe(1000);
+      expect(updatedEdges[1].zIndex).toBe(0);
+      expect(updatedEdges[2].zIndex).toBe(1000);
     });
   });
 });

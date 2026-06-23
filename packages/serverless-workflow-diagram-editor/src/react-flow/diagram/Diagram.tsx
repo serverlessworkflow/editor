@@ -66,10 +66,22 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
     (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
     [setNodes],
   );
+
   const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
-    (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
+    (changes) => {
+      setEdges((edgesSnapshot) => {
+        const updatedEdges = RF.applyEdgeChanges(changes, edgesSnapshot);
+
+        // Update zIndex for selected edges to bring them to front
+        return updatedEdges.map((edge) => ({
+          ...edge,
+          zIndex: edge.selected ? 1000 : 0,
+        }));
+      });
+    },
     [setEdges],
   );
+
   const onSelectionChange = React.useCallback<RF.OnSelectionChangeFunc>(
     ({ nodes: selectedNodes }) => setSelectedNodeId(selectedNodes[0]?.id ?? null),
     [setSelectedNodeId],
