@@ -48,7 +48,8 @@
     "clsx": "catalog:",
     "elkjs": "catalog:",
     "js-yaml": "catalog:",
-    "radix-ui": "catalog:"
+    "radix-ui": "catalog:",
+    "use-sync-external-store": "catalog:"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "catalog:",

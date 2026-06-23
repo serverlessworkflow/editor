@@ -120,12 +120,18 @@ catalogs:
     storybook:
       specifier: ^10.4.6
       version: 10.4.6
+    syncpack:
+      specifier: ^15.3.2
+      version: 15.3.2
     tailwindcss:
       specifier: ^4.3.1
       version: 4.3.1
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
+    use-sync-external-store:
+      specifier: ^1.6.0
+      version: 1.6.0
     vite:
       specifier: ^8.0.16
       version: 8.0.16
@@ -156,7 +162,7 @@ importers:
         specifier: 'catalog:'
         version: 0.55.0
       syncpack:
-        specifier: 15.3.2
+        specifier: 'catalog:'
         version: 15.3.2
       typescript:
         specifier: 'catalog:'
@@ -224,6 +230,9 @@ importers:
       radix-ui:
         specifier: 'catalog:'
         version: 1.6.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      use-sync-external-store:
+        specifier: 'catalog:'
+        version: 1.6.0(react@19.2.7)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: 'catalog:'
