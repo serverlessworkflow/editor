@@ -93,18 +93,16 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <p className="dec-task-node-badge-custom">{badge}</p>
+          <span className="dec-task-node-badge-custom">{badge}</span>
         </TooltipTrigger>
-        <TooltipContent className="tooltip-content">
-          <p>{badge}</p>
-        </TooltipContent>
+        <TooltipContent className="dec-tooltip-content">{badge}</TooltipContent>
       </Tooltip>
     );
   }
   return (
-    <p className="dec-task-node-badge" data-testid={testId}>
+    <span className="dec-task-node-badge" data-testid={testId}>
       {badge}
-    </p>
+    </span>
   );
 }
 
