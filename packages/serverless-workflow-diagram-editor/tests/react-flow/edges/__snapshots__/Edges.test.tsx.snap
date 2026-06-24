@@ -3,7 +3,7 @@
 exports[`React Flow custom edge types > matches snapshot with waypoints 1`] = `
 <path
   class="react-flow__edge-path edge-line"
-  d="M 0,0 L 50,50 L 0,0"
+  d="M 0,0 L 50,0 L 50,50 L 0,50 L 0,0"
   fill="none"
   id="n1-n2"
   marker-end=""

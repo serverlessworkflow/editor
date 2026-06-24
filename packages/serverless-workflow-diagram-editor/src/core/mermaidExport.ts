@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./validationErrors";
-export * from "./graph";
-export * from "./taskDetails";
-export * from "./taskSubType";
-export * from "./elkjs";
-export * from "./mermaidExport";
+import { convertToMermaidCode } from "@serverlessworkflow/sdk";
+import type { Specification } from "@serverlessworkflow/sdk";
+
+/**
+ * Converts a workflow model to Mermaid diagram code
+ * @param workflow - The workflow object (parsed from JSON/YAML)
+ * @returns Mermaid diagram code as a string
+ */
+export function exportToMermaid(workflow: Specification.Workflow): string {
+  return convertToMermaidCode(workflow);
+}

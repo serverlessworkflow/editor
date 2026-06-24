@@ -31,7 +31,14 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+
+        /^use-sync-external-store($|\/)/, // Keep this external to avoid bundling the CJS shim into dist/index.js.
+      ],
     },
   },
 });

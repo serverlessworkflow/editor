@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-export * from "./workflowSdk";
-export * from "./validationErrors";
-export * from "./graph";
-export * from "./taskDetails";
-export * from "./taskSubType";
-export * from "./elkjs";
-export * from "./mermaidExport";
+export function downloadFile(content: string, filename: string, mimeType = "text/plain"): void {
+  if (typeof document === "undefined") {
+    throw new Error("Document API is not available in this environment");
+  }
+
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 100);
+}

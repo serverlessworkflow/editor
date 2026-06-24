@@ -101,7 +101,7 @@ describe("parseValidationErrorMessage", () => {
     const message = '- /do/0/task | #/required | message with | pipes | {"key": "value"}';
     const errors = parseValidationErrorMessage(message);
     expect(errors).toHaveLength(1);
-    expect(errors[0].taskId).toBe("/do/0/task");
+    expect(errors[0].path).toBe("/do/0/task");
     expect(errors[0].errorType).toBe("#/required");
     expect(errors[0].message).toBe("message with | pipes");
     expect(errors[0].object).toEqual({ key: "value" });
@@ -112,7 +112,7 @@ describe("parseValidationErrorMessage", () => {
       '- /do/0/task | #/required | must have property | {"message": "value | with | pipes"}';
     const errors = parseValidationErrorMessage(message);
     expect(errors).toHaveLength(1);
-    expect(errors[0].taskId).toBe("/do/0/task");
+    expect(errors[0].path).toBe("/do/0/task");
     expect(errors[0].errorType).toBe("#/required");
     expect(errors[0].message).toBe("must have property");
     expect(errors[0].object).toEqual({ message: "value | with | pipes" });
@@ -181,6 +181,27 @@ describe("validateWorkflow", () => {
     expect(errors).toMatchSnapshot();
   });
 
+  it("does not return exact-duplicate validation errors", () => {
+    const invalid = new Classes.Workflow({
+      document: { dsl: "1.0.3", name: "nested-invalid", version: "1.0.0", namespace: "default" },
+      do: [
+        {
+          processItems: {
+            for: { each: "item", in: "${ .items }" },
+            do: [{ chargePayment: { call: "http", with: { method: "post" } } }],
+          },
+        },
+      ],
+    }) as Specification.Workflow;
+
+    const errors = validateWorkflow(invalid);
+    const signatures = errors
+      .filter((e): e is Exclude<typeof e, Error> => !(e instanceof Error))
+      .map((e) => `${e.path} ${e.errorType} ${e.message}`);
+
+    expect(signatures.length).toBe(new Set(signatures).size);
+  });
+
   it("returns original Error when validation throws unstructured error message", () => {
     // This test verifies the fallback branch in validateWorkflow (lines 228-232)
     // where an error is thrown that doesn't match either supported format.
@@ -199,7 +220,7 @@ describe("validateWorkflow", () => {
     // When parsing yields no structured errors, the fallback should return the original error
     let result: (
       | Error
-      | { taskId?: string; errorType?: string; message: string; object?: Record<string, unknown> }
+      | { path?: string; errorType?: string; message: string; object?: Record<string, unknown> }
     )[];
     if (parsedFromError.length > 0) {
       result = parsedFromError;
@@ -214,7 +235,7 @@ describe("validateWorkflow", () => {
     expect(result[0]).toBeInstanceOf(Error);
 
     // Verify it's a plain Error, not a ValidationError
-    expect(result[0]).not.toHaveProperty("taskId");
+    expect(result[0]).not.toHaveProperty("path");
     expect(result[0]).not.toHaveProperty("errorType");
     expect(result[0]).not.toHaveProperty("object");
 

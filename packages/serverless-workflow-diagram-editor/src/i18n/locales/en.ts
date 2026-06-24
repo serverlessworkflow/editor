@@ -24,6 +24,7 @@ export const en = {
   "sidebar.selectNode": "Select a node to view its details.",
   "sidebar.sectionDocument": "Document",
   "sidebar.sectionMetadata": "Metadata",
+  "sidebar.sectionErrors": "Errors",
   "sidebar.name": "Name",
   "sidebar.version": "Version",
   "sidebar.namespace": "Namespace",
@@ -36,6 +37,12 @@ export const en = {
   "sidebar.sectionSource": "Source",
   "sidebar.viewSource": "View source",
   "sidebar.noDetails": "No additional details for this node",
+  "node.entry": "Entry",
+  "node.exit": "Exit",
+  "node.errorBadge": "This node has validation errors",
+  "sidebar.exportMermaid.copy": "Copy Mermaid Code",
+  "sidebar.exportMermaid.download": "Download as Mermaid File",
+  "sidebar.exportMermaid.copied": "Copied!",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

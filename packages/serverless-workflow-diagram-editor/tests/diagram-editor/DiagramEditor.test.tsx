@@ -18,6 +18,11 @@ import { render, screen } from "@testing-library/react";
 import { DiagramEditor } from "../../src/diagram-editor";
 import { vi, expect, afterEach, describe, it } from "vitest";
 import { BASIC_VALID_WORKFLOW_YAML } from "../fixtures/workflows";
+import { t } from "../test-utils";
+
+/* When js-yaml throws a YAMLException, parseWorkflow
+ returns a null model and the editor must fall back to the parsing error page. */
+const UNPARSEABLE_CONTENT = "{ invalid";
 
 describe("DiagramEditor Component", () => {
   afterEach(() => {
@@ -35,6 +40,13 @@ describe("DiagramEditor Component", () => {
     const reactFlowContainer = screen.getByTestId("diagram-container");
 
     expect(reactFlowContainer).toBeInTheDocument();
+  });
+
+  it("Renders the parsing error page instead of the diagram when content is unparseable", () => {
+    render(<DiagramEditor content={UNPARSEABLE_CONTENT} locale={locale} isReadOnly={isReadOnly} />);
+
+    expect(screen.getByText(t("workflowError.parsing.title"))).toBeInTheDocument();
+    expect(screen.queryByTestId("diagram-container")).not.toBeInTheDocument();
   });
 
   it.each([

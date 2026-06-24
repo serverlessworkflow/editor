@@ -17,16 +17,20 @@
 import type React from "react";
 import { GraphNodeType, type Specification } from "@serverlessworkflow/sdk";
 import * as RF from "@xyflow/react";
+import { useI18n } from "@serverlessworkflow/i18n";
 import {
   CATCH_CONTAINER_NODE_TYPE,
   type ContainerNodeType,
   type LeafNodeType,
+  type TerminalNodeType,
   leafNodeConfigMap,
   containerNodeConfigMap,
+  terminalNodeConfigMap,
 } from "./taskNodeConfig";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { CircleAlert } from "lucide-react";
 
 export const ReactFlowNodeTypes: RF.NodeTypes = {
   [GraphNodeType.Start]: StartNode,
@@ -71,6 +75,7 @@ const KNOWN_BADGES = new Set([
 export type BaseNodeData<T = Specification.Task | void> = {
   label: string;
   task?: T;
+  hasError?: boolean;
 };
 
 interface NodeContentProps {
@@ -106,15 +111,20 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
   );
 }
 
+function NodeErrorBadge({ testId }: { testId: string }) {
+  return <CircleAlert className="dec-node-error-badge" data-testid={testId} />;
+}
+
 function LeafNodeContent({ id, data, selected, type, badge }: NodeContentProps) {
   const config = leafNodeConfigMap[type as LeafNodeType];
   const Icon = config.icon;
   return (
     <div
-      className={`dec-leaf-node ${selected ? "selected" : ""}`}
+      className={`dec-leaf-node ${selected ? "selected" : ""} ${data.hasError ? "has-error" : ""}`}
       style={{ "--task-node-color": config.color } as React.CSSProperties}
       data-testid={`${type}-node-${id}`}
     >
+      {data.hasError && <NodeErrorBadge testId={`${type}-node-${id}-error`} />}
       <RF.Handle type="target" position={RF.Position.Top} />
       <div className="dec-leaf-node-content">
         <Icon size={20} className="dec-leaf-node-icon" />
@@ -136,10 +146,11 @@ function ContainerNodeContent({ id, data, selected, type, badge }: NodeContentPr
   const Icon = config.icon;
   return (
     <div
-      className={`dec-container-node ${selected ? "selected" : ""}`}
+      className={`dec-container-node ${selected ? "selected" : ""} ${data.hasError ? "has-error" : ""}`}
       style={{ "--task-node-color": config.color } as React.CSSProperties}
       data-testid={`${type}-node-${id}`}
     >
+      {data.hasError && <NodeErrorBadge testId={`${type}-node-${id}-error`} />}
       <RF.Handle type="target" position={RF.Position.Top} />
       <div className="dec-container-node-header">
         <Icon size={20} className="dec-container-node-icon" />
@@ -150,6 +161,26 @@ function ContainerNodeContent({ id, data, selected, type, badge }: NodeContentPr
         {badge && <TaskNodeBadge badge={badge} testId={`${type}-node-${id}-badge`} />}
       </div>
       <RF.Handle type="source" position={RF.Position.Bottom} />
+    </div>
+  );
+}
+
+/* Entry/exit nodes */
+function TerminalNodeContent({ id, type }: { id: string; type: TerminalNodeType }) {
+  const { t } = useI18n();
+  const config = terminalNodeConfigMap[type];
+  const Icon = config.icon;
+  const label = t(config.labelKey);
+  const isEntry = type === GraphNodeType.Entry;
+  return (
+    <div className="dec-terminal-node" data-testid={`${type}-node-${id}`}>
+      {isEntry ? (
+        <RF.Handle type="source" position={RF.Position.Bottom} />
+      ) : (
+        <RF.Handle type="target" position={RF.Position.Top} />
+      )}
+      <Icon size={14} className="dec-terminal-node-icon" />
+      <span className="dec-terminal-node-label">{label}</span>
     </div>
   );
 }
@@ -194,16 +225,14 @@ export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>)
 
 /* entry node */
 export type EntryNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Entry>;
-export function EntryNode({ id, data, selected, type }: RF.NodeProps<EntryNodeType>) {
-  // TODO: This component is just a placeholder
-  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+export function EntryNode({ id, type }: RF.NodeProps<EntryNodeType>) {
+  return <TerminalNodeContent id={id} type={type} />;
 }
 
 /* exit node */
 export type ExitNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Exit>;
-export function ExitNode({ id, data, selected, type }: RF.NodeProps<ExitNodeType>) {
-  // TODO: This component is just a placeholder
-  return <PlaceholderContent id={id} data={data} selected={selected} type={type} />;
+export function ExitNode({ id, type }: RF.NodeProps<ExitNodeType>) {
+  return <TerminalNodeContent id={id} type={type} />;
 }
 
 /* call leaf node */

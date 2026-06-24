@@ -20,10 +20,13 @@ import {
   CATCH_CONTAINER_NODE_TYPE,
   type ContainerNodeType,
   type LeafNodeType,
+  type TerminalNodeType,
   containerNodeConfigMap,
   getNodeVisualConfig,
   leafNodeConfigMap,
+  terminalNodeConfigMap,
 } from "../../../src/react-flow/nodes/taskNodeConfig";
+import { en } from "../../../src/i18n/locales/en";
 
 const leafNodeTypes: LeafNodeType[] = [
   GraphNodeType.Call,
@@ -45,6 +48,8 @@ const containerNodeTypes: ContainerNodeType[] = [
   GraphNodeType.TryCatch,
   CATCH_CONTAINER_NODE_TYPE,
 ];
+
+const terminalNodeTypes: TerminalNodeType[] = [GraphNodeType.Entry, GraphNodeType.Exit];
 
 describe("taskNodeConfig", () => {
   it("should have config for all leaf nodes", () => {
@@ -78,6 +83,22 @@ describe("taskNodeConfig", () => {
     },
   );
 
+  it("should have config for terminal nodes", () => {
+    for (const terminal of terminalNodeTypes) {
+      expect(terminalNodeConfigMap[terminal]).toBeDefined();
+    }
+  });
+
+  it.each(terminalNodeTypes)(
+    "should have icon and a valid labelKey for terminal %s",
+    (terminal) => {
+      const config = terminalNodeConfigMap[terminal];
+
+      expect(config.icon).toBeDefined();
+      expect(en[config.labelKey]).toBeDefined();
+    },
+  );
+
   describe("getNodeVisualConfig", () => {
     it("resolves a leaf node type", () => {
       expect(getNodeVisualConfig(GraphNodeType.Call)).toBe(leafNodeConfigMap[GraphNodeType.Call]);
@@ -95,6 +116,10 @@ describe("taskNodeConfig", () => {
 
     it("returns undefined for an unknown type", () => {
       expect(getNodeVisualConfig("not-a-node-type")).toBeUndefined();
+    });
+
+    it.each(terminalNodeTypes)("returns undefined for terminal node type %s", (terminal) => {
+      expect(getNodeVisualConfig(terminal)).toBeUndefined();
     });
 
     it("returns undefined when type is undefined", () => {

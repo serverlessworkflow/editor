@@ -24,6 +24,8 @@ import {
   GitFork,
   IterationCw,
   List,
+  LogIn,
+  LogOut,
   Megaphone,
   PenLine,
   Phone,
@@ -31,6 +33,7 @@ import {
   Terminal,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import type { TranslationKeys } from "../../i18n/locales/en";
 
 export interface TaskNodeConfig {
   color: string;
@@ -38,8 +41,15 @@ export interface TaskNodeConfig {
   typeLabel: string;
 }
 
+export interface TerminalNodeConfig {
+  icon: ComponentType<{ size?: number; className?: string }>;
+  labelKey: TranslationKeys;
+}
+
 /* Custom react-flow only node type for catch nodes that contain child nodes (i.e are containers) (the sdk uses GraphNodeType.Catch for both leaf and container catch nodes) */
 export const CATCH_CONTAINER_NODE_TYPE = "catch-container";
+
+export type TerminalNodeType = typeof GraphNodeType.Entry | typeof GraphNodeType.Exit;
 
 export type ContainerNodeType =
   | typeof GraphNodeType.Do
@@ -140,6 +150,21 @@ export const containerNodeConfigMap: Record<ContainerNodeType, TaskNodeConfig> =
     typeLabel: "CATCH",
   },
 };
+
+export const terminalNodeConfigMap: Record<TerminalNodeType, TerminalNodeConfig> = {
+  [GraphNodeType.Entry]: {
+    icon: LogIn,
+    labelKey: "node.entry",
+  },
+  [GraphNodeType.Exit]: {
+    icon: LogOut,
+    labelKey: "node.exit",
+  },
+};
+
+export function isTerminalNodeType(type: string | undefined): type is TerminalNodeType {
+  return type === GraphNodeType.Entry || type === GraphNodeType.Exit;
+}
 
 const nodeConfigMap: Record<string, TaskNodeConfig> = {
   ...leafNodeConfigMap,

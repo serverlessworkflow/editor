@@ -34,12 +34,12 @@ const createMockYAMLException = (reason?: string, snippet?: string): Error => {
 };
 
 const createMockValidationError = (
-  taskId: string,
+  path: string,
   errorType: string,
   message: string,
 ): ValidationError => {
   return {
-    taskId,
+    path,
     errorType,
     message,
     object: { missingProperty: "call" },

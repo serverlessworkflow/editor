@@ -66,4 +66,44 @@ describe("WorkflowInfoView", () => {
     expect(screen.getByText("env: production")).toBeInTheDocument();
     expect(screen.getByText("team: platform")).toBeInTheDocument();
   });
+
+  describe("general errors", () => {
+    it("renders general errors above the document section", () => {
+      renderWithProviders(<WorkflowInfoView document={baseDocument} />, {
+        nodeIds: new Set(["/do/0/call"]),
+        errors: [
+          {
+            path: "/document",
+            message: "must have required property 'version'",
+          },
+          new Error("Unsupported DSL version"),
+        ],
+      });
+
+      expect(screen.getByTestId("sidebar-errors")).toBeInTheDocument();
+      expect(screen.getByText("must have required property 'version'")).toBeInTheDocument();
+      expect(screen.getByText("Unsupported DSL version")).toBeInTheDocument();
+      // document section still renders below the errors
+      expect(screen.getByTestId("workflow-info")).toBeInTheDocument();
+    });
+
+    it("does not render node-owned errors in the workflow view", () => {
+      renderWithProviders(<WorkflowInfoView document={baseDocument} />, {
+        nodeIds: new Set(["/do/0/call"]),
+        errors: [{ path: "/do/0/call", message: "node-owned error" }],
+      });
+
+      expect(screen.queryByTestId("sidebar-errors")).not.toBeInTheDocument();
+      expect(screen.queryByText("node-owned error")).not.toBeInTheDocument();
+    });
+
+    it("does not render the errors section when there are no general errors", () => {
+      renderWithProviders(<WorkflowInfoView document={baseDocument} />, {
+        nodeIds: new Set(),
+        errors: [],
+      });
+
+      expect(screen.queryByTestId("sidebar-errors")).not.toBeInTheDocument();
+    });
+  });
 });

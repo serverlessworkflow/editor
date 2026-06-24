@@ -15,7 +15,7 @@
  */
 
 import * as RF from "@xyflow/react";
-import type { WayPoints } from "../diagram/autoLayout";
+import type { Point, WayPoints } from "../diagram/autoLayout";
 
 export enum EdgeTypes {
   Default = "default",
@@ -39,6 +39,8 @@ export type EdgeLabelProps = {
   sourceY: number;
   targetX: number;
   targetY: number;
+  sourcePosition?: RF.Position;
+  targetPosition?: RF.Position;
   type?: EdgeTypes;
   data?: BaseEdgeData | undefined;
 };
@@ -50,28 +52,91 @@ export function createPathFromWayPoints(
   targetY: number,
   wayPoints?: WayPoints,
 ): string {
-  if (!wayPoints || wayPoints.length === 0) {
-    return `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
-  }
+  const points = [{ x: sourceX, y: sourceY }, ...(wayPoints || []), { x: targetX, y: targetY }];
 
-  let path = `M ${sourceX},${sourceY}`;
-  for (const point of wayPoints) {
-    path += ` L ${point.x},${point.y}`;
-  }
+  // points always contains at least source and target, so points[0] is guaranteed
+  let path = `M ${points[0]!.x},${points[0]!.y}`;
+  let previous = points[0]!;
 
-  path += ` L ${targetX},${targetY}`;
+  for (let i = 1; i < points.length; i++) {
+    const current = points[i]!;
+    if (previous.x !== current.x && previous.y !== current.y) {
+      path += ` L ${current.x},${previous.y}`;
+    }
+
+    path += ` L ${current.x},${current.y}`;
+    previous = current;
+  }
 
   return path;
 }
 
-export function EdgeLabel({ sourceX, sourceY, targetX, targetY, type, data }: EdgeLabelProps) {
+/**
+ * Picks the middle bend point of a waypoint path.
+ * With an even number of bends, averages the two central ones.
+ */
+export function getWayPointsMidpoint(wayPoints: WayPoints): Point | undefined {
+  if (wayPoints.length === 0) {
+    return undefined;
+  }
+  const middle = wayPoints.length / 2;
+
+  if (wayPoints.length % 2 === 1) {
+    return wayPoints[Math.floor(middle)];
+  }
+
+  const before = wayPoints[middle - 1];
+  const after = wayPoints[middle];
+
+  if (!before || !after) {
+    return undefined;
+  }
+  return { x: (before.x + after.x) / 2, y: (before.y + after.y) / 2 };
+}
+
+/**
+ * Resolves where the label sits:
+ * - waypoint edges uses getWayPointsMidpoint
+ * - smooth-step edges reuse React Flow's default
+ */
+function getEdgeLabelPosition({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition = RF.Position.Bottom,
+  targetPosition = RF.Position.Top,
+  data,
+}: EdgeLabelProps): Point {
+  if (data?.wayPoints && data.wayPoints.length > 0) {
+    const midpoint = getWayPointsMidpoint(data.wayPoints);
+    if (midpoint) {
+      return midpoint;
+    }
+  }
+
+  const [, labelX, labelY] = RF.getSmoothStepPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  });
+  return { x: labelX, y: labelY };
+}
+
+export function EdgeLabel(props: EdgeLabelProps) {
+  const { type, data } = props;
+  const { x, y } = getEdgeLabelPosition(props);
+
   return (
     <>
       {data?.label && (
         <RF.EdgeLabelRenderer>
           <div
             style={{
-              transform: `translate(-50%, -50%) translate(${(sourceX + targetX) / 2}px,${(sourceY + targetY) / 2}px)`,
+              transform: `translate(-50%, -50%) translate(${x}px,${y}px)`,
             }}
             className={type ? `edge-label ${type}` : "edge-label"}
           >
