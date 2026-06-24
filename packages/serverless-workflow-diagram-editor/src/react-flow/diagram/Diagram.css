@@ -423,7 +423,7 @@
 
 /* Override React Flow's default selected edge styling to preserve original colors */
 .dec-root .react-flow__edge.selected .edge-line {
-  stroke: #aea6a6 !important;
+  stroke: var(--dec-edge-selected) !important;
 }
 
 .dec-root .react-flow__edge.selected .edge-line.error {
@@ -431,7 +431,7 @@
 }
 
 .dec-root .react-flow__edge.selected .edge-line.condition {
-  stroke: rgb(59 130 246) !important;
+  stroke: var(--dec-edge-selected-condition) !important;
 }
 
 /* Selected edge shadow effect - lighter for light mode */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { vi, it, expect, afterEach, describe, beforeEach } from "vitest";
 import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorContextProvider";
@@ -220,7 +220,9 @@ describe("Diagram Component", () => {
         expect(lastCall![0].edges).toHaveLength(2);
       });
       const onEdgesChange = vi.mocked(ReactFlow).mock.calls.at(-1)![0].onEdgesChange;
-      onEdgesChange?.([{ id: "edge1", type: "select", selected: true }] as any);
+      act(() => {
+        onEdgesChange?.([{ id: "edge1", type: "select", selected: true }] as any);
+      });
       await waitFor(() => {
         const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
         expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(1000);

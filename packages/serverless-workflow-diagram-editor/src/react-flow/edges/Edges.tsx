@@ -173,9 +173,7 @@ function CustomBaseEdge({
         targetPosition,
       })[0];
 
-  const edgeClassName = selected
-    ? `${className ?? "edge-line"} selected`
-    : (className ?? "edge-line");
+  const edgeClassName = `${className ?? "edge-line"}${selected ? " selected" : ""}`;
 
   return (
     <RF.BaseEdge id={id} path={edgePath} markerEnd={markerEnd ?? ""} className={edgeClassName} />
