@@ -295,7 +295,7 @@
   .dec-root.dark .dec-task-node-badge-custom {
     color: color-mix(in srgb, var(--task-node-color) 18%, white);
     background-color: color-mix(in srgb, var(--task-node-color) 40%, transparent);
-  }
+  }ho
 
   .dec-root .dec-task-node-badge {
     @apply dec:ml-auto
