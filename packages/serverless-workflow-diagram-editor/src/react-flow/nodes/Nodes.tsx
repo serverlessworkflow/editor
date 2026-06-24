@@ -101,7 +101,7 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
             {badge}
           </span>
         </TooltipTrigger>
-        <TooltipContent className="dec-tooltip-content">{badge}</TooltipContent>
+        <TooltipContent>{badge}</TooltipContent>
       </Tooltip>
     );
   }
