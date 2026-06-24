@@ -28,8 +28,7 @@ import {
   terminalNodeConfigMap,
 } from "./taskNodeConfig";
 import { getCallSubType, getListenSubType, getRunSubType } from "../../core";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { CircleAlert } from "lucide-react";
 
 export const ReactFlowNodeTypes: RF.NodeTypes = {
