@@ -152,34 +152,37 @@ describe("React Flow custom edge types", () => {
       shouldHaveSelected: false,
       expectedClasses: "edge-line condition",
     },
-  ])("$description", ({ component: Component, selected, shouldHaveSelected, expectedClasses }) => {
-    const { container } = render(
-      <RF.ReactFlowProvider>
-        <Component
-          id={"n1-n2"}
-          source={"n1"}
-          target={"n2"}
-          sourceX={0}
-          sourceY={0}
-          targetX={0}
-          targetY={0}
-          sourcePosition={RF.Position.Left}
-          targetPosition={RF.Position.Left}
-          selected={selected}
-        />
-      </RF.ReactFlowProvider>,
-    );
-    const path = container.querySelector("path.edge-line");
-    expect(path).toBeInTheDocument();
+  ])(
+    "renders $edgeDescription edge with selected=$selected",
+    ({ component: Component, selected, shouldHaveSelected, expectedClasses }) => {
+      const { container } = render(
+        <RF.ReactFlowProvider>
+          <Component
+            id={"n1-n2"}
+            source={"n1"}
+            target={"n2"}
+            sourceX={0}
+            sourceY={0}
+            targetX={0}
+            targetY={0}
+            sourcePosition={RF.Position.Left}
+            targetPosition={RF.Position.Left}
+            selected={selected}
+          />
+        </RF.ReactFlowProvider>,
+      );
+      const path = container.querySelector("path.edge-line");
+      expect(path).toBeInTheDocument();
 
-    if (shouldHaveSelected) {
-      expect(path).toHaveClass("selected");
-    } else {
-      expect(path).not.toHaveClass("selected");
-    }
+      if (shouldHaveSelected) {
+        expect(path).toHaveClass("selected");
+      } else {
+        expect(path).not.toHaveClass("selected");
+      }
 
-    expect(path).toHaveClass(expectedClasses);
-  });
+      expect(path).toHaveClass(expectedClasses);
+    },
+  );
 
   it("matches snapshot with waypoints", () => {
     const { container } = render(

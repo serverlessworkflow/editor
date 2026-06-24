@@ -219,12 +219,19 @@ describe("Diagram Component", () => {
         expect(lastCall).toBeDefined();
         expect(lastCall![0].edges).toHaveLength(2);
       });
+
       const onEdgesChange = vi.mocked(ReactFlow).mock.calls.at(-1)![0].onEdgesChange;
+      const changes: Parameters<RF.OnEdgesChange>[0] = [
+        { id: "edge1", type: "select", selected: true },
+      ];
+
       act(() => {
-        onEdgesChange?.([{ id: "edge1", type: "select", selected: true }] as any);
+        onEdgesChange?.(changes);
       });
+
       await waitFor(() => {
         const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
+
         expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(1000);
         expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(1000);
       });
