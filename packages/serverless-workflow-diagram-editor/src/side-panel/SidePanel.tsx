@@ -66,7 +66,7 @@ export function SidePanel() {
       aria-label={selectedNode ? "Node details panel" : "Workflow information panel"}
       role="complementary"
     >
-      <SidebarHeader role="banner">
+      <SidebarHeader>
         <div className="dec-sidebar-header-title">
           <span
             className={`dec-sidebar-header-icon-wrap${nodeConfig ? " colored" : ""}`}
@@ -103,7 +103,7 @@ export function SidePanel() {
         )}
       </SidebarContent>
       {model !== null && selectedNodeId === null ? (
-        <SidebarFooter aria-label="Export actions" role="contentinfo">
+        <SidebarFooter aria-label="Export actions">
           <MermaidActions model={model} />
         </SidebarFooter>
       ) : null}
