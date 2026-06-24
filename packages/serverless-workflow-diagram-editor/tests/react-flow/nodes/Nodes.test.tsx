@@ -30,6 +30,7 @@ import {
 import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
 import { en } from "../../../src/i18n/locales/en";
 import { renderWithProviders } from "../../test-utils/render-helpers";
+import { TooltipProvider } from "../../../src/components/ui/tooltip";
 
 function testNode(
   id: string,
@@ -256,19 +257,20 @@ describe("React Flow custom node types", () => {
         }),
       ];
       render(
-        <div>
-          <RF.ReactFlow
-            nodeTypes={ReactFlowNodeTypes}
-            nodes={nodesWithUnknownBadges}
-            edges={allEdges}
-          />
-        </div>,
+        <TooltipProvider>
+          <div>
+            <RF.ReactFlow
+              nodeTypes={ReactFlowNodeTypes}
+              nodes={nodesWithUnknownBadges}
+              edges={allEdges}
+            />
+          </div>
+        </TooltipProvider>,
       );
 
       const callBadge = screen.getByTestId("call-node-n1-badge-custom");
       expect(callBadge).toBeInTheDocument();
       expect(callBadge.textContent).toBe("customCall");
-      expect(callBadge).toHaveAttribute("title", "customCall");
     });
 
     it("should render while/compete badges on container nodes", () => {
