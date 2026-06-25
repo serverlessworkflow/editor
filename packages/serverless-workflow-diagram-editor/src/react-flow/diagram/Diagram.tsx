@@ -72,10 +72,11 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
       setEdges((edgesSnapshot) => {
         const updatedEdges = RF.applyEdgeChanges(changes, edgesSnapshot);
 
-        // Update zIndex for selected edges to bring them to front
+        // Elevate selected edges above regular edges (z-index: 100)
+        // but keep them below edge labels (z-index: 1000+)
         return updatedEdges.map((edge) => ({
           ...edge,
-          zIndex: edge.selected ? 1000 : 0,
+          zIndex: edge.selected ? 100 : 0,
         }));
       });
     },
@@ -105,7 +106,13 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           // Only update if this effect is still active (not cancelled by cleanup)
           if (isActive && !abortController?.signal.aborted) {
             setNodes(nodes);
-            setEdges(edges);
+            // Apply z-index to edges: selected edges (100) above regular edges (0)
+            // but below edge labels (1000+)
+            const edgesWithZIndex = edges.map((edge) => ({
+              ...edge,
+              zIndex: edge.selected ? 100 : 0,
+            }));
+            setEdges(edgesWithZIndex);
 
             // Queue fitView to run after React updates the DOM
             fitViewTimeoutId = setTimeout(() => reactFlowInstance.fitView(), 0);
@@ -173,6 +180,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           },
         }}
         data-testid={"react-flow-canvas"}
+        elevateEdgesOnSelect={false}
         nodesDraggable={!isReadOnly}
         nodesConnectable={!isReadOnly}
       >

@@ -498,3 +498,91 @@ describe("EdgeLabel positioning", () => {
     expect(JSON.stringify(result)).toContain(`translate(${labelX}px,${labelY}px)`);
   });
 });
+
+describe("EdgeLabel z-index behavior", () => {
+  it.each([
+    {
+      selected: false,
+      expectedZIndex: 1000,
+      description: "applies z-index 1000 when selected=false",
+    },
+    {
+      selected: true,
+      expectedZIndex: 1001,
+      description: "applies z-index 1001 when selected=true",
+    },
+    {
+      selected: undefined,
+      expectedZIndex: 1000,
+      description: "applies default z-index 1000 when selected=undefined",
+    },
+  ])("$description", ({ selected, expectedZIndex }) => {
+    const result = EdgeLabel({
+      sourceX: 0,
+      sourceY: 0,
+      targetX: 100,
+      targetY: 100,
+      data: { label: "Test Label" },
+      selected,
+    });
+
+    const resultString = JSON.stringify(result);
+    expect(resultString).toContain(`"zIndex":${expectedZIndex}`);
+  });
+
+  it("applies default z-index 1000 when selected prop is not provided", () => {
+    const result = EdgeLabel({
+      sourceX: 0,
+      sourceY: 0,
+      targetX: 100,
+      targetY: 100,
+      data: { label: "Test Label" },
+    });
+
+    const resultString = JSON.stringify(result);
+    expect(resultString).toContain('"zIndex":1000');
+  });
+
+  describe("integration with edge components", () => {
+    it.each([
+      { component: DefaultEdge, edgeType: "default", edgeClass: "", selected: true },
+      { component: ErrorEdge, edgeType: "error", edgeClass: "error", selected: true },
+      { component: ConditionEdge, edgeType: "condition", edgeClass: "condition", selected: true },
+      { component: DefaultEdge, edgeType: "default", edgeClass: "", selected: false },
+      { component: ErrorEdge, edgeType: "error", edgeClass: "error", selected: false },
+      { component: ConditionEdge, edgeType: "condition", edgeClass: "condition", selected: false },
+    ])(
+      "$edgeType edge passes selected=$selected to EdgeLabel",
+      ({ component: Component, edgeClass, selected }) => {
+        const { container } = render(
+          <RF.ReactFlowProvider>
+            <Component
+              id="e1"
+              source="n1"
+              target="n2"
+              sourceX={0}
+              sourceY={0}
+              targetX={100}
+              targetY={100}
+              sourcePosition={RF.Position.Right}
+              targetPosition={RF.Position.Left}
+              data={{ label: "Test Label" }}
+              selected={selected}
+            />
+          </RF.ReactFlowProvider>,
+        );
+
+        // Verify the edge path is rendered with correct selected class
+        const pathSelector = edgeClass ? `path.edge-line.${edgeClass}` : "path.edge-line";
+        const path = container.querySelector(pathSelector);
+        expect(path).toBeInTheDocument();
+
+        if (selected) {
+          expect(path).toHaveClass("selected");
+        } else {
+          expect(path).not.toHaveClass("selected");
+        }
+      },
+    );
+  });
+});

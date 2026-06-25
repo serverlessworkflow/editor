@@ -43,6 +43,7 @@ export type EdgeLabelProps = {
   targetPosition?: RF.Position;
   type?: EdgeTypes;
   data?: BaseEdgeData | undefined;
+  selected?: boolean;
 };
 
 export function createPathFromWayPoints(
@@ -127,7 +128,7 @@ function getEdgeLabelPosition({
 }
 
 export function EdgeLabel(props: EdgeLabelProps) {
-  const { type, data } = props;
+  const { type, data, selected } = props;
   const { x, y } = getEdgeLabelPosition(props);
 
   return (
@@ -137,6 +138,7 @@ export function EdgeLabel(props: EdgeLabelProps) {
           <div
             style={{
               transform: `translate(-50%, -50%) translate(${x}px,${y}px)`,
+              zIndex: selected ? 1001 : 1000,
             }}
             className={type ? `edge-label ${type}` : "edge-label"}
           >
