@@ -47,11 +47,15 @@
 
     --dec-error-accent: #ef4444;
     --dec-error-glow: rgba(239, 68, 68, 0.35);
+    --dec-edge-selected: #aea6a6;
+    --dec-edge-selected-condition: rgb(59 130 246);
   }
 
   .dec-root.dark{
         --dec-error-accent: #f87171;
     --dec-error-glow: rgba(248, 113, 113, 0.4);
+    --dec-edge-selected: #aea6a6;
+    --dec-edge-selected-condition: rgb(59 130 246);
   }
 
   .dec-root .dec-diagram-content {

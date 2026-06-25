@@ -408,7 +408,8 @@
 /* React flow SVG components do not work with classes defined into layers */
 .dec-root .edge-line {
   @apply dec:stroke-[#aea6a6]
-        dec:stroke-2;
+        dec:stroke-2
+        dec:transition-[filter];
 }
 
 .dec-root .edge-line.error {
@@ -418,6 +419,32 @@
 
 .dec-root .edge-line.condition {
   @apply dec:stroke-blue-500;
+}
+
+/* Override React Flow's default selected edge styling to preserve original colors */
+.dec-root .react-flow__edge.selected .edge-line {
+  stroke: var(--dec-edge-selected) !important;
+}
+
+.dec-root .react-flow__edge.selected .edge-line.error {
+  stroke: var(--dec-error-accent) !important;
+}
+
+.dec-root .react-flow__edge.selected .edge-line.condition {
+  stroke: var(--dec-edge-selected-condition) !important;
+}
+
+/* Selected edge shadow effect - lighter for light mode */
+.dec-root .edge-line.selected {
+  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.8))
+          drop-shadow(0 0 6px rgba(59, 130, 246, 0.4))
+          drop-shadow(0 0 12px rgba(59, 130, 246, 0.2));
+}
+
+.dec-root.dark .edge-line.selected {
+  filter: drop-shadow(0 0 3px rgb(59 130 246))
+          drop-shadow(0 0 8px rgb(59 130 246))
+          drop-shadow(0 0 16px rgba(59, 130, 246, 0.8));
 }
 
 /* custom edge labels */

@@ -67,6 +67,123 @@ describe("React Flow custom edge types", () => {
     expect(path).toHaveClass(`edge-line ${edgeClass}`);
   });
 
+  it.each([
+    {
+      component: DefaultEdge,
+      edgeDescription: "default",
+      edgeClass: "",
+      selected: true,
+      description: "renders $edgeDescription edge with selected class when selected=true",
+      shouldHaveSelected: true,
+      expectedClasses: "edge-line selected",
+    },
+    {
+      component: ErrorEdge,
+      edgeDescription: "error",
+      edgeClass: "error",
+      selected: true,
+      description: "renders $edgeDescription edge with selected class when selected=true",
+      shouldHaveSelected: true,
+      expectedClasses: "edge-line error selected",
+    },
+    {
+      component: ConditionEdge,
+      edgeDescription: "condition",
+      edgeClass: "condition",
+      selected: true,
+      description: "renders $edgeDescription edge with selected class when selected=true",
+      shouldHaveSelected: true,
+      expectedClasses: "edge-line condition selected",
+    },
+    {
+      component: DefaultEdge,
+      edgeDescription: "default",
+      edgeClass: "",
+      selected: false,
+      description: "renders $edgeDescription edge without selected class when selected=false",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line",
+    },
+    {
+      component: ErrorEdge,
+      edgeDescription: "error",
+      edgeClass: "error",
+      selected: false,
+      description: "renders $edgeDescription edge without selected class when selected=false",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line error",
+    },
+    {
+      component: ConditionEdge,
+      edgeDescription: "condition",
+      edgeClass: "condition",
+      selected: false,
+      description: "renders $edgeDescription edge without selected class when selected=false",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line condition",
+    },
+    {
+      component: DefaultEdge,
+      edgeDescription: "default",
+      edgeClass: "",
+      selected: undefined,
+      description:
+        "renders $edgeDescription edge without selected class when selected is undefined",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line",
+    },
+    {
+      component: ErrorEdge,
+      edgeDescription: "error",
+      edgeClass: "error",
+      selected: undefined,
+      description:
+        "renders $edgeDescription edge without selected class when selected is undefined",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line error",
+    },
+    {
+      component: ConditionEdge,
+      edgeDescription: "condition",
+      edgeClass: "condition",
+      selected: undefined,
+      description:
+        "renders $edgeDescription edge without selected class when selected is undefined",
+      shouldHaveSelected: false,
+      expectedClasses: "edge-line condition",
+    },
+  ])(
+    "renders $edgeDescription edge with selected=$selected",
+    ({ component: Component, selected, shouldHaveSelected, expectedClasses }) => {
+      const { container } = render(
+        <RF.ReactFlowProvider>
+          <Component
+            id={"n1-n2"}
+            source={"n1"}
+            target={"n2"}
+            sourceX={0}
+            sourceY={0}
+            targetX={0}
+            targetY={0}
+            sourcePosition={RF.Position.Left}
+            targetPosition={RF.Position.Left}
+            selected={selected}
+          />
+        </RF.ReactFlowProvider>,
+      );
+      const path = container.querySelector("path.edge-line");
+      expect(path).toBeInTheDocument();
+
+      if (shouldHaveSelected) {
+        expect(path).toHaveClass("selected");
+      } else {
+        expect(path).not.toHaveClass("selected");
+      }
+
+      expect(path).toHaveClass(expectedClasses);
+    },
+  );
+
   it("matches snapshot with waypoints", () => {
     const { container } = render(
       <RF.ReactFlowProvider>
