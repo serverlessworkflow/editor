@@ -402,6 +402,58 @@
   }
 
     /* end validation errors */
+  
+  .dec-start-end-node {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dec-start-node,
+  .dec-end-node {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: var(--color-background, white);
+  }
+  
+  /* Start node - green single circle */
+  .dec-start-node {
+    border: 1px solid grey;
+    background-color: lightgray;
+  }
+
+  .dec-end-node {
+    border: 1px solid grey;
+    background-color: lightgray;
+  }
+  
+  .dec-end-node-inner {
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1px solid grey;
+    background-color: lightgray;
+    pointer-events: none;
+  }
+  
+  .dec-start-end-node.selected .dec-start-node {
+    box-shadow: 0 0 0 4px rgba(209, 204, 204, 0.3);
+  }
+  
+  .dec-start-end-node.selected .dec-end-node {
+    box-shadow: 0 0 0 4px rgba(209, 204, 204, 0.3);
+  }
+  
+  .dec-start-node:hover,
+  .dec-end-node:hover {
+    box-shadow: 0 0 0 4px rgba(209, 204, 204, 0.3);
+  }
 }
 
 /* custom edges */
