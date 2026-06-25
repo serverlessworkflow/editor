@@ -24,6 +24,7 @@ import { en } from "../../../src/i18n/locales/en";
 import { ReactFlowProvider, ReactFlow } from "@xyflow/react";
 import * as RF from "@xyflow/react";
 import * as autoLayoutModule from "../../../src/react-flow/diagram/autoLayout";
+import { ZINDEX } from "../../../src/react-flow/zIndexConstants";
 
 // Mock ReactFlow to capture props
 vi.mock("@xyflow/react", async () => {
@@ -256,9 +257,9 @@ describe("Diagram Component", () => {
       await waitFor(() => {
         const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
 
-        // Selected edge should have zIndex: 100 (above regular edges, below labels at 1000+)
-        expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(100);
-        expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(100);
+        // Selected edges should have elevated z-index (above regular edges, below labels)
+        expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(ZINDEX.EDGE_SELECTED);
+        expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(ZINDEX.EDGE_SELECTED);
       });
     });
 

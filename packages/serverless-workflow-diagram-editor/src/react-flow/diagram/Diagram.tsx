@@ -25,6 +25,7 @@ import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
 import { applyAutoLayout } from "./autoLayout";
 import { SidePanelTrigger } from "@/side-panel/SidePanelTrigger";
+import { ZINDEX } from "../zIndexConstants";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
@@ -72,11 +73,11 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
       setEdges((edgesSnapshot) => {
         const updatedEdges = RF.applyEdgeChanges(changes, edgesSnapshot);
 
-        // Elevate selected edges above regular edges (z-index: 100)
-        // but keep them below edge labels (z-index: 1000+)
+        // Elevate selected edges above regular edges
+        // but keep them below edge labels
         return updatedEdges.map((edge) => ({
           ...edge,
-          zIndex: edge.selected ? 100 : 0,
+          zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
         }));
       });
     },
@@ -106,11 +107,11 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           // Only update if this effect is still active (not cancelled by cleanup)
           if (isActive && !abortController?.signal.aborted) {
             setNodes(nodes);
-            // Apply z-index to edges: selected edges (100) above regular edges (0)
-            // but below edge labels (1000+)
+            // Apply z-index to edges: selected edges above regular edges
+            // but below edge labels
             const edgesWithZIndex = edges.map((edge) => ({
               ...edge,
-              zIndex: edge.selected ? 100 : 0,
+              zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
             }));
             setEdges(edgesWithZIndex);
 

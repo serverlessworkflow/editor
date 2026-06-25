@@ -27,6 +27,7 @@ import {
   createPathFromWayPoints,
   getWayPointsMidpoint,
 } from "../../../src/react-flow/edges/Edges";
+import { ZINDEX } from "../../../src/react-flow/zIndexConstants";
 import * as RF from "@xyflow/react";
 
 describe("React Flow custom edge types", () => {
@@ -503,18 +504,18 @@ describe("EdgeLabel z-index behavior", () => {
   it.each([
     {
       selected: false,
-      expectedZIndex: 1000,
-      description: "applies z-index 1000 when selected=false",
+      expectedZIndex: ZINDEX.EDGE_LABEL_REGULAR,
+      description: "applies regular label z-index when selected=false",
     },
     {
       selected: true,
-      expectedZIndex: 1001,
-      description: "applies z-index 1001 when selected=true",
+      expectedZIndex: ZINDEX.EDGE_LABEL_SELECTED,
+      description: "applies selected label z-index when selected=true",
     },
     {
       selected: undefined,
-      expectedZIndex: 1000,
-      description: "applies default z-index 1000 when selected=undefined",
+      expectedZIndex: ZINDEX.EDGE_LABEL_REGULAR,
+      description: "applies default regular label z-index when selected=undefined",
     },
   ])("$description", ({ selected, expectedZIndex }) => {
     const result = EdgeLabel({
@@ -530,7 +531,7 @@ describe("EdgeLabel z-index behavior", () => {
     expect(resultString).toContain(`"zIndex":${expectedZIndex}`);
   });
 
-  it("applies default z-index 1000 when selected prop is not provided", () => {
+  it("applies default regular label z-index when selected prop is not provided", () => {
     const result = EdgeLabel({
       sourceX: 0,
       sourceY: 0,
@@ -540,7 +541,7 @@ describe("EdgeLabel z-index behavior", () => {
     });
 
     const resultString = JSON.stringify(result);
-    expect(resultString).toContain('"zIndex":1000');
+    expect(resultString).toContain(`"zIndex":${ZINDEX.EDGE_LABEL_REGULAR}`);
   });
 
   describe("integration with edge components", () => {
@@ -552,7 +553,7 @@ describe("EdgeLabel z-index behavior", () => {
       { component: ErrorEdge, edgeType: "error", edgeClass: "error", selected: false },
       { component: ConditionEdge, edgeType: "condition", edgeClass: "condition", selected: false },
     ])(
-      "$edgeType edge passes selected=$selected to EdgeLabel",
+      "$edgeType edge applies selected class when selected=$selected",
       ({ component: Component, edgeClass, selected }) => {
         const { container } = render(
           <RF.ReactFlowProvider>

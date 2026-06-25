@@ -16,6 +16,7 @@
 
 import * as RF from "@xyflow/react";
 import type { Point, WayPoints } from "../diagram/autoLayout";
+import { ZINDEX } from "../zIndexConstants";
 
 export enum EdgeTypes {
   Default = "default",
@@ -138,7 +139,7 @@ export function EdgeLabel(props: EdgeLabelProps) {
           <div
             style={{
               transform: `translate(-50%, -50%) translate(${x}px,${y}px)`,
-              zIndex: selected ? 1001 : 1000,
+              zIndex: selected ? ZINDEX.EDGE_LABEL_SELECTED : ZINDEX.EDGE_LABEL_REGULAR,
             }}
             className={type ? `edge-label ${type}` : "edge-label"}
           >
