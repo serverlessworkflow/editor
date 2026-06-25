@@ -58,10 +58,9 @@
     --dec-minimap-node-stroke: #64748b;
     --dec-minimap-border: #cbd5e1;
     --dec-minimap-shadow: rgba(15, 23, 42, 0.12);
-
   }
 
-  .dec-root.dark{
+  .dec-root.dark {
     --dec-error-accent: #f87171;
     --dec-error-glow: rgba(248, 113, 113, 0.4);
     --dec-edge-selected: #aea6a6;
