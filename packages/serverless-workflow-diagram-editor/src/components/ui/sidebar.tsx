@@ -20,8 +20,6 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelRightIcon } from "lucide-react";
 import { Slot } from "radix-ui";
-import { useI18n } from "@serverlessworkflow/i18n";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -222,16 +220,15 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();
-  const { t } = useI18n();
 
   return (
     <button
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label={t("aria.sidebar.toggle")}
+      aria-label="Toggle Sidebar"
       tabIndex={-1}
       onClick={toggleSidebar}
-      title={t("sidebar.toggle")}
+      title="Toggle Sidebar"
       className={cn(
         "dec:absolute dec:inset-y-0 dec:z-20 dec:hidden dec:w-4 dec:-translate-x-1/2 dec:transition-all dec:ease-linear dec:group-data-[side=left]:-right-4 dec:group-data-[side=right]:left-0 dec:after:absolute dec:after:inset-y-0 dec:after:left-1/2 dec:after:w-[2px] dec:hover:after:bg-sidebar-border dec:sm:flex",
         "dec:in-data-[side=left]:cursor-w-resize dec:in-data-[side=right]:cursor-e-resize",
