@@ -19,8 +19,8 @@ catalogs:
       specifier: ^1.61.0
       version: 1.61.0
     '@serverlessworkflow/sdk':
-      specifier: ^1.0.3-alpha1
-      version: 1.0.3-alpha1
+      specifier: ^1.0.3-alpha3
+      version: 1.0.3-alpha3
     '@storybook/addon-a11y':
       specifier: ^10.4.6
       version: 10.4.6
@@ -93,6 +93,9 @@ catalogs:
     jsdom:
       specifier: ^29.1.0
       version: 29.1.1
+    lint-staged:
+      specifier: ^17.0.8
+      version: 17.0.8
     lucide-react:
       specifier: ^1.21.0
       version: 1.21.0
@@ -153,7 +156,7 @@ importers:
         specifier: 'catalog:'
         version: 9.1.7
       lint-staged:
-        specifier: 17.0.8
+        specifier: 'catalog:'
         version: 17.0.8
       oxfmt:
         specifier: 'catalog:'
@@ -208,7 +211,7 @@ importers:
         version: link:../i18n
       '@serverlessworkflow/sdk':
         specifier: 'catalog:'
-        version: 1.0.3-alpha1
+        version: 1.0.3-alpha3
       '@xyflow/react':
         specifier: 'catalog:'
         version: 12.11.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2079,8 +2082,8 @@ packages:
       rollup:
         optional: true
 
-  '@serverlessworkflow/sdk@1.0.3-alpha1':
-    resolution: {integrity: sha512-I0h+AMnWC/monzHYC6x7Cy3RzHHCSsOfDQkZQXyXu7vc2jYIs95Mk0XUJdCr+FDyamdErp72w0N9Oj58ybYthA==}
+  '@serverlessworkflow/sdk@1.0.3-alpha3':
+    resolution: {integrity: sha512-rAI7bbEVc/OgA9X9Y0xZ/rdQhGwf+V9+BT/H/zqjVJfPqiMNduD28+RO90fTx0I56BII/nSlaKsgrnyJYH5/bA==}
     engines: {node: '>=22.0.0', npm: '>=10.0.0'}
 
   '@standard-schema/spec@1.1.0':
@@ -3520,6 +3523,11 @@ packages:
 
   semver@7.8.0:
     resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.5:
+    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5573,11 +5581,12 @@ snapshots:
       estree-walker: 2.0.2
       picomatch: 4.0.4
 
-  '@serverlessworkflow/sdk@1.0.3-alpha1':
+  '@serverlessworkflow/sdk@1.0.3-alpha3':
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       js-yaml: 4.2.0
+      semver: 7.8.5
 
   '@standard-schema/spec@1.1.0': {}
 
@@ -7077,6 +7086,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.8.0: {}
+
+  semver@7.8.5: {}
 
   shebang-command@2.0.0:
     dependencies:
