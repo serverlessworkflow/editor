@@ -190,29 +190,11 @@ interface PlaceholderProps {
   type: string;
 }
 
-// TODO: This content is just a placeholder
-function PlaceholderContent({ id, data, selected, type }: PlaceholderProps) {
-  return (
-    <div
-      className={`custom-node-container ${selected ? "selected" : ""}`}
-      data-testid={`${type}-node-${id}`}
-    >
-      <RF.Handle type="target" position={RF.Position.Top} />
-      <div className="node-label-container" data-testid={`${type}-label-${id}`}>
-        {`${type}\n${data.label}`}
-      </div>
-      <RF.Handle type="source" position={RF.Position.Bottom} />
-    </div>
-  );
-}
-
 function StartEndNode({ id, data, selected, type }: NodeContentProps) {
   const isStart = type === GraphNodeType.Start;
   return (
     <div
-      className={`dec-start-end-node ${selected ? "selected" : ""} ${
-        data.hasError ? "has-error" : ""
-      }`}
+      className={`dec-start-end-node ${selected ? "selected" : ""}`}
       data-testid={`${type}-node-${id}`}
     >
       {!isStart && <RF.Handle type="target" position={RF.Position.Top} />}

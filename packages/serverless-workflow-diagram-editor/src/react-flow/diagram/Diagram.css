@@ -424,21 +424,21 @@
   
   /* Start node - green single circle */
   .dec-start-node {
-    border: 1px solid grey;
-    background-color: lightgray;
+  border: 1px solid #aea6a6;
+  background-color: #f2f2f2;
   }
 
   .dec-end-node {
-    border: 1px solid grey;
-    background-color: lightgray;
+  border: 1px solid #aea6a6;
+  background-color: #e7e3e3;
   }
   
   .dec-end-node-inner {
     position: absolute;
     inset: 6px;
     border-radius: 50%;
-    border: 1px solid grey;
-    background-color: lightgray;
+    border: 1px solid #aea6a6;
+    background-color: #e7e3e3;
     pointer-events: none;
   }
   
