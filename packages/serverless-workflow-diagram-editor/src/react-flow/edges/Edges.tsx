@@ -160,6 +160,7 @@ function CustomBaseEdge({
   data,
   markerEnd,
   className,
+  selected,
 }: RF.EdgeProps & { data?: BaseEdgeData; className?: string }) {
   const edgePath = data?.wayPoints
     ? createPathFromWayPoints(sourceX, sourceY, targetX, targetY, data.wayPoints)
@@ -172,13 +173,10 @@ function CustomBaseEdge({
         targetPosition,
       })[0];
 
+  const edgeClassName = `${className ?? "edge-line"}${selected ? " selected" : ""}`;
+
   return (
-    <RF.BaseEdge
-      id={id}
-      path={edgePath}
-      markerEnd={markerEnd ?? ""}
-      className={className ?? "edge-line"}
-    />
+    <RF.BaseEdge id={id} path={edgePath} markerEnd={markerEnd ?? ""} className={edgeClassName} />
   );
 }
 

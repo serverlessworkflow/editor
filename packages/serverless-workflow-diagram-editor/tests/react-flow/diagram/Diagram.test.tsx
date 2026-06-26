@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { vi, it, expect, afterEach, describe, beforeEach } from "vitest";
 import { Diagram } from "../../../src/react-flow/diagram/Diagram";
 import { DiagramEditorContextProvider } from "../../../src/store/DiagramEditorContextProvider";
@@ -22,6 +22,7 @@ import { SidebarProvider } from "../../../src/components/ui/sidebar";
 import { I18nProvider } from "@serverlessworkflow/i18n";
 import { en } from "../../../src/i18n/locales/en";
 import { ReactFlowProvider, ReactFlow } from "@xyflow/react";
+import * as RF from "@xyflow/react";
 import * as autoLayoutModule from "../../../src/react-flow/diagram/autoLayout";
 
 // Mock ReactFlow to capture props
@@ -179,6 +180,61 @@ describe("Diagram Component", () => {
 
     await waitFor(() => {
       expect(applyAutoLayoutSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("onEdgesChange with zIndex updates", () => {
+    it("should provide onEdgesChange callback to ReactFlow", async () => {
+      renderDiagram({ isReadOnly: false });
+
+      // Wait for initial render
+      await waitFor(() => {
+        expect(applyAutoLayoutSpy).toHaveBeenCalled();
+      });
+
+      // Get the onEdgesChange callback from ReactFlow mock
+      const mockReactFlow = vi.mocked(ReactFlow);
+      const lastCall = mockReactFlow.mock.calls.at(-1);
+      expect(lastCall).toBeDefined();
+      const reactFlowProps = lastCall![0];
+      const onEdgesChange = reactFlowProps.onEdgesChange;
+
+      expect(onEdgesChange).toBeDefined();
+      expect(typeof onEdgesChange).toBe("function");
+    });
+
+    it("should apply zIndex correctly when edges are updated", async () => {
+      applyAutoLayoutSpy.mockResolvedValueOnce({
+        nodes: [],
+        edges: [
+          { id: "edge1", source: "n1", target: "n2", selected: false },
+          { id: "edge2", source: "n2", target: "n3", selected: true },
+        ],
+      });
+
+      renderDiagram({ isReadOnly: false });
+
+      await waitFor(() => {
+        const lastCall = vi.mocked(ReactFlow).mock.calls.at(-1);
+        expect(lastCall).toBeDefined();
+        expect(lastCall![0].edges).toHaveLength(2);
+      });
+
+      const onEdgesChange = vi.mocked(ReactFlow).mock.calls.at(-1)![0].onEdgesChange;
+      const changes: Parameters<RF.OnEdgesChange>[0] = [
+        { id: "edge1", type: "select", selected: true },
+      ];
+
+      act(() => {
+        onEdgesChange?.(changes);
+      });
+
+      await waitFor(() => {
+        const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
+
+        expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(1000);
+        expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(1000);
+      });
     });
   });
 });
