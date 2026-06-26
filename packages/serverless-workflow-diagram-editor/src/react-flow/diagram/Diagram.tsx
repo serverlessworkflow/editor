@@ -33,6 +33,12 @@ const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   duration: 400,
 };
 
+const applyEdgeZIndex = <T extends RF.Edge>(edges: T[]): T[] =>
+  edges.map((edge) => ({
+    ...edge,
+    zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
+  }));
+
 /**
  * Diagram component API
  */
@@ -72,13 +78,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
     (changes) => {
       setEdges((edgesSnapshot) => {
         const updatedEdges = RF.applyEdgeChanges(changes, edgesSnapshot);
-
-        // Elevate selected edges above regular edges
-        // but keep them below edge labels
-        return updatedEdges.map((edge) => ({
-          ...edge,
-          zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
-        }));
+        return applyEdgeZIndex(updatedEdges);
       });
     },
     [setEdges],
@@ -107,13 +107,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           // Only update if this effect is still active (not cancelled by cleanup)
           if (isActive && !abortController?.signal.aborted) {
             setNodes(nodes);
-            // Apply z-index to edges: selected edges above regular edges
-            // but below edge labels
-            const edgesWithZIndex = edges.map((edge) => ({
-              ...edge,
-              zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
-            }));
-            setEdges(edgesWithZIndex);
+            setEdges(applyEdgeZIndex(edges));
 
             // Queue fitView to run after React updates the DOM
             fitViewTimeoutId = setTimeout(() => reactFlowInstance.fitView(), 0);

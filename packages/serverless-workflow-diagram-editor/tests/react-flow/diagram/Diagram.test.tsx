@@ -224,8 +224,8 @@ describe("Diagram Component", () => {
 
       // All unselected edges should have zIndex: 0
       const edges = vi.mocked(ReactFlow).mock.calls.at(-1)![0].edges!;
-      expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(0);
-      expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(0);
+      expect(edges.find((e: RF.Edge) => e.id === "edge1")?.zIndex).toBe(ZINDEX.EDGE_REGULAR);
+      expect(edges.find((e: RF.Edge) => e.id === "edge2")?.zIndex).toBe(ZINDEX.EDGE_REGULAR);
     });
 
     it("should elevate selected edge above regular edges but below labels", async () => {
@@ -283,8 +283,8 @@ describe("Diagram Component", () => {
         const selectedEdge = edges.find((e: RF.Edge) => e.id === "edge1");
         const regularEdge = edges.find((e: RF.Edge) => e.id === "edge2");
 
-        expect(selectedEdge?.zIndex).toBe(100);
-        expect(regularEdge?.zIndex).toBe(0);
+        expect(selectedEdge?.zIndex).toBe(ZINDEX.EDGE_SELECTED);
+        expect(regularEdge?.zIndex).toBe(ZINDEX.EDGE_REGULAR);
 
         // Hierarchy in the test
         // Regular edges: 0
