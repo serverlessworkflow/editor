@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import * as RF from "@xyflow/react";
+import { useI18n } from "@serverlessworkflow/i18n";
 import { ReactFlowNodeTypes } from "../nodes/Nodes";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
@@ -46,6 +47,7 @@ export type DiagramProps = {
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
+  const { t } = useI18n();
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
   const { model, errors, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
     useDiagramEditorContext();
@@ -177,7 +179,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
         >
           <RF.ControlButton
             onClick={() => setMinimapVisible(!minimapVisible)}
-            aria-label={minimapVisible ? "Hide minimap" : "Show minimap"}
+            aria-label={minimapVisible ? t("aria.minimap.hide") : t("aria.minimap.show")}
           >
             M
           </RF.ControlButton>

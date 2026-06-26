@@ -63,7 +63,7 @@ export function SidePanel() {
   return (
     <Sidebar
       side="right"
-      aria-label={selectedNode ? "Node details panel" : "Workflow information panel"}
+      aria-label={selectedNode ? t("aria.panel.nodeDetails") : t("aria.panel.workflowInfo")}
       role="complementary"
     >
       <SidebarHeader>
@@ -89,7 +89,7 @@ export function SidePanel() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent aria-label="Panel content" role="region">
+      <SidebarContent aria-label={t("aria.panel.content")} role="region">
         {selectedNode ? (
           <NodeDetailsView node={selectedNode} />
         ) : (
@@ -103,7 +103,7 @@ export function SidePanel() {
         )}
       </SidebarContent>
       {model !== null && selectedNodeId === null ? (
-        <SidebarFooter aria-label="Export actions">
+        <SidebarFooter aria-label={t("aria.panel.exportActions")}>
           <MermaidActions model={model} />
         </SidebarFooter>
       ) : null}

@@ -90,6 +90,7 @@ interface BadgeProps {
 }
 
 function TaskNodeBadge({ badge, testId }: BadgeProps) {
+  const { t } = useI18n();
   const isUnknown = !KNOWN_BADGES.has(badge.toLowerCase());
 
   if (isUnknown) {
@@ -97,7 +98,7 @@ function TaskNodeBadge({ badge, testId }: BadgeProps) {
     return (
       <span
         title={badge}
-        aria-label={`Badge: ${badge}`}
+        aria-label={`${t("aria.badge")} ${badge}`}
         className="dec-task-node-badge-custom"
         data-testid={`${testId}-custom`}
       >
