@@ -182,14 +182,6 @@ function TerminalNodeContent({ id, type }: { id: string; type: TerminalNodeType 
   );
 }
 
-// TODO: These props are just a placeholder
-interface PlaceholderProps {
-  id: string;
-  data: BaseNodeData;
-  selected: boolean;
-  type: string;
-}
-
 function StartEndNode({ id, data, selected, type }: NodeContentProps) {
   const isStart = type === GraphNodeType.Start;
   return (

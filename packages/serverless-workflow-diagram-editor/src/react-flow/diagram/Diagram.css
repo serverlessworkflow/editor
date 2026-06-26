@@ -422,7 +422,6 @@
     background: var(--color-background, white);
   }
   
-  /* Start node - green single circle */
   .dec-start-node {
   border: 1px solid #aea6a6;
   background-color: #f2f2f2;
