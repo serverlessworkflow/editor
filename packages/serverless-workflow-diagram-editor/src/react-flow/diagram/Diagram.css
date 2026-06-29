@@ -453,6 +453,13 @@
   .dec-end-node:hover {
     box-shadow: 0 0 0 4px rgba(209, 204, 204, 0.3);
   }
+
+  .dec-root.dark .dec-start-node,
+  .dec-root.dark .dec-end-node,
+  .dec-root.dark .dec-end-node-inner {
+  @apply dec:border-slate-600
+    dec:bg-slate-800;
+  }
 }
 
 /* custom edges */
