@@ -437,12 +437,6 @@
      dec:bg-slate-100;
  }
  
- .dec-start-end-node.selected .dec-start-node,
- .dec-start-end-node.selected .dec-end-node,
- .dec-start-node:hover,
- .dec-end-node:hover {
-   box-shadow: 0 0 0 4px rgba(209, 204, 204, 0.3);
- }
  
  .dec-root.dark .dec-start-node,
  .dec-root.dark .dec-end-node {

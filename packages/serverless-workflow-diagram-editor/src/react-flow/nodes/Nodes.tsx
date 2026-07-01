@@ -182,34 +182,67 @@ function TerminalNodeContent({ id, type }: { id: string; type: TerminalNodeType 
   );
 }
 
-function StartEndNode({ id, data, selected, type }: NodeContentProps) {
+// function StartEndNode({ id, data, selected, type }: NodeContentProps) {
+//   const isStart = type === GraphNodeType.Start;
+//   return (
+//     <div
+//       className={`dec-start-end-node ${selected ? "selected" : ""}`}
+//       data-testid={`${type}-node-${id}`}
+//     >
+//       {!isStart && <RF.Handle type="target" position={RF.Position.Top} />}
+//       <div className={isStart ? "dec-start-node" : "dec-end-node"}>
+//         {!isStart && <div className="dec-end-node-inner" />}
+//       </div>
+//       {isStart && <RF.Handle type="source" position={RF.Position.Bottom} />}
+//     </div>
+//   );
+// }
+
+// /* start node */
+// export type StartNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Start>;
+// export function StartNode({ id, data, selected, type }: RF.NodeProps<StartNodeType>) {
+//   // TODO: This component is just a placeholder
+//   return <StartEndNode id={id} data={data} selected={selected} type={type} />;
+// }
+
+// /* end node */
+// export type EndNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.End>;
+// export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>) {
+//   // TODO: This component is just a placeholder
+//   return <StartEndNode id={id} data={data} selected={selected} type={type} />;
+// }
+
+function StartEndNode({ id, type }: { id: string; type: GraphNodeType.Start | GraphNodeType.End }) {
   const isStart = type === GraphNodeType.Start;
   return (
     <div
-      className={`dec-start-end-node ${selected ? "selected" : ""}`}
+      className="dec-start-end-node"
       data-testid={`${type}-node-${id}`}
+      onClick={(e) => e.stopPropagation()}
     >
-      {!isStart && <RF.Handle type="target" position={RF.Position.Top} />}
+      {isStart ? (
+        <RF.Handle type="source" position={RF.Position.Bottom} />
+      ) : (
+        <RF.Handle type="target" position={RF.Position.Top} />
+      )}
+
       <div className={isStart ? "dec-start-node" : "dec-end-node"}>
         {!isStart && <div className="dec-end-node-inner" />}
       </div>
-      {isStart && <RF.Handle type="source" position={RF.Position.Bottom} />}
     </div>
   );
 }
 
 /* start node */
 export type StartNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.Start>;
-export function StartNode({ id, data, selected, type }: RF.NodeProps<StartNodeType>) {
-  // TODO: This component is just a placeholder
-  return <StartEndNode id={id} data={data} selected={selected} type={type} />;
+export function StartNode({ id, type }: RF.NodeProps<StartNodeType>) {
+  return <StartEndNode id={id} type={type} />;
 }
 
 /* end node */
 export type EndNodeType = RF.Node<BaseNodeData, typeof GraphNodeType.End>;
-export function EndNode({ id, data, selected, type }: RF.NodeProps<EndNodeType>) {
-  // TODO: This component is just a placeholder
-  return <StartEndNode id={id} data={data} selected={selected} type={type} />;
+export function EndNode({ id, type }: RF.NodeProps<EndNodeType>) {
+  return <StartEndNode id={id} type={type} />;
 }
 
 /* entry node */
