@@ -75,8 +75,8 @@ pnpm run build:storybook
 ### Core Principles
 
 - **Vendor-neutral**: Platform-agnostic editor that can be embedded anywhere
-- **SDK isolation**: Only [`src/core/workflowSdk.ts`](src/core/workflowSdk.ts) and [`src/core/graph.ts`](src/core/graph.ts) directly import from `@serverlessworkflow/sdk`
-- **React Flow isolation**: All `@xyflow/react` specifics contained in [`src/react-flow/`](src/react-flow/)
+- **SDK isolation**: SDK integration helpers live under [`src/core/`](src/core/) (e.g., `workflowSdk.ts`, `graph.ts`, `taskSubType.ts`, `taskDetails.ts`, `mermaidExport.ts`); other layers may also import SDK types/enums (e.g., `Specification`, `GraphNodeType`) when needed.
+- **React Flow isolation**: React Flow rendering components live in [`src/react-flow/`](src/react-flow/) (nodes/edges/diagram); other layers may import `@xyflow/react` types and/or `ReactFlowProvider`.
 - **TypeScript strict mode**: Enforced with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`
 
 ### Directory Structure

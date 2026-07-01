@@ -18,10 +18,6 @@
 
 Core package agnostic from the rendering library and its types.
 
-## SDK Isolation
-
-**Critical constraint**: `workflowSdk.ts`, `graph.ts`, `taskSubType.ts`, `taskDetails.ts`, and `mermaidExport.ts` are the only modules that import from `@serverlessworkflow/sdk` directly, keeping the rest of the editor decoupled from SDK implementation details.
-
 ## Modules
 
 ### workflowSdk.ts

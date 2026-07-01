@@ -164,8 +164,8 @@ Internationalization utilities used by the diagram editor.
 
 The diagram editor maintains strict separation of concerns:
 
-- **SDK Isolation**: Only `src/core/workflowSdk.ts` and `src/core/graph.ts` import from `@serverlessworkflow/sdk`
-- **React Flow Isolation**: All `@xyflow/react` code is contained in `src/react-flow/`
+- **SDK Isolation**: SDK integration helpers live under `src/core/` (e.g., `workflowSdk.ts`, `graph.ts`, `taskSubType.ts`, `taskDetails.ts`, `mermaidExport.ts`); other layers may also import SDK types/enums (e.g., `Specification`, `GraphNodeType`) when needed.
+- **React Flow Isolation**: React Flow rendering components live in `src/react-flow/` (nodes/edges/diagram); other layers may import `@xyflow/react` types and/or `ReactFlowProvider`.
 - **Platform Agnostic**: Core logic decoupled from platform-specific APIs
 - **Embeddable**: Designed for integration into VS Code, web apps, and browser extensions
 
