@@ -95,6 +95,7 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
   return (
     <div
       className={`dec-root${resolvedColorMode === "dark" ? " dark" : ""}`}
+      lang={locale}
       data-testid={"dec-root"}
     >
       <I18nProvider locale={locale} dictionaries={dictionaries}>

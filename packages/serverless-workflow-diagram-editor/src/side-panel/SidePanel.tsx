@@ -61,11 +61,16 @@ export function SidePanel() {
   }, [selectedNodeId, setOpen]);
 
   return (
-    <Sidebar side="right">
+    <Sidebar
+      side="right"
+      aria-label={selectedNode ? t("aria.panel.nodeDetails") : t("aria.panel.workflowInfo")}
+      role="complementary"
+    >
       <SidebarHeader>
         <div className="dec-sidebar-header-title">
           <span
             className={`dec-sidebar-header-icon-wrap${nodeConfig ? " colored" : ""}`}
+            aria-hidden="true"
             style={
               nodeConfig
                 ? ({ "--task-node-color": nodeConfig.color } as React.CSSProperties)
@@ -84,22 +89,24 @@ export function SidePanel() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent aria-label={t("aria.panel.content")} role="region">
         {selectedNode ? (
           <NodeDetailsView node={selectedNode} />
         ) : (
           <>
             <div className="dec-sidebar-hint">
-              <Info className="dec-sidebar-hint-icon" />
+              <Info className="dec-sidebar-hint-icon" aria-hidden="true" />
               <span className="dec-sidebar-hint-text">{t("sidebar.selectNode")}</span>
             </div>
             {model !== null ? <WorkflowInfoView document={model.document} /> : null}
           </>
         )}
       </SidebarContent>
-      <SidebarFooter>
-        {model !== null && selectedNodeId === null && <MermaidActions model={model} />}
-      </SidebarFooter>
+      {model !== null && selectedNodeId === null ? (
+        <SidebarFooter aria-label={t("aria.panel.exportActions")}>
+          <MermaidActions model={model} />
+        </SidebarFooter>
+      ) : null}
     </Sidebar>
   );
 }

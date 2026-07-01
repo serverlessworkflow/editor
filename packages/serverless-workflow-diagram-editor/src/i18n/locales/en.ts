@@ -43,6 +43,13 @@ export const en = {
   "sidebar.exportMermaid.copy": "Copy Mermaid Code",
   "sidebar.exportMermaid.download": "Download as Mermaid File",
   "sidebar.exportMermaid.copied": "Copied!",
+  "aria.minimap.hide": "Hide minimap",
+  "aria.minimap.show": "Show minimap",
+  "aria.badge": "Badge:",
+  "aria.panel.nodeDetails": "Node details panel",
+  "aria.panel.workflowInfo": "Workflow information panel",
+  "aria.panel.content": "Panel content",
+  "aria.panel.exportActions": "Export actions",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

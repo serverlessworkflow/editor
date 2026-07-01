@@ -90,12 +90,18 @@ interface BadgeProps {
 }
 
 function TaskNodeBadge({ badge, testId }: BadgeProps) {
+  const { t } = useI18n();
   const isUnknown = !KNOWN_BADGES.has(badge.toLowerCase());
 
   if (isUnknown) {
     /* TODO: instead of using the browser default to display tool tip like below, replace with tooltip component when we add it */
     return (
-      <span title={badge} className="dec-task-node-badge-custom" data-testid={`${testId}-custom`}>
+      <span
+        title={badge}
+        aria-label={`${t("aria.badge")} ${badge}`}
+        className="dec-task-node-badge-custom"
+        data-testid={`${testId}-custom`}
+      >
         {badge}
       </span>
     );
