@@ -16,6 +16,7 @@
 
 import * as RF from "@xyflow/react";
 import type { Point, WayPoints } from "../diagram/autoLayout";
+import { ZINDEX } from "../zIndexConstants";
 
 export enum EdgeTypes {
   Default = "default",
@@ -43,6 +44,7 @@ export type EdgeLabelProps = {
   targetPosition?: RF.Position;
   type?: EdgeTypes;
   data?: BaseEdgeData | undefined;
+  selected?: boolean;
 };
 
 export function createPathFromWayPoints(
@@ -127,7 +129,7 @@ function getEdgeLabelPosition({
 }
 
 export function EdgeLabel(props: EdgeLabelProps) {
-  const { type, data } = props;
+  const { type, data, selected } = props;
   const { x, y } = getEdgeLabelPosition(props);
 
   return (
@@ -137,6 +139,7 @@ export function EdgeLabel(props: EdgeLabelProps) {
           <div
             style={{
               transform: `translate(-50%, -50%) translate(${x}px,${y}px)`,
+              zIndex: selected ? ZINDEX.EDGE_LABEL_SELECTED : ZINDEX.EDGE_LABEL_REGULAR,
             }}
             className={type ? `edge-label ${type}` : "edge-label"}
           >
@@ -160,6 +163,7 @@ function CustomBaseEdge({
   data,
   markerEnd,
   className,
+  selected,
 }: RF.EdgeProps & { data?: BaseEdgeData; className?: string }) {
   const edgePath = data?.wayPoints
     ? createPathFromWayPoints(sourceX, sourceY, targetX, targetY, data.wayPoints)
@@ -172,13 +176,10 @@ function CustomBaseEdge({
         targetPosition,
       })[0];
 
+  const edgeClassName = `${className ?? "edge-line"}${selected ? " selected" : ""}`;
+
   return (
-    <RF.BaseEdge
-      id={id}
-      path={edgePath}
-      markerEnd={markerEnd ?? ""}
-      className={className ?? "edge-line"}
-    />
+    <RF.BaseEdge id={id} path={edgePath} markerEnd={markerEnd ?? ""} className={edgeClassName} />
   );
 }
 

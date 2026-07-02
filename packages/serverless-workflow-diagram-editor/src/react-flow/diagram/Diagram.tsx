@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import * as RF from "@xyflow/react";
+import { useI18n } from "@serverlessworkflow/i18n";
 import { ReactFlowNodeTypes } from "../nodes/Nodes";
 import "@xyflow/react/dist/style.css";
 import "./Diagram.css";
@@ -25,12 +26,19 @@ import { useDiagramEditorContext } from "../../store/DiagramEditorContext";
 import { buildDiagramElements } from "./diagramBuilder";
 import { applyAutoLayout } from "./autoLayout";
 import { SidePanelTrigger } from "@/side-panel/SidePanelTrigger";
+import { ZINDEX } from "../zIndexConstants";
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = {
   maxZoom: 1,
   minZoom: 0.1,
   duration: 400,
 };
+
+const applyEdgeZIndex = <T extends RF.Edge>(edges: T[]): T[] =>
+  edges.map((edge) => ({
+    ...edge,
+    zIndex: edge.selected ? ZINDEX.EDGE_SELECTED : ZINDEX.EDGE_REGULAR,
+  }));
 
 /**
  * Diagram component API
@@ -46,6 +54,7 @@ export type DiagramProps = {
 };
 
 export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
+  const { t } = useI18n();
   const reactFlowInstance: RF.ReactFlowInstance = RF.useReactFlow();
   const { model, errors, nodes, edges, isReadOnly, setNodes, setEdges, setSelectedNodeId } =
     useDiagramEditorContext();
@@ -66,10 +75,17 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
     (changes) => setNodes((nodesSnapshot) => RF.applyNodeChanges(changes, nodesSnapshot)),
     [setNodes],
   );
+
   const onEdgesChange = React.useCallback<RF.OnEdgesChange>(
-    (changes) => setEdges((edgesSnapshot) => RF.applyEdgeChanges(changes, edgesSnapshot)),
+    (changes) => {
+      setEdges((edgesSnapshot) => {
+        const updatedEdges = RF.applyEdgeChanges(changes, edgesSnapshot);
+        return applyEdgeZIndex(updatedEdges);
+      });
+    },
     [setEdges],
   );
+
   const onSelectionChange = React.useCallback<RF.OnSelectionChangeFunc>(
     ({ nodes: selectedNodes }) => setSelectedNodeId(selectedNodes[0]?.id ?? null),
     [setSelectedNodeId],
@@ -93,7 +109,7 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           // Only update if this effect is still active (not cancelled by cleanup)
           if (isActive && !abortController?.signal.aborted) {
             setNodes(nodes);
-            setEdges(edges);
+            setEdges(applyEdgeZIndex(edges));
 
             // Queue fitView to run after React updates the DOM
             fitViewTimeoutId = setTimeout(() => reactFlowInstance.fitView(), 0);
@@ -161,10 +177,13 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           },
         }}
         data-testid={"react-flow-canvas"}
+        elevateEdgesOnSelect={false}
         nodesDraggable={!isReadOnly}
         nodesConnectable={!isReadOnly}
       >
-        {minimapVisible && <RF.MiniMap pannable zoomable position={"top-right"} />}
+        {minimapVisible && (
+          <RF.MiniMap pannable zoomable position={"bottom-left"} maskStrokeWidth={2} />
+        )}
 
         <RF.Panel position="top-right">
           <SidePanelTrigger />
@@ -175,7 +194,12 @@ export const Diagram = ({ divRef, ref, colorMode = "light" }: DiagramProps) => {
           position={"bottom-right"}
           showInteractive={false}
         >
-          <RF.ControlButton onClick={() => setMinimapVisible(!minimapVisible)}>M</RF.ControlButton>
+          <RF.ControlButton
+            onClick={() => setMinimapVisible(!minimapVisible)}
+            aria-label={minimapVisible ? t("aria.minimap.hide") : t("aria.minimap.show")}
+          >
+            M
+          </RF.ControlButton>
         </RF.Controls>
         <RF.Background className="diagram-background" variant={RF.BackgroundVariant.Cross} />
       </RF.ReactFlow>

@@ -236,7 +236,7 @@ describe("React Flow custom node types", () => {
           listen: { to: { any: [] } },
         }),
       ];
-      render(
+      renderWithProviders(
         <div>
           <RF.ReactFlow nodeTypes={ReactFlowNodeTypes} nodes={nodesWithBadges} edges={allEdges} />
         </div>,
@@ -257,7 +257,7 @@ describe("React Flow custom node types", () => {
           call: "customCall",
         }),
       ];
-      render(
+      renderWithProviders(
         <TooltipProvider>
           <div>
             <RF.ReactFlow
@@ -283,7 +283,7 @@ describe("React Flow custom node types", () => {
         }),
       ];
 
-      render(
+      renderWithProviders(
         <TooltipProvider>
           <div>
             <RF.ReactFlow
@@ -316,7 +316,7 @@ describe("React Flow custom node types", () => {
           fork: { branches: [], compete: true },
         }),
       ];
-      render(
+      renderWithProviders(
         <div>
           <RF.ReactFlow
             nodeTypes={ReactFlowNodeTypes}

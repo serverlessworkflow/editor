@@ -23,9 +23,12 @@ type ErrorPageProps = {
 
 export const ErrorPage = ({ title, message, snippet }: ErrorPageProps) => {
   return (
-    <div className="dec:p-6">
+    <div role="alert" aria-live="assertive" className="dec:p-6">
       <div className="dec:flex dec:items-center dec:gap-2">
-        <AlertTriangle className="dec:size-5 dec:shrink-0 dec:text-red-600 dec:dark:text-red-400" />
+        <AlertTriangle
+          className="dec:size-5 dec:shrink-0 dec:text-red-600 dec:dark:text-red-400"
+          aria-hidden="true"
+        />
         <h2 className="dec:text-base dec:font-semibold dec:text-gray-900 dec:dark:text-gray-100">
           {title}
         </h2>

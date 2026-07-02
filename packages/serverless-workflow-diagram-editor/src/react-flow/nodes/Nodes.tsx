@@ -91,13 +91,18 @@ interface BadgeProps {
 }
 
 function TaskNodeBadge({ badge, testId }: BadgeProps) {
+  const { t } = useI18n();
   const isUnknown = !KNOWN_BADGES.has(badge.toLowerCase());
 
   if (isUnknown) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="dec-task-node-badge-custom" data-testid={`${testId}-custom`}>
+          <span
+            className="dec-task-node-badge-custom"
+            data-testid={`${testId}-custom`}
+            aria-label={`${t("aria.badge")} ${badge}`}
+          >
             {badge}
           </span>
         </TooltipTrigger>

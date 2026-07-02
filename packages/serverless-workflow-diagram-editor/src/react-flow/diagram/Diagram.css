@@ -18,6 +18,13 @@
 
 /* react flow overrides */
 @layer react-flow-overrides {
+  /* Elevate the edge-label renderer container above nodes.
+     React Flow renders .react-flow__edgelabel-renderer before NodeRenderer
+     in the DOM, so without an explicit z-index it is painted behind nodes. */
+  .dec-root .react-flow__edgelabel-renderer {
+    z-index: var(--dec-zindex-edge-label-regular);
+  }
+
   .dec-root .diagram-background {
     --xy-background-pattern-color: #ccc;
     background-color: #e5e4e2;
@@ -65,6 +72,27 @@
     min-width: 0 !important;
     min-height: 0 !important;
   }
+
+  /* minimap */
+  .dec-root .react-flow__minimap{
+    --xy-minimap-background-color: var(--dec-minimap-bg);
+    --xy-minimap-mask-background-color: var(--dec-minimap-mask);
+    --xy-minimap-mask-stroke-color: var(--dec-minimap-viewport);
+    --xy-minimap-node-background-color: var(--dec-minimap-node);
+    --xy-minimap-node-stroke-color: var(--dec-minimap-node-stroke);
+    --xy-minimap-node-stroke-width: 2;
+    
+    border: 1px solid var(--dec-minimap-border);
+    border-radius:8px;
+    box-shadow: 0 4px 12px var(--dec-minimap-shadow);
+    overflow: hidden;
+}
+
+  .dec-root .react-flow__minimap-node {
+    fill: var(--dec-minimap-node);
+    stroke: var(--dec-minimap-node-stroke);
+    stroke-width: 2;
+}
 }
 
 /* custom nodes */
@@ -408,7 +436,8 @@
 /* React flow SVG components do not work with classes defined into layers */
 .dec-root .edge-line {
   @apply dec:stroke-[#aea6a6]
-        dec:stroke-2;
+        dec:stroke-2
+        dec:transition-[filter];
 }
 
 .dec-root .edge-line.error {
@@ -418,6 +447,32 @@
 
 .dec-root .edge-line.condition {
   @apply dec:stroke-blue-500;
+}
+
+/* Override React Flow's default selected edge styling to preserve original colors */
+.dec-root .react-flow__edge.selected .edge-line {
+  stroke: var(--dec-edge-selected) !important;
+}
+
+.dec-root .react-flow__edge.selected .edge-line.error {
+  stroke: var(--dec-error-accent) !important;
+}
+
+.dec-root .react-flow__edge.selected .edge-line.condition {
+  stroke: var(--dec-edge-selected-condition) !important;
+}
+
+/* Selected edge shadow effect - lighter for light mode */
+.dec-root .edge-line.selected {
+  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.8))
+          drop-shadow(0 0 6px rgba(59, 130, 246, 0.4))
+          drop-shadow(0 0 12px rgba(59, 130, 246, 0.2));
+}
+
+.dec-root.dark .edge-line.selected {
+  filter: drop-shadow(0 0 3px rgb(59 130 246))
+          drop-shadow(0 0 8px rgb(59 130 246))
+          drop-shadow(0 0 16px rgba(59, 130, 246, 0.8));
 }
 
 /* custom edge labels */
