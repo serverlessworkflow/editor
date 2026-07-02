@@ -195,6 +195,8 @@ function StartEndNode({ id, type }: { id: string; type: GraphNodeType.Start | Gr
       className="dec-start-end-node"
       data-testid={`${type}-node-${id}`}
       onClick={(e) => e.stopPropagation()}
+      onKeyUp={(e) => e.stopPropagation()}
+      role="presentation"
     >
       {isStart ? (
         <RF.Handle type="source" position={RF.Position.Bottom} />
