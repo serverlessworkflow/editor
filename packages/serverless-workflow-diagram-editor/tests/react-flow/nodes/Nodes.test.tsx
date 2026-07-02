@@ -31,6 +31,7 @@ import { DEFAULT_NODE_SIZE } from "../../../src/react-flow/diagram/autoLayout";
 import { en } from "../../../src/i18n/locales/en";
 import { renderWithProviders } from "../../test-utils/render-helpers";
 import { TooltipProvider } from "../../../src/components/ui/tooltip";
+import userEvent from "@testing-library/user-event";
 
 function testNode(
   id: string,
@@ -271,6 +272,38 @@ describe("React Flow custom node types", () => {
       const callBadge = screen.getByTestId("call-node-n1-badge-custom");
       expect(callBadge).toBeInTheDocument();
       expect(callBadge.textContent).toBe("customCall");
+    });
+
+    it("should render the raw value as a custom badge for an unknown subtype and display it in the tooltip", async () => {
+      const user = userEvent.setup();
+
+      const nodesWithUnknownBadges = [
+        testNode("n1", GraphNodeType.Call, 100, "CallNode", {
+          call: "customCall",
+        }),
+      ];
+
+      render(
+        <TooltipProvider>
+          <div>
+            <RF.ReactFlow
+              nodeTypes={ReactFlowNodeTypes}
+              nodes={nodesWithUnknownBadges}
+              edges={allEdges}
+            />
+          </div>
+        </TooltipProvider>,
+      );
+
+      const callBadge = screen.getByTestId("call-node-n1-badge-custom");
+
+      expect(callBadge).toBeInTheDocument();
+      expect(callBadge).toHaveTextContent("customCall");
+
+      await user.hover(callBadge);
+
+      const tooltip = await screen.findByRole("tooltip");
+      expect(tooltip).toHaveTextContent("customCall");
     });
 
     it("should render while/compete badges on container nodes", () => {
