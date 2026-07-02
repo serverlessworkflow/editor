@@ -27,6 +27,7 @@ import { useResolvedColorMode } from "../hooks/useResolvedColorMode";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { SidePanel } from "@/side-panel/SidePanel";
 import { DiagramEditorErrorBoundary } from "./error-pages/DiagramEditorErrorBoundary";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 /**
  * DiagramEditor component API
@@ -113,16 +114,18 @@ export const DiagramEditor = (props: DiagramEditorProps) => {
                     isReadOnly={props.isReadOnly}
                     locale={locale}
                   >
-                    <SidebarProvider defaultOpen={false}>
-                      <div className="dec-diagram-content">
-                        <DiagramEditorContent
-                          diagramRef={diagramRef}
-                          diagramDivRef={diagramDivRef}
-                          colorMode={resolvedColorMode}
-                        />
-                      </div>
-                      <SidePanel />
-                    </SidebarProvider>
+                    <TooltipProvider>
+                      <SidebarProvider defaultOpen={false}>
+                        <div className="dec-diagram-content">
+                          <DiagramEditorContent
+                            diagramRef={diagramRef}
+                            diagramDivRef={diagramDivRef}
+                            colorMode={resolvedColorMode}
+                          />
+                        </div>
+                        <SidePanel />
+                      </SidebarProvider>
+                    </TooltipProvider>
                   </DiagramEditorContextProvider>
                 </ReactFlowProvider>
               </DiagramEditorErrorBoundary>

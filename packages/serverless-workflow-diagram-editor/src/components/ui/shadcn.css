@@ -25,6 +25,10 @@
 */
 
 .dec-root {
+  --background: hsl(0 0% 100%);
+
+  --foreground: hsl(222.2 84% 4.9%);
+
   --sidebar: hsl(0 0% 98%);
 
   --sidebar-foreground: hsl(240 5.3% 26.1%);
@@ -43,6 +47,10 @@
 }
 
 .dec-root.dark {
+  --background: hsl(222.2 84% 4.9%);
+
+  --foreground: hsl(210 40% 98%);
+
   --sidebar: #2d3748;
 
   --sidebar-foreground: hsl(240 4.8% 95.9%);
@@ -61,6 +69,10 @@
 }
 
 @theme inline {
+  --color-background: var(--background);
+  
+  --color-foreground: var(--foreground);
+
   --color-sidebar: var(--sidebar);
 
   --color-sidebar-foreground: var(--sidebar-foreground);
