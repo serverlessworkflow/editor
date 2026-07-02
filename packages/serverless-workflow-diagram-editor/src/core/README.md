@@ -20,12 +20,30 @@ Core package agnostic from the rendering library and its types.
 
 ## Modules
 
-`workflowSdk.ts` and `graph.ts` are the only places in the diagram editor that import from the SDK directly, keeping the rest of the editor decoupled from SDK implementation details.
-
 ### workflowSdk.ts
 
-Abstraction layer over the `@serverlessworkflow/sdk`.
+Abstraction layer over the `@serverlessworkflow/sdk`. Provides functions to parse, validate, and work with workflow definitions without exposing SDK internals to the rest of the editor.
 
 ### graph.ts
 
-Add custom types to the original sdk `Graph` type.
+Utility functions for working with the SDK's `FlatGraph` type. Provides `getNodesByType()` to filter nodes by type and `fixNodesConnections()` to normalize graph edges by redirecting entry/exit node connections to their parent nodes.
+
+### taskSubType.ts
+
+Utilities for extracting task subtypes from task definitions. Provides functions like `getRunSubType()`, `getListenSubType()`, and `getCallSubType()` to determine the specific variant of each task type.
+
+### taskDetails.ts
+
+Flattens task properties into display-ready detail fields. Converts nested task objects into a flat array of `DetailField` objects (text, array, or object) for rendering in the UI, separating task-specific fields from inherited base fields.
+
+### elkjs.ts
+
+Wrapper for the ELK (Eclipse Layout Kernel) graph layout library. Provides `processElkLayout()` function with abort signal support for cancelable layout calculations.
+
+### mermaidExport.ts
+
+Converts workflow models to Mermaid diagram code. Thin wrapper over the SDK's `convertToMermaidCode()` function for exporting workflows to Mermaid format.
+
+### validationErrors.ts
+
+Filters and categorizes validation errors from the SDK. Separates node-specific errors from workflow-level errors, removes noise (redundant errors for invalid tasks), and provides utilities to map errors to their owning nodes.
