@@ -108,44 +108,6 @@
     @apply dec:text-white;
   }
 
-  .dec-root .custom-node-container {
-    @apply dec:rounded-[5px] 
-            dec:bg-white 
-            dec:border dec:border-black 
-            dec:transition-[border,box-shadow] 
-            dec:h-full 
-            dec:w-full;
-  }
-
-  .dec-root.dark .custom-node-container {
-    @apply dec:bg-[#2d3748]
-            dec:border-[#e5e4e2];
-  }
-
-  .dec-root .custom-node-container:hover {
-    @apply dec:hover:border dec:hover:border-black 
-            dec:hover:shadow-[0_0_10px_rgba(0,65,208,0.3)] 
-            dec:hover:h-full 
-            dec:hover:w-full;
-  }
-
-  .dec-root.dark .custom-node-container:hover {
-    @apply dec:hover:border-[#5dafd5] 
-            dec:hover:shadow-[0_0_10px_rgba(255,255,255,0.3)];
-  }
-
-  .dec-root .custom-node-container.selected {
-    @apply dec:bg-[#aebbd5] 
-            dec:border dec:border-black 
-            dec:shadow-[0_0_10px_rgba(1,79,248,0.3)];
-  }
-
-  .dec-root.dark .custom-node-container.selected {
-    @apply dec:bg-[#727676] 
-            dec:border-[#4324dc] 
-            dec:shadow-[0_0_10px_rgba(255,255,255,0.3)];
-  }
-
   /* Hover + selection are shared by every interactive node (leaf + container) */
   .dec-root .dec-leaf-node:hover,
   .dec-root .dec-container-node:hover {
